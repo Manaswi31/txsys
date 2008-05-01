@@ -37,16 +37,16 @@ void Txc11::handleMessage(cMessage * msg)
     TicTocMsg11 * ttmsg = check_and_cast<TicTocMsg11*> (msg);
     if (ttmsg->getDestination()==index()) {
 	int hopcount = ttmsg->getHopCount();
-	ev << "Message" << ttmsg << "arrived after" <<< hopcount <<"hops.\n";
+	ev << "Message" << ttmsg << "arrived after" << hopcount <<"hops.\n";
 	numReceived++;
-	bubbule("ARRIVED, starting new one!");
+	bubble("ARRIVED, starting new one!");
 
 	ev << "Generating another message:";
 	TicTocMsg11 * newmsg = generateMessage();
 	ev << newmsg << endl;
 	forwardMessage(newmsg);
 
-	if (ev.GUI())
+	if (ev.isGUI())
 	    updateDisplay();
     }
     else {
