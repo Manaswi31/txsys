@@ -40,3 +40,6 @@ module pkcountNetwork
 //currently the link delay is modeled as a constant "100ms"
 
 endmodule
+
+network pkcount : pkcountNetwork
+endnetwork
