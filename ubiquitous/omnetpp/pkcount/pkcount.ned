@@ -1,11 +1,12 @@
-simple  AppGen
+simple AppGen
     parameters:
-	iaTime: numberic;
+	iaTime: numeric;
+
     gates: 
 	out: out_strm;
 endsimple
 
-simple  AppSink
+simple AppSink
     gates:
 	in: in_strm;
 endsimple
@@ -25,7 +26,7 @@ module rHost
     submodules:
 	app_sink: AppSink;
     connections:
-	app_sink.in_strm-->in_strm;
+	app_sink.in_strm<--in_strm;
 endmodule
 
 
@@ -35,5 +36,7 @@ module pkcountNetwork
 	rhost: rHost;
 	display: "i=device/pc2";
     connections:
-	sHost.out_strm-->100ms-->rHost.in_strm; //currently the link delay is modeled as a constant "100ms"
+	shost.out_strm-->delay 100ms-->rhost.in_strm; 
+//currently the link delay is modeled as a constant "100ms"
+
 endmodule

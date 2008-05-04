@@ -16,6 +16,5 @@ message Packet
   fields:
     int srcAddr;
     int destAddr;
-    int hopCount;
 }
 
