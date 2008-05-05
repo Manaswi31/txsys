@@ -1,14 +1,3 @@
-//
-// This file is part of an OMNeT++/OMNEST simulation example.
-//
-// Copyright (C) 1992-2005 Andras Varga
-// Copyright (C) 2005-2007 Ahmet Sekercioglu
-//
-// This file is distributed WITHOUT ANY WARRANTY. See the file
-// `license' for details on this and other legal matters.
-//
-// $Id: app_gen.cc,v 1.7 2007/08/31 04:40:07 ahmet Exp $";
-
 #include <vector>
 #include <omnetpp.h>
 #include "packet_m.h"
@@ -26,8 +15,6 @@ void AppGen::initialize()
   WATCH(iaTime);
   WATCH(numSent);
   
-  
-  
   // Schedule an event for sending the first packet.
   timeToGenerateAPacket = new cMessage("timeToGenerateAPacket");
   iaTime = par("iaTime");
@@ -38,7 +25,7 @@ void AppGen::handleMessage(cMessage *msg)
 {
   // Time to create and send a packet. 
   if (ev.isGUI()) parentModule()->bubble("Sending a packet");
-  numSent++;
+      numSent++;
 
   // Display the number of packets sent.
   char buf[40];
