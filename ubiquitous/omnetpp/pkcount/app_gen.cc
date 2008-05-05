@@ -26,12 +26,7 @@ void AppGen::initialize()
   WATCH(iaTime);
   WATCH(numSent);
   
-  const char *destAddressesPar = par("destAddresses");
-  cStringTokenizer tokenizer(destAddressesPar);
-  const char *token;
-  while ((token = tokenizer.nextToken()) != NULL) {
-    destAddresses.push_back(atoi(token));
-  }
+  
   
   // Schedule an event for sending the first packet.
   timeToGenerateAPacket = new cMessage("timeToGenerateAPacket");
@@ -45,11 +40,6 @@ void AppGen::handleMessage(cMessage *msg)
   if (ev.isGUI()) parentModule()->bubble("Sending a packet");
   numSent++;
 
-  pkSize = par("pkSize");
-
-  // Choose a destination.
-  int destAddress = destAddresses[intuniform(0, destAddresses.size()-1)];
-  
   // Display the number of packets sent.
   char buf[40];
   sprintf(buf, "sent: %ld", numSent);
@@ -58,14 +48,8 @@ void AppGen::handleMessage(cMessage *msg)
   // Prepare a packet.
   // Application layer does not know the node address yet (hence -1)
   char pkname[40];
-  sprintf(pkname,"pk-(%d)-to-%d-#%ld", -1, destAddress, numSent);
-  ev << simTime() << " generating a packet " << pkname << endl;
-  Packet *pk = new Packet(pkname);
-  pk->setSrcAddr(-1); // Application does not know the source address.
-  pk->setDestAddr(destAddress);
-  pk->setLength(pkSize);
-  pk->setTimestamp();
-  send(pk,"out");
+  Packet *pk = new Packet();
+  send(pk,"out_strm");
   
   // Schedule an event for sending the next packet.
   iaTime = par("iaTime");
