@@ -9,10 +9,6 @@ class AppGen : public cSimpleModule
     int pkSize;
     double iaTime;
 
-    // Statistics
-    long numSent;
-
-    std::vector<int> destAddresses;
     cMessage *timeToGenerateAPacket;
 
   protected:
