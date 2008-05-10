@@ -1,7 +1,5 @@
-/
-// $Id: pksw.ned,v 1.3 2005/11/01 06:49:38 ahmet Exp $
 
-simple AppGen
+simple SimpleSource
     parameters:
         destAddresses: string,
         pkSize: numeric, 
@@ -11,17 +9,41 @@ simple AppGen
 
 endsimple
 
-simple AppSink
+simple Sink
     gates:
         in: in;
 endsimple
 
-simple
-
+simple HostProc
+    gates:
+        in: from_ll;
+	in: from_hl;
+	out: to_ll;
+	out: to_hl;
+endsimple
 
 module Host
     submodules:
+	sink: Sink
+	src: SimpleSource
+	proc: HostProc
+    gates:
+	out: out;
+	in: in;
+    connections: 
+	src.out-->proc.from_hl;
+	sink.in<--proc.to_hl;
+	proc.to_ll-->out;
+	proc.from_ll<--in;
 
+endmodule
+
+module Switch
+    submodules:
+	switch: SwitchProc
+    gates:
+	in: in[];
+	out: out[];
 endmodule
 
 module pksw

@@ -1,8 +1,8 @@
 
-#ifndef __Switch_H
-#define __Switch_H
+#ifndef __SwitchProc_H
+#define __SwitchProc_H
 
-class Switch : public cSimpleModule
+class SwitchProc : public cSimpleModule
 {
   private:
     // Statistics

@@ -1,38 +1,31 @@
-//
-// This file is part of an OMNeT++/OMNEST simulation example.
-//
-// Copyright (C) 1992-2005 Andras Varga
-// Copyright (C) 2005 Ahmet Sekercioglu
-//
-// This file is distributed WITHOUT ANY WARRANTY. See the file
-// `license' for details on this and other legal matters.
-//
-// $Id: app_sink.cc,v 1.6 2007/08/31 04:40:07 ahmet Exp $
 
 #include <vector>
 #include <omnetpp.h>
 #include "packet_m.h"
-#include "Switch.h"
+#include "SwitchProc.h"
 
-Define_Module(Switch);
+Define_Module(SwitchProc);
 
-void Switch::initialize()
+void SwitchProc::initialize()
 {
   
 }
 
-void Switch::handleMessage(cMessage *msg)
+void SwitchProc::handleMessage(cMessage *msg)
 {
   // Handle incoming packet
+  int dest;
   Packet *pk = check_and_cast<Packet *>(msg);
   if (ev.isGUI()) parentModule()->bubble("Arrived");
 
-  //Switch the packets based on their "destination" field
+  //SwitchProc the packets based on their "destination" field
+  dest = pk->getDestAddr(); 
+  send(pk, "");
 
   delete pk;
 }
 
-void Switch::finish()
+void SwitchProc::finish()
 {
   ev << parentModule()->fullName() << "." << fullName() << ":" << endl;
 }
