@@ -12,27 +12,27 @@
 #include <vector>
 #include <omnetpp.h>
 #include "packet_m.h"
-#include "Switch.h"
+#include "HostProc.h"
 
-Define_Module(Switch);
+Define_Module(HostProc);
 
-void Switch::initialize()
+void HostProc::initialize()
 {
   
 }
 
-void Switch::handleMessage(cMessage *msg)
+void HostProc::handleMessage(cMessage *msg)
 {
   // Handle incoming packet
   Packet *pk = check_and_cast<Packet *>(msg);
   if (ev.isGUI()) parentModule()->bubble("Arrived");
 
-  //Switch the packets based on their "destination" field
+  //HostProc the packets based on their "destination" field
 
   delete pk;
 }
 
-void Switch::finish()
+void HostProc::finish()
 {
   ev << parentModule()->fullName() << "." << fullName() << ":" << endl;
 }
