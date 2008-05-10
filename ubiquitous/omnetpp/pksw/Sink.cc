@@ -46,9 +46,8 @@ void Sink::handleMessage(cMessage *msg)
   sprintf(buf, "rcvd: %ld", numReceived);
   displayString().setTagArg("t", 0, buf);
 
-  ev << simTime() << " received packet " << pk->name() << " after " << pk->getHopCount() << "hops" << endl;
-  hopCountVector.record(pk->getHopCount());
-  hopCountStats.collect(pk->getHopCount());
+  //ev << simTime() << " received packet " << pk->name() << " after " << pk->getHopCount() << "hops" << endl;
+  //ev << simTime() << " received packet " << pk->name() << " after " << pk->getHopCount() << "hops" << endl;
   pkDelayVector.record(simTime() - pk->timestamp());
   pkDelayStats.collect(simTime() - pk->timestamp());
   pkSizeStats.collect(pk->length());

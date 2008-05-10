@@ -20,7 +20,7 @@ void SwitchProc::handleMessage(cMessage *msg)
 
   //SwitchProc the packets based on their "destination" field
   dest = pk->getDestAddr(); 
-  send(pk, "");
+  send(pk, "out", dest);
 
   delete pk;
 }
