@@ -1,4 +1,3 @@
-/
 // $Id: app_gen.cc,v 1.7 2007/08/31 04:40:07 ahmet Exp $";
 
 #include <vector>
@@ -31,9 +30,6 @@ void SimpleSource::handleMessage(cMessage *msg)
   numSent++;
 
   pkSize = par("pkSize");
-
-  // Choose a destination.
-  int destAddress = destAddresses[intuniform(0, destAddresses.size()-1)];
   
   // Display the number of packets sent.
   char buf[40];
@@ -42,12 +38,13 @@ void SimpleSource::handleMessage(cMessage *msg)
 
   // Prepare a packet.
   // Application layer does not know the node address yet (hence -1)
+  /*
   char pkname[40];
   sprintf(pkname,"pk-(%d)-to-%d-#%ld", -1, destAddress, numSent);
   ev << simTime() << " generating a packet " << pkname << endl;
   Packet *pk = new Packet(pkname);
-  pk->setSrcAddr(-1); // Application does not know the source address.
-  pk->setDestAddr(destAddress);
+  */
+  Packet *pk = new Packet();
   pk->setLength(pkSize);
   pk->setTimestamp();
   send(pk,"out");
