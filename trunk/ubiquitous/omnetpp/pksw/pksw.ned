@@ -1,7 +1,6 @@
 
 simple SimpleSource
     parameters:
-        destAddresses: string,
         pkSize: numeric,
         iaTime: numeric;
     gates:
@@ -53,17 +52,24 @@ module Switch
         out: out[];
     submodules:
         switch_proc: SwitchProc;
+	    gatesizes:
+		in[sizeof(in)],
+		out[sizeof(out)];
             display: "p=80,48;i=block/switch";
     connections:
-        in++ --> switch_proc.in++;
-        out++ <-- switch_proc.out++;
+        for i=0..sizeof(in)-1 do
+            in[i] --> switch_proc.in[i];
+            out[i] <-- switch_proc.out[i];
+        endfor;
+//in++ --> switch_proc.in++;
+//out++ <-- switch_proc.out++;
     display: "b=141,89";
 endmodule
 
 module pksw
     submodules:
         host: Host[4];
-            display: "p=77,88;i=device/pc2";
+            display: "i=device/pc2";
         switch: Switch;
             parameters:
             display: "p=122,176;i=abstract/switch";
