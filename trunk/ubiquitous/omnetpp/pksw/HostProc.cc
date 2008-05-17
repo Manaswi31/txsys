@@ -25,11 +25,12 @@ void HostProc::handleMessage(cMessage *msg)
 {
   // Handle incoming packet
   Packet *pk = check_and_cast<Packet *>(msg);
-  if (ev.isGUI()) parentModule()->bubble("Arrived");
+  //if (ev.isGUI()) parentModule()->bubble("Arrived");
 
   //HostProc the packets based on their "destination" field
+  pk->setDestAddr(3);
 
-  delete pk;
+  send(pk, "to_ll");
 }
 
 void HostProc::finish()
