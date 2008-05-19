@@ -28,9 +28,22 @@ void HostProc::handleMessage(cMessage *msg)
   //if (ev.isGUI()) parentModule()->bubble("Arrived");
 
   //HostProc the packets based on their "destination" field
-  pk->setDestAddr(3);
+  /*
+  if (pk->arrivalGateId()==from_ll) {
+      send(pk, "to_hl");
+  } else {
+      pk->setDestAddr(3);
 
-  send(pk, "to_ll");
+      send(pk, "to_ll");
+  }
+  */
+  if (pk->arrivalGateId()==gate("from_ll")->id()) {
+      send(pk, "to_hl");
+  } else {
+      pk->setDestAddr(3);
+
+      send(pk, "to_ll");
+  }
 }
 
 void HostProc::finish()

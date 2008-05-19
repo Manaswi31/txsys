@@ -22,7 +22,6 @@ void SwitchProc::handleMessage(cMessage *msg)
   dest = pk->getDestAddr(); 
   send(pk, "out", dest);
 
-  delete pk;
 }
 
 void SwitchProc::finish()
