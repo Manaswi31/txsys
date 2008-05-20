@@ -13,6 +13,9 @@ simple Sink
 endsimple
 
 simple HostProc
+    parameters:
+	destAddr: numeric,
+	txRate: numeric;
     gates:
         in: from_ll;
         in: from_hl;

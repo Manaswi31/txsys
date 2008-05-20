@@ -1,4 +1,3 @@
-// $Id: app_gen.cc,v 1.7 2007/08/31 04:40:07 ahmet Exp $";
 
 #include <vector>
 #include <omnetpp.h>
