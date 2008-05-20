@@ -7,6 +7,8 @@ class HostProc : public cSimpleModule
   private:
     // Statistics
     long numForwarded;
+    int destAddr;
+    double txRate;
 
    protected:
     virtual void initialize();
