@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<process-model model-name="prti_Plane" code-language="C" tv-in-db="yes" tv-in-tb="yes">
+	<OPNET-info OPNET-release="10.5.A" OPNET-patchlevel="1"/>
+	<attribute-assignments>
+		<assignment attribute-name="begsim intrpt" type="toggle" status="hidden" value="1"/>
+		<assignment attribute-name="doc file" type="string" status="hidden"/>
+		<assignment attribute-name="endsim intrpt" type="toggle" status="hidden"/>
+		<assignment attribute-name="failure intrpts" type="enumerated" status="hidden"/>
+		<assignment attribute-name="intrpt interval" type="toggle double" status="hidden" value="1.0"/>
+		<assignment attribute-name="priority" type="integer" status="hidden"/>
+		<assignment attribute-name="recovery intrpts" type="enumerated" status="hidden"/>
+		<assignment attribute-name="subqueue" type="compound" status="hidden">
+			<sub-object>
+				<attribute creation-mechanics="Model" name="count" type="integer" value="1"/>
+				<attribute creation-mechanics="Model" name="list" type="object list">
+					<object-list>
+						<sub-object/>
+					</object-list>
+				</attribute>
+			</sub-object>
+		</assignment>
+		<assignment attribute-name="super priority" type="toggle" status="hidden"/>
+	</attribute-assignments>
+	<interfaces>
+		<interface promoted-name="intrpt interval" type="toggle double" inherit-limits="yes" inherit-symbol-only="yes" inherit-comments="yes" inherit-units="yes" inherit-default-value="yes">
+			<attribute-names>
+<![CDATA[
+intrpt interval
+]]>
+			</attribute-names>
+			<properties type="toggle double" auto-assign="no" symbolic-only="no">
+				<default-value value="disabled"/>
+			</properties>
+		</interface>
+	</interfaces>
+	<state-variables>
+<![CDATA[
+/* ID of parent node */
+Objid	\parent_id;
+
+]]>
+	</state-variables>
+	<header-block>
+<![CDATA[
+#include <string.h>
+#include <stdio.h>
+
+/* stream index for incoming interactions */
+#define PLANE_ORDER_STREAM_INDEX	0
+]]>
+	</header-block>
+	<function-block>
+<![CDATA[
+
+]]>
+	</function-block>
+	<states initial-state-id="0">
+		<state id="0" x="150" y="150">
+			<attribute name="name" type="string" value="init"/>
+			<attribute name="Enter Execs" type="textlist">
+				<value-text>
+<![CDATA[
+parent_id = op_topo_parent (op_id_self());
+
+op_hla_interaction_pk_register (op_id_self (), "Plane_Order",
+	PLANE_ORDER_STREAM_INDEX);
+]]>
+				</value-text>
+			</attribute>
+			<attribute name="status" type="toggle" value="1"/>
+		</state>
+		<state id="1" x="270" y="150">
+			<attribute name="name" type="string" value="wait"/>
+			<attribute name="Exit Execs" type="textlist">
+				<value-text>
+<![CDATA[
+if ((op_intrpt_type () == OPC_INTRPT_STRM) &&
+	(op_intrpt_strm () == PLANE_ORDER_STREAM_INDEX))
+	{
+	Packet * pk;
+	double speed, bearing;
+	char gs [40];
+	double latitude, longitude, dummy;
+
+	/* extract information from packet */
+	pk = op_pk_get (PLANE_ORDER_STREAM_INDEX);
+	op_pk_nfd_get_dbl (pk, "bearing", &bearing);
+	op_pk_nfd_get_dbl (pk, "ground speed", &speed);
+	op_pk_destroy (pk);
+
+	/* update node attributes */
+	sprintf (gs, "%f kilometer/sec", speed);
+	op_ima_obj_attr_set_dbl (parent_id, "bearing", bearing);
+	op_ima_obj_attr_set_str (parent_id, "ground speed", gs);
+
+	/* obtain current position */
+	op_ima_obj_pos_get (parent_id, &latitude, &longitude,
+	   &dummy, &dummy, &dummy, &dummy);
+
+	/* Generate reply */
+	pk = op_pk_create_fmt ("Plane_Ack");
+	op_pk_nfd_set_int32 (pk, "id", parent_id);
+	op_pk_nfd_set_dbl (pk, "change_lat", latitude);
+	op_pk_nfd_set_dbl (pk, "change_long", longitude);
+	op_hla_interaction_pk_send (pk, OPC_HLA_DELIVER_NOW);
+	}
+else if (op_intrpt_type () == OPC_INTRPT_REGULAR)
+	{
+	double dummy;
+	/* just check position to have animation updated */
+	op_ima_obj_pos_get (parent_id, &dummy, &dummy, &dummy,
+		&dummy, &dummy, &dummy);
+	}
+]]>
+				</value-text>
+			</attribute>
+		</state>
+	</states>
+	<transitions>
+		<transition source-state-id="0" destination-state-id="1" label-x="240" label-y="149">
+			<path-point x="178" y="149"/>
+			<path-point x="242" y="149"/>
+			<attribute name="name" type="string" value="tr_0"/>
+		</transition>
+		<transition source-state-id="1" destination-state-id="1" label-x="309" label-y="174">
+			<path-point x="291" y="168"/>
+			<path-point x="328" y="181"/>
+			<path-point x="328" y="112"/>
+			<path-point x="292" y="131"/>
+			<attribute name="name" type="string" value="tr_1"/>
+		</transition>
+	</transitions>
+	<comments>
+<![CDATA[
+ 
+]]>
+	</comments>
+	<annotations>
+		<annotation type="text">
+			<attribute name="name" type="string" value="text_0"/>
+			<attribute name="text" type="textlist">
+				<value-text>
+<![CDATA[
+Register with HLA PM
+]]>
+				</value-text>
+			</attribute>
+			<attribute name="color" type="color" value="RGB331"/>
+			<attribute name="x position" type="double" value="151"/>
+			<attribute name="y position" type="double" value="100.5"/>
+			<attribute name="width" type="double" value="84"/>
+			<attribute name="height" type="double" value="41"/>
+		</annotation>
+		<annotation type="text">
+			<attribute name="name" type="string" value="text_1"/>
+			<attribute name="text" type="textlist">
+				<value-text>
+<![CDATA[
+Stream interrupt
+-> interaction
+
+Regular interrupt
+-> for animation
+]]>
+				</value-text>
+			</attribute>
+			<attribute name="color" type="color" value="RGB331"/>
+			<attribute name="x position" type="double" value="323.5"/>
+			<attribute name="y position" type="double" value="255.5"/>
+			<attribute name="width" type="double" value="145"/>
+			<attribute name="height" type="double" value="139"/>
+		</annotation>
+	</annotations>
+</process-model>
