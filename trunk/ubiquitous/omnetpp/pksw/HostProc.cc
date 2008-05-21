@@ -13,10 +13,15 @@ void HostProc::initialize()
 
 void HostProc::handleMessage(cMessage *msg)
 {
+    int index_ = index();
     cMessage* event;
     Packet* pk2send ;
     if (msg->isSelfMessage()) {
+	ev << index() << "sending a packet" << endl;
 	pk2send = &( pkQueue.front()); 
+	if (pk2send==NULL) {
+	    ev << "pk2send NULL" << endl;
+	}
 	pkQueue.pop_front();
         send(pk2send , "to_ll");
 	return;
