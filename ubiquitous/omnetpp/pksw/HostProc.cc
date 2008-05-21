@@ -14,8 +14,11 @@ void HostProc::initialize()
 void HostProc::handleMessage(cMessage *msg)
 {
     cMessage* event;
+    Packet* pk2send ;
     if (msg->isSelfMessage()) {
-        send(pk, "to_ll");
+	pk2send = &( pkQueue.front()); 
+	pkQueue.pop_front();
+        send(pk2send , "to_ll");
 	return;
     }
     Packet *pk = check_and_cast<Packet *>(msg);
@@ -31,6 +34,7 @@ void HostProc::handleMessage(cMessage *msg)
       pk->setDestAddr(destAddr);
       event = new cMessage();
       scheduleAt(simulation.simTime()+txDelay, event ); //modeling the transmission delay, txDelay = pkLen/txRate
+	pkQueue.push_back(*pk);
   }
 }
 
