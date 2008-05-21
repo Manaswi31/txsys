@@ -1,7 +1,15 @@
 <?xml version="1.0"?>
 <process-model model-name="prti_Plane" code-language="C" tv-in-db="yes" tv-in-tb="yes">
 	<OPNET-info OPNET-release="10.5.A" OPNET-patchlevel="1"/>
+	<model-attributes>
+		<attribute name="Send Command" type="toggle">
+			<properties type="toggle" auto-assign="no" symbolic-only="no">
+				<default-value value="0"/>
+			</properties>
+		</attribute>
+	</model-attributes>
 	<attribute-assignments>
+		<assignment attribute-name="Send Command" type="toggle" status="promoted"/>
 		<assignment attribute-name="begsim intrpt" type="toggle" status="hidden" value="1"/>
 		<assignment attribute-name="doc file" type="string" status="hidden"/>
 		<assignment attribute-name="endsim intrpt" type="toggle" status="hidden"/>
@@ -38,6 +46,8 @@ intrpt interval
 /* ID of parent node */
 Objid	\parent_id;
 
+Boolean	\send_command;
+
 ]]>
 	</state-variables>
 	<header-block>
@@ -62,8 +72,17 @@ Objid	\parent_id;
 <![CDATA[
 parent_id = op_topo_parent (op_id_self());
 
-op_hla_interaction_pk_register (op_id_self (), "Plane_Order",
-	PLANE_ORDER_STREAM_INDEX);
+op_ima_obj_attr_get(op_id_self(), "", & send_command);
+
+if (send_command)
+	{
+	op_hla_interaction_pk_register (op_id_self (), "Plane_Order",
+		PLANE_ORDER_STREAM_INDEX);
+	}
+
+
+op_hla_interaction_pk_register (op_id_self (), "Plane_Ack",
+		PLANE_ORDER_STREAM_INDEX);
 ]]>
 				</value-text>
 			</attribute>
