@@ -15,31 +15,23 @@ void HostProc::handleMessage(cMessage *msg)
 {
     int index_ = index();
     cMessage* event;
-    Packet* pk2send ;
-    if (msg->isSelfMessage()) {
-	ev << index() << "sending a packet" << endl;
-	pk2send = &( pkQueue.front()); 
-	if (pk2send==NULL) {
-	    ev << "pk2send NULL" << endl;
-	}
-	pkQueue.pop_front();
-        send(pk2send , "to_ll");
-	return;
-    }
+    
     Packet *pk = check_and_cast<Packet *>(msg);
     double txDelay = (double)pk->length()/txRate;
-  // Handle incoming packet
 
+    /*a packet is finished with the txDelay wait duration*/
+    if (msg->isSelfMessage()) {
+        send(pk , "to_ll");
+	return;
+    }
 
   //if this is a packet from the network, forward it to upper layer
-  //else set its destAddr field and send it to the network
+  //else set its destAddr field, and send it to the network after a duration of txDelay
    if (pk->arrivalGateId()==gate("from_ll")->id()) {
       send(pk, "to_hl");
   } else {
       pk->setDestAddr(destAddr);
-      event = new cMessage();
-      scheduleAt(simulation.simTime()+txDelay, event ); //modeling the transmission delay, txDelay = pkLen/txRate
-	pkQueue.push_back(*pk);
+      scheduleAt(simulation.simTime()+txDelay, pk); //modeling the transmission delay, txDelay = pkLen/txRate
   }
 }
 
