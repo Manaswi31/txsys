@@ -430,7 +430,7 @@ initiate_federation_participation(const char * const federateName)
 	try
 		{
 		lookahead.setEpsilon ();
-		//lookahead=0.1;
+		lookahead=0.1;
 		start_time.setZero ();
 		rti_amb.enableTimeRegulation (start_time, lookahead);
 		}
