@@ -16,4 +16,4 @@
 "HLA Time Lookahead"					:	0.1
 "HLA Time Regulating"					:	true
 "HLA Update Check Interval"				:	-1.0
-"HLA Verbose"							:	false
+"HLA Verbose"							:	true
