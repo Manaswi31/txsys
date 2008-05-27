@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<node-model model-name="Center">
+	<OPNET-info OPNET-release="10.5.A" OPNET-patchlevel="1"/>
+	<comments>
+<![CDATA[
+
+
+]]>
+	</comments>
+	<attribute-assignments>
+		<assignment attribute-name="TIM source" type="string" status="hidden"/>
+		<assignment attribute-name="altitude" type="double" value="1.0"/>
+		<assignment attribute-name="altitude modeling" type="enumerated" status="promoted"/>
+		<assignment attribute-name="condition" type="toggle" status="hidden"/>
+		<assignment attribute-name="minimized icon" type="minimized icon" status="promoted"/>
+		<assignment attribute-name="phase" type="double" status="hidden"/>
+		<assignment attribute-name="priority" type="integer" status="hidden"/>
+		<assignment attribute-name="user id" type="integer" status="hidden"/>
+	</attribute-assignments>
+	<node-modules base-id="1">
+		<module type="proc" id="0" x="108" y="108">
+			<module-attributes>
+				<attribute name="name" type="string" value="center"/>
+				<attribute name="process model" type="typed file" value="Plane"/>
+			</module-attributes>
+		</module>
+	</node-modules>
+	<model-data mobile-icon-name="plane_lf" doc-file="nt_node" tooltip="network node"/>
+</node-model>
