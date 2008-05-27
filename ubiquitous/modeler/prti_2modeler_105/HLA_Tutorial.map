@@ -1,0 +1,13 @@
+(mapping version 2
+  (interactions
+	 (class Order Plane_Order
+	   (parameter bearing bearing double)
+	   (parameter speed "ground speed" double)
+    )
+	(class Order_Reply Plane_Ack
+	  (parameter id id long)
+	  (parameter change_lat change_lat double)
+	  (parameter change_long change_long double)
+	)
+  )
+)
