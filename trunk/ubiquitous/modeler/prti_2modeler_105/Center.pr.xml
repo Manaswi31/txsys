@@ -6,7 +6,7 @@
 		<assignment attribute-name="doc file" type="string" status="hidden"/>
 		<assignment attribute-name="endsim intrpt" type="toggle" status="hidden"/>
 		<assignment attribute-name="failure intrpts" type="enumerated" status="hidden"/>
-		<assignment attribute-name="intrpt interval" type="toggle double" status="hidden" value="1.0"/>
+		<assignment attribute-name="intrpt interval" type="toggle double" status="hidden" value="disabled"/>
 		<assignment attribute-name="priority" type="integer" status="hidden"/>
 		<assignment attribute-name="recovery intrpts" type="enumerated" status="hidden"/>
 		<assignment attribute-name="subqueue" type="compound" status="hidden">
@@ -61,8 +61,8 @@ Objid	\parent_id;
 				<value-text>
 <![CDATA[
 parent_id = op_topo_parent (op_id_self());
-
-
+op_hla_interaction_pk_register (op_id_self (), "Plane_Ack",
+		PLANE_ORDER_STREAM_INDEX);
 ]]>
 				</value-text>
 			</attribute>
@@ -73,26 +73,18 @@ parent_id = op_topo_parent (op_id_self());
 			<attribute name="Exit Execs" type="textlist">
 				<value-text>
 <![CDATA[
-if (op_intrpt_type () == OPC_INTRPT_REGULAR)
+if ((op_intrpt_type () == OPC_INTRPT_STRM) &&
+	(op_intrpt_strm () == PLANE_ORDER_STREAM_INDEX))
 	{
-
-	
 	Packet * pk;
 	double speed, bearing;
 	char gs [40];
 	double latitude, longitude, dummy;
 
+	/* extract information from packet */
+	pk = op_pk_get (PLANE_ORDER_STREAM_INDEX);
+	op_pk_print(pk);
 
-	/* obtain current position */
-	op_ima_obj_pos_get (parent_id, &latitude, &longitude,
-	   &dummy, &dummy, &dummy, &dummy);
-
-	/* Generate reply */
-	pk = op_pk_create_fmt ("Plane_Ack");
-	op_pk_nfd_set_int32 (pk, "id", parent_id);
-	op_pk_nfd_set_dbl (pk, "change_lat", latitude);
-	op_pk_nfd_set_dbl (pk, "change_long", longitude);
-	op_hla_interaction_pk_send (pk, OPC_HLA_DELIVER_NOW);
 	}
 ]]>
 				</value-text>
