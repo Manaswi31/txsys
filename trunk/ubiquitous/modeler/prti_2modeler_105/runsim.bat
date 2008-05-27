@@ -1,0 +1,1 @@
+op_runsim -net_name HLA_Tutorial-2Planes -kernel_type development -ef HLA_Tutorial -debug

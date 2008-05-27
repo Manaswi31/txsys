@@ -1,0 +1,19 @@
+# Fill in with your working directory
+"HLA Class Mapping File"				:	"HLA_Tutorial.map"
+
+# Predefined values
+"HLA Abort On Failure" 					:	false
+"HLA Callback Set"						:	511
+"HLA Create Federation" 				:	true
+"HLA Create Init Synchronization Point"	:	false
+"HLA Destroy Federation"				:	true
+"HLA Fed File Name"						:	""
+"HLA Federate Name"						:	OPNET
+"HLA Federation Name"					:	HLA_Tutorial
+"HLA Init Synchronization Point"		:	""
+"HLA Join Attempts"						:	10
+"HLA Time Constrained"					:	true
+"HLA Time Lookahead"					:	0.1
+"HLA Time Regulating"					:	true
+"HLA Update Check Interval"				:	-1.0
+"HLA Verbose"							:	true

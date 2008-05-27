@@ -1,0 +1,16 @@
+F:\svn-workplace\ubiquitous\modeler\prti_2modeler>controller_tutorial.exe HLA_T
+torial
+Attempting to join federation...
+Federation joined, attempting to enable time regulation...
+Time regulation enabled, RTI time is 0
+Attempting to constrain time advances...
+Time advances constrained
+[Time: 0] Enter command: t 1
+[Time: 1] Enter command: f 2 3 3
+[Time: 1] Enter command: t 2
+[Time: 2] Enter command: t 3
+Incoming interaction at time 2.1
+Node 2 has changed movement at  44, -31
+Incoming interaction at time 2.1
+Node 3 has changed movement at  63, 82
+[Time: 3] Enter command:

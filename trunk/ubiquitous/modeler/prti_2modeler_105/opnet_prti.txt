@@ -1,0 +1,44 @@
+OPNET 与 pRTI 接口配置说明
+
+ 
+
+此处的配置是配合OPNET HLA Tutorial中的例子使用。
+
+1，安装Modeler，并确认modeler和HLA的license能够使用。
+
+2，安装pRTI软件，这里安装目录以"e:\Program Files\pRTI13"为例。
+
+设置Windows环境变量：
+
+RTI_HOME
+"E:\Program Files"
+
+RTI_BUILD_TYPE
+pRTI13LE
+
+INCLUDE
+%RTI_HOME%\%RTI_BUILD_TYPE%\include
+
+LIB
+%RTI_HOME%\%RTI_BUILD_TYPE%\lib
+
+将"%RTI_HOME%\%RTI_BUILD_TYPE%\lib; %RTI_HOME%\%RTI_BUILD_TYPE%\jre\bin\client;"加入系统环境变量"path"中。
+
+
+OPNET软件参数
+
+在OPNET主界面的Edit —> Preference—> comp_flags_c++_specific属性中加上 "/I%RTI_HOME%\%RTI_BUILD_TYPE%\include　/DRTI_USES_STD_FSTREAM"
+
+
+
+
+5，将HLA_Tutorial.fed中第三行的(FEDversion v1_3) 改为(FEDversion v1.3)
+
+6，修改make_controller.bat文件，将第八行中的"%RTI_HOME%\%RTI_BUILD_TYPE%\include" 改为"C:\Program Files\pRTI13\include"
+
+7，在controller_tutorial.cpp 第429行"lookahead.setEpsilon ();"之后插入一行："lookahead=0.1;"，以解决pRTI与OPNET通信过程中出现的死锁问题。
+
+
+ 
+
+经过以上配置，我们就可以在OPNET中利用prti接口进行协同仿真了，关于HLA Tutorial这个例子的具体细节操作，请见OPNET Product Document HLA User Guide for Modeler 。
