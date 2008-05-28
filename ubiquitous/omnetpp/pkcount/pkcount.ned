@@ -26,6 +26,7 @@ module rHost
         in: in_strm;
     submodules:
         app_sink: AppSink;
+            display: "p=97,48;i=block/process";
     connections:
         app_sink.in_strm <-- in_strm;
 endmodule
@@ -36,7 +37,7 @@ module pkcountNetwork
         shost: sHost;
             display: "p=123,48;i=device/pc";
         rhost: rHost;
-            display: "i=device/pc2";
+            display: "p=66,136;i=device/pc2";
     connections:
         shost.out_strm --> delay 100ms --> rhost.in_strm;
                                                           //currently the link delay is modeled as a constant "100ms"

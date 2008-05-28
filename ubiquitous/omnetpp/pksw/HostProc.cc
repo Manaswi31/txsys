@@ -1,4 +1,3 @@
-#include <vector>
 #include <omnetpp.h>
 #include "packet_m.h"
 #include "HostProc.h"
@@ -15,7 +14,7 @@ void HostProc::handleMessage(cMessage *msg)
 {
     int index_ = index();
     cMessage* event;
-    
+
     Packet *pk = check_and_cast<Packet *>(msg);
     double txDelay = (double)pk->length()/txRate;
 
