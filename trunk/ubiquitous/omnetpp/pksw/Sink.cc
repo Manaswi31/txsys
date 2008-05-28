@@ -1,13 +1,4 @@
-//
-// This file is part of an OMNeT++/OMNEST simulation example.
-//
-// Copyright (C) 1992-2005 Andras Varga
-// Copyright (C) 2005 Ahmet Sekercioglu
-//
-// This file is distributed WITHOUT ANY WARRANTY. See the file
-// `license' for details on this and other legal matters.
-//
-// $Id: app_sink.cc,v 1.6 2007/08/31 04:40:07 ahmet Exp $
+
 
 #include <vector>
 #include <omnetpp.h>
@@ -19,7 +10,7 @@ Define_Module(Sink);
 void Sink::initialize()
 {
   numReceived = 0;
-  
+
   WATCH(numReceived);
 
   hopCountVector.setName("hopCountVector");
@@ -39,7 +30,7 @@ void Sink::handleMessage(cMessage *msg)
   // Handle incoming packet
   Packet *pk = check_and_cast<Packet *>(msg);
   if (ev.isGUI()) parentModule()->bubble("Arrived");
-  numReceived++;
+    numReceived++;
 
   // Display the number of packets received.
   char buf[40];
@@ -69,13 +60,13 @@ void Sink::finish()
   ev << "  pk. delay, max:    " << pkDelayStats.max() << endl;
   ev << "  pk. delay, mean:   " << pkDelayStats.mean() << endl;
   ev << "  pk. delay, stddev: " << pkDelayStats.stddev() << endl;
-  
+
   ev << "  pk. size, min:    " << pkSizeStats.min() << endl;
   ev << "  pk. size, max:    " << pkSizeStats.max() << endl;
   ev << "  pk. size, mean:   " << pkSizeStats.mean() << endl;
   ev << "  pk. size, stddev: " << pkSizeStats.stddev() << endl;
   ev << " " << endl;
-  
+
   recordScalar("#received", numReceived);
   hopCountStats.recordScalar("hop count");
   pkDelayStats.recordScalar("pk delay");
