@@ -11,7 +11,7 @@ Define_Module(SimpleSource);
 void SimpleSource::initialize()
 {
   numSent = 0;
-  
+
   WATCH(pkSize);
   WATCH(iaTime);
   WATCH(numSent);
@@ -24,12 +24,12 @@ void SimpleSource::initialize()
 
 void SimpleSource::handleMessage(cMessage *msg)
 {
-  // Time to create and send a packet. 
+  // Time to create and send a packet.
   if (ev.isGUI()) parentModule()->bubble("Sending a packet");
-  numSent++;
+    numSent++;
 
   pkSize = par("pkSize");
-  
+
   // Display the number of packets sent.
   char buf[40];
   sprintf(buf, "sent: %ld", numSent);
@@ -47,7 +47,7 @@ void SimpleSource::handleMessage(cMessage *msg)
   pk->setLength(pkSize);
   pk->setTimestamp();
   send(pk,"out");
-  
+
   // Schedule an event for sending the next packet.
   iaTime = par("iaTime");
   scheduleAt(simTime()+iaTime, timeToGenerateAPacket);
