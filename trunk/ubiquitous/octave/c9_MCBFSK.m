@@ -31,9 +31,10 @@ for j = 1:len_snr
     errors(j)=error_count;
 end
 ber_sim=errors/Nsymbols;
-ber_theor=q(sqrt(snr));
-semilogy(snrdB,ber_theor,snrdB,ber_sim,'o')
+ber_bfsk_theor=q(sqrt(snr));
+ber_bpsk_theor=q(sqrt(2*snr));
+semilogy(snrdB,ber_bfsk_theor,snrdB,ber_bpsk_theor,'g', snrdB,ber_sim,'o')
 axis([snrdB_min snrdB_max 0.0001 1])
 xlabel('SNR in dB')
-ylable('BER')
+ylabel('BER')
 %legend('Theoretical', 'Simulation')
