@@ -1,6 +1,11 @@
 import
     "base";
 
+channel physical
+    delay 0.01ms;
+    datarate 1000000;
+endchannel
+
 module sHost
     gates:
         in: in;
@@ -38,4 +43,14 @@ simple DataLink
         out: to_hl;
         out: to_ll;
 endsimple
+
+module sware_net
+    submodules:
+	shost: sHost
+	rhost: rHost
+    connections:
+	shost.out-->physical-->rhost.in;
+	rhost.out-->physical-->shost.in;
+
+endmodule
 
