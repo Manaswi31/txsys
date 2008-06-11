@@ -1,3 +1,7 @@
+message AppPacket
+{
+}
+
 message SwareData
 {
     fields:

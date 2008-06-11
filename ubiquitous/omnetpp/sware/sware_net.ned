@@ -1,10 +1,17 @@
-import
-    "base";
+import "base";
 
 channel physical
     delay 0.01ms;
     datarate 1000000;
 endchannel
+
+simple DataLink
+    gates:
+        in: from_hl;
+        in: from_ll;
+        out: to_hl;
+        out: to_ll;
+endsimple
 
 module sHost
     gates:
@@ -36,13 +43,6 @@ module rHost
     display: "b=264,139";
 endmodule
 
-simple DataLink
-    gates:
-        in: from_hl;
-        in: from_ll;
-        out: to_hl;
-        out: to_ll;
-endsimple
 
 module sware_net
     submodules:

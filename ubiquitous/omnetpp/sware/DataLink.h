@@ -10,7 +10,10 @@ protected:
     virtual void handleMessage(cMessage *msg);
     virtual void finish();
 private:
-    std::deque <> ;
+    std::deque <AppPacket*> appPkQueue;
+    bool waitAckFlag = false;
+    Packet* pendingPk;
+    double ackWaitDuration;
 };
 
 #endif
