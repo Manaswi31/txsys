@@ -1,5 +1,7 @@
 message AppPacket
 {
+    fields:
+	int dummy;
 }
 
 message SwareData

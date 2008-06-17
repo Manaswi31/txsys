@@ -2,6 +2,7 @@
 #define __DATA_LINK_H
 
 #include <deque>
+#include "packet_m.h"
 
 class DataLink : public cSimpleModule
 {
@@ -11,8 +12,8 @@ protected:
     virtual void finish();
 private:
     std::deque <AppPacket*> appPkQueue;
-    bool waitAckFlag = false;
-    Packet* pendingPk;
+    bool waitAckFlag;
+    AppPacket* pendingPk;
     double ackWaitDuration;
 };
 
