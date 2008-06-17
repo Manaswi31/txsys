@@ -1,20 +1,21 @@
 #include <omnetpp.h>
-#include <DataLink.h>
+#include "DataLink.h"
 
 void DataLink::initialize()
 {
     ackWaitDuration = 5.0;
-   // waitAckFlag = false;
+    waitAckFlag = false;
    // appPkQueue
 }
 
 void DataLink::handleMessage(cMessage *msg)
 {
-    if (msg->arrivalGateID()==gate("from_hl")->id()) {
+    if (msg->arrivalGateId()==gate("from_hl")->id()) {
+	/*This is a packet from higher layer*/
 	if (waitAckFlag)
 	    appPkQueue.push_back(msg);
 	else {
-	    pendingPk=check_and_cast <Packet*> msg;
+	    pendingPk=check_and_cast <AppPacket*> msg;
 	    Packet* copyPk = pendingPk;
 	    send(copyPk , "to_ll");
 	    cMessage ackWaitTimer = new cMessage();
