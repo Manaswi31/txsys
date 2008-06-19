@@ -13,6 +13,7 @@ protected:
 private:
     std::deque <AppPacket*> appPkQueue;
     bool waitAckFlag;
+    cMessage * ackWaitTimer;
     AppPacket* pendingPk;
     double ackWaitDuration;
 };
