@@ -54,3 +54,6 @@ module sware_net
 
 endmodule
 
+network sware_net : sware_net
+endnetwork
+

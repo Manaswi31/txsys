@@ -16,7 +16,7 @@ void DataLink::handleMessage(cMessage *msg)
 	/*This is a packet from higher layer*/
 	pendingPk=check_and_cast <AppPacket*> (msg);
 	if (waitAckFlag)
-	    appPkQueue.push_back(inPk);
+	    appPkQueue.push_back(pendingPk);
 	else {
 	    AppPacket* copyPk = new AppPacket(*pendingPk);
 	    send(copyPk , "to_ll");
@@ -34,8 +34,11 @@ void DataLink::handleMessage(cMessage *msg)
 	    /* This is an ACK*/
 	    if (ackWaitTimer) 
 		delete ackWaitTimer;
-	    Packet * outPacket = appPkQueue.pop_front();
-
+	    if (!appPkQueue.empty()) {
+		AppPacket* outPacket = appPkQueue.front();
+	        appPkQueue.pop_front();
+		send(outPacket, "to_ll");
+	    }
 	}
     }
 }
