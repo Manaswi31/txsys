@@ -12,21 +12,36 @@ void DataLink::initialize()
 
 void DataLink::handleMessage(cMessage *msg)
 {
-    AppPacket * inPk=check_and_cast <AppPacket*> (msg);
     if (msg->arrivalGateId()==gate("from_hl")->id()) {
 	/*This is a packet from higher layer*/
+	pendingPk=check_and_cast <AppPacket*> (msg);
 	if (waitAckFlag)
 	    appPkQueue.push_back(inPk);
 	else {
-	    AppPacket* copyPk = pendingPk;
+	    AppPacket* copyPk = new AppPacket(*pendingPk);
 	    send(copyPk , "to_ll");
 	    ackWaitTimer= new cMessage();
 	    scheduleAt(simulation.simTime()+ackWaitDuration, ackWaitTimer);
 	}
     } else if (msg->arrivalGateId()==gate("from_ll")->id()) {
-	/* This is an ACK*/
-	delete ackWaitTimer;
+	/* This is a packet from lower layer*/
+	if (dynamic_cast<AppPacket*>(msg) != NULL) {
+	    AppPacket * inPacket = check_and_cast <AppPacket*> (msg);
+	    send(inPacket, "to_hl");
+	    SwareAck *ackPacket = new SwareAck(); 
+	    send(ackPacket, "to_ll");
+	} else {
+	    /* This is an ACK*/
+	    if (ackWaitTimer) 
+		delete ackWaitTimer;
+	    Packet * outPacket = appPkQueue.pop_front();
+
+	}
     }
+}
+
+void DataLink::handleHlMessage(cMessage & msg)
+{
 }
 
 void DataLink::finish()
