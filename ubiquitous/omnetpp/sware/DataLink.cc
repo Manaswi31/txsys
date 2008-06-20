@@ -2,6 +2,8 @@
 #include "DataLink.h"
 #include "packet_m.h"
 
+Define_Module(DataLink);
+
 void DataLink::initialize()
 {
     ackWaitDuration = 5.0;

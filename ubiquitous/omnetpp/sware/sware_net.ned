@@ -1,4 +1,5 @@
-import "base";
+import
+    "base";
 
 channel physical
     delay 0.01ms;
@@ -19,11 +20,13 @@ module sHost
         out: out;
     submodules:
         gen: SimpleSource;
+        sink: Sink;
         datalink: DataLink;
             display: "p=120,96;b=40,28";
     connections:
         gen.out --> datalink.from_hl;
         datalink.to_ll --> out;
+        datalink.to_hl --> sink.in;
         in --> datalink.from_ll;
     display: "b=264,139";
 endmodule
@@ -33,12 +36,15 @@ module rHost
         in: in;
         out: out;
     submodules:
+        gen: SimpleSource;
         sink: Sink;
+            display: "p=99,48;b=40,24";
         datalink: DataLink;
             display: "p=120,96;b=40,28";
     connections:
-        sink.out --> datalink.from_hl;
+        datalink.to_hl --> sink.in;
         datalink.to_ll --> out;
+        gen.out --> datalink.from_hl;
         in --> datalink.from_ll;
     display: "b=264,139";
 endmodule
@@ -46,11 +52,12 @@ endmodule
 
 module sware_net
     submodules:
-	shost: sHost
-	rhost: rHost
+        shost: sHost;
+        rhost: rHost;
+            display: "p=125,96;b=40,24";
     connections:
-	shost.out-->physical-->rhost.in;
-	rhost.out-->physical-->shost.in;
+        shost.out --> physical --> rhost.in;
+        rhost.out --> physical --> shost.in;
 
 endmodule
 
