@@ -4,7 +4,7 @@ message AppPacket
 	int dummy;
 }
 
-message SwareData
+message SwareDataPk
 {
     fields:
 	int srcAddr;

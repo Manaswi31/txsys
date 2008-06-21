@@ -6,14 +6,14 @@ Define_Module(DataLink);
 
 void DataLink::initialize()
 {
-    ackWaitDuration = 5.0;
+    ackWaitDuration = 5.0; /*ACK wait timeout duration*/
     waitAckFlag = false;
     ackWaitTimer = NULL;
-   // appPkQueue
 }
 
 void DataLink::handleMessage(cMessage *msg)
 {
+    AppPacket* in;
     if (msg->arrivalGateId()==gate("from_hl")->id()) {
 	/*This is a packet from higher layer*/
 	pendingPk=check_and_cast <AppPacket*> (msg);
@@ -28,14 +28,14 @@ void DataLink::handleMessage(cMessage *msg)
     } else if (msg->arrivalGateId()==gate("from_ll")->id()) {
 	/* This is a packet from lower layer*/
 	if (dynamic_cast<AppPacket*>(msg) != NULL) {
-	    AppPacket * inPacket = check_and_cast <AppPacket*> (msg);
+	    SwareDataPk* inPacket = check_and_cast <SwareDataPk*> (msg);
 	    send(inPacket, "to_hl");
 	    SwareAck *ackPacket = new SwareAck(); 
 	    send(ackPacket, "to_ll");
 	} else {
 	    /* This is an ACK*/
 	    if (ackWaitTimer) 
-		delete ackWaitTimer;
+		cancelAndDelete(ackWaitTimer);
 	    if (!appPkQueue.empty()) {
 		AppPacket* outPacket = appPkQueue.front();
 	        appPkQueue.pop_front();
