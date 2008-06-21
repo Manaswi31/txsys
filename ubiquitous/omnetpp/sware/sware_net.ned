@@ -53,8 +53,9 @@ endmodule
 module sware_net
     submodules:
         shost: sHost;
+            display: "p=90,48;i=device/pc";
         rhost: rHost;
-            display: "p=125,96;b=40,24";
+            display: "i=device/pc;p=125,96";
     connections:
         shost.out --> physical --> rhost.in;
         rhost.out --> physical --> shost.in;
