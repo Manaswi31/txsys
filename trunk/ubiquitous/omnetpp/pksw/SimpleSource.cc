@@ -44,6 +44,7 @@ void SimpleSource::handleMessage(cMessage *msg)
   Packet *pk = new Packet(pkname);
   */
   Packet *pk = new Packet();
+  //cMessage *pk = new cMessage();
   pk->setLength(pkSize);
   pk->setTimestamp();
   send(pk,"out");

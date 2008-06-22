@@ -1,8 +1,8 @@
 simple SimpleSource
     parameters:
+	startTime: numeric,
         pkSize: numeric,
-        iaTime: numeric,
-	pkFormatName: string;
+        iaTime: numeric;
     gates:
         out: out;
 endsimple
