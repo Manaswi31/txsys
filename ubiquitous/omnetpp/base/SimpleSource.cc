@@ -10,6 +10,7 @@ Define_Module(SimpleSource);
 
 void SimpleSource::initialize()
 {
+    double startTime;
   numSent = 0;
 
   WATCH(pkSize);
@@ -19,7 +20,11 @@ void SimpleSource::initialize()
    // Schedule an event for sending the first packet.
   timeToGenerateAPacket = new cMessage("timeToGenerateAPacket");
   iaTime = par("iaTime");
-  scheduleAt(iaTime, timeToGenerateAPacket);
+    startTime = par("startTime");
+  if (startTime > 0.0)
+      scheduleAt(startTime+ iaTime, timeToGenerateAPacket);
+  else if (startTime < 0.0)
+      ;
 }
 
 void SimpleSource::handleMessage(cMessage *msg)
@@ -43,7 +48,7 @@ void SimpleSource::handleMessage(cMessage *msg)
   ev << simTime() << " generating a packet " << pkname << endl;
   Packet *pk = new Packet(pkname);
   */
-  Packet *pk = new Packet();
+  AppPacket *pk = new AppPacket();
   pk->setLength(pkSize);
   pk->setTimestamp();
   send(pk,"out");

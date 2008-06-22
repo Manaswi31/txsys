@@ -28,7 +28,7 @@ void HostProc::handleMessage(cMessage *msg)
   //else set its destAddr field, and send it to the network after a duration of txDelay
    if (pk->arrivalGateId()==gate("from_ll")->id()) {
       send(pk, "to_hl");
-   if (msg==Packet) ev<<"Packet";
+   //if (msg==Packet) ev<<"Packet";
   } else {
       pk->setDestAddr(destAddr);
       scheduleAt(simulation.simTime()+txDelay, pk); //modeling the transmission delay, txDelay = pkLen/txRate

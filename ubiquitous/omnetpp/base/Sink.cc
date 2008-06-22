@@ -28,7 +28,7 @@ void Sink::initialize()
 void Sink::handleMessage(cMessage *msg)
 {
   // Handle incoming packet
-  Packet *pk = check_and_cast<Packet *>(msg);
+  AppPacket *pk = check_and_cast<AppPacket *>(msg);
   if (ev.isGUI()) parentModule()->bubble("Arrived");
     numReceived++;
 
