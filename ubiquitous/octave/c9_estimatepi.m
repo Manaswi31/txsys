@@ -8,9 +8,9 @@ for j=1:m
     k=0;
     for i=1:n
 	if x(i)^2+y(i)^2<=1
-	    k=k+1
+	    k=k+1;
 	end
-	data(i,j)=4*(k/i);
+    data(i,j)=4*(k/i);
     end
     z(j)=data(n,j);
 end
