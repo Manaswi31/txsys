@@ -55,12 +55,12 @@ module sware_net
         shost: sHost;
             display: "p=90,48;i=device/pc";
         rhost: rHost;
-            display: "i=device/pc;p=277,232";
-    connections:
+            display: "i=device/pc;p=245,168";
+   connections:
         shost.out --> physical --> rhost.in;
         rhost.out --> physical --> shost.in;
 
-    display: "b=387,306";
+    display: "b=291,218";
 endmodule
 
 network sware_net : sware_net
