@@ -13,6 +13,7 @@ void DataLink::initialize()
 
 void DataLink::handleMessage(cMessage *msg)
 {
+    int evNum = simulation.eventNumber();
     AppPacket* in;
     if (msg->arrivalGateId()==gate("from_hl")->id()) {
 	/*This is a packet from higher layer*/
@@ -24,6 +25,7 @@ void DataLink::handleMessage(cMessage *msg)
 	    SwareDataPk * swareDataPk = new SwareDataPk(); 
 	    swareDataPk->encapsulate(copyPk);
 	    send(swareDataPk , "to_ll");
+	    waitAckFlag = true;
 	    ackWaitTimer= new cMessage();
 	    scheduleAt(simulation.simTime()+ackWaitDuration, ackWaitTimer);
 	}
