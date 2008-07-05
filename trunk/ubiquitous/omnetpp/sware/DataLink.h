@@ -14,9 +14,13 @@ protected:
 private:
     std::deque <AppPacket*> appPkQueue;
     bool waitAckFlag;
+    bool debugFlag;
     cMessage * ackWaitTimer;
     AppPacket* pendingPk;
     double ackWaitDuration;
+    cOutVector qLenOV;
+    cOutVector loadOutVector;
+    cOutVector thrpOutVector;
 };
 
 #endif
