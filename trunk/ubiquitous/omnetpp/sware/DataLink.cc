@@ -23,6 +23,7 @@ void DataLink::handleMessage(cMessage *msg)
 	pendingPk=check_and_cast <AppPacket*> (msg);
 	if (waitAckFlag) {
 	    appPkQueue.push_back(pendingPk);
+	    pendingPk = NULL;
 	    qLenOV.record(appPkQueue.size());
 	} else {
 	    /*Encapulate app packets and send it down*/
@@ -33,7 +34,7 @@ void DataLink::handleMessage(cMessage *msg)
 
 	    /*Set ACK timer and flag*/
 	    waitAckFlag = true;
-	    ackWaitTimer= new cMessage();
+	    ackWaitTimer= new cMessage("ackWaitTimer");
 	    scheduleAt(simulation.simTime()+ackWaitDuration, ackWaitTimer);
 	}
     } else if (msg->arrivalGateId()==gate("from_ll")->id()) {
@@ -43,6 +44,7 @@ void DataLink::handleMessage(cMessage *msg)
 	    SwareDataPk* inPacket = check_and_cast <SwareDataPk*> (msg);
 	    cMessage * payload = inPacket->decapsulate();
 	    AppPacket* appPk = check_and_cast <AppPacket*> (payload);
+	    //AppPacket* appPk = (AppPacket*) (payload);
 	    //thrpOutVector.record(appPk->length());
 	    send(appPk, "to_hl");
 	    delete inPacket;
@@ -69,6 +71,10 @@ void DataLink::handleMessage(cMessage *msg)
 		SwareDataPk* swareDataPk = new SwareDataPk();
 		swareDataPk->encapsulate(appPacket);
 		send(swareDataPk , "to_ll");
+
+		waitAckFlag = true;
+		ackWaitTimer = new cMessage("ackWaitTimer");
+		scheduleAt(simulation.simTime() + ackWaitDuration, ackWaitTimer);
 	    }
 	}
     }
