@@ -1,1 +1,1 @@
-op_runsim -net_name prti_plane-sc -kernel_type development -ef prti_plane -debug
+op_runsim -net_name prti_plane-sc -kernel_type development -ef prti_plane -debug -verbose_sim
