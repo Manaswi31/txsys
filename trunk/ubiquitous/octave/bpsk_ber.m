@@ -21,7 +21,7 @@ for ii = 1:length(Eb_N0_dB)
 
 end
 
-simBer = nErr/N % simulated ber
+simBer = nErr/N; % simulated ber
 theoryBer = 0.5*erfc(sqrt(10.^(Eb_N0_dB/10))); % theoretical ber
 
 % plot
