@@ -1,0 +1,6 @@
+# Source default definitions
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi
+ 
+export PS1=[32m"[VIM][0m$PS1"
