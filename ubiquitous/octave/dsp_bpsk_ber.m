@@ -9,7 +9,7 @@ x_d = 2*d-1; % BPSK modulation 0 -> -1; 1 -> 0
 n = 1/sqrt(2)*[randn(1,N) + j*randn(1,N)]; % white gaussian noise, 0dB variance 
 Eb_N0_dB = [-10:0.38:10]; % multiple Eb/N0 values
 
-for ii = 1:0.38:length(Eb_N0_dB)
+for ii = 1:length(Eb_N0_dB)
    % Noise addition
    n_d = 10.^(-Eb_N0_dB(ii)/20)*n;
    y_d = x_d + n_d; % additive white gaussian noise
