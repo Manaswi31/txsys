@@ -1,19 +1,26 @@
 set ns [new Simulator]
 
-set tracefd [open example1.tr w]
-$ns trace-all $tracefd
+#set tracefd [open example1.tr w]
+#$ns trace-all $tracefd
 set namtracefd [open example1.nam w]
 $ns namtrace-all $namtracefd
 
 proc finish {} {
-	global ns tracefd namtracefd
+
+	global tracefd namtracefd
+	#global ns tracefd namtracefd
+	set ns [Simulator instance]
 	$ns flush-trace
 
-	close $tracefd
+#	close $tracefd
 	close $namtracefd
 	
 	exec nam example1.nam &
 	exit 0
+}
+
+proc record {} {
+
 }
 
 set n0 [$ns node]
