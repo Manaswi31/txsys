@@ -7,13 +7,14 @@ $ns trace-all $tracefd
 set namtracefd [open example1.nam w]
 $ns namtrace-all $namtracefd
 
-#Create two nodes
+#Create two nodes: n0 and n1
 set n0 [$ns node]
 set n1 [$ns node]
 
 #Create a duplex link between the nodes
 $ns duplex-link $n0 $n1 1Mb 10ms DropTail
 
+#Create a udp agent on node0
 set udp0 [new Agent/UDP]
 $ns attach-agent $n0 $udp0
 
