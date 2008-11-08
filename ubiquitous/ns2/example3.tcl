@@ -44,7 +44,7 @@ $ns connect $udp0 $null0
 $ns rtmodel-at 1.0 down $n(1) $n(2)
 $ns rtmodel-at 2.0 up $n(1) $n(2)
 
-#$ns rtproto DV
+$ns rtproto DV
 
 $ns at 0.5 "$cbr0 start"
 $ns at 4.5 "$cbr0 stop"
