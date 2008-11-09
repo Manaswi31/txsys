@@ -1,11 +1,11 @@
 BEGIN {
-    node = 2;
+    node = 3;
    }
 
     {
 	if (time2 - time1 > 0.050) {
 	    thru = bytes_counter / (time2-time1);
-	    printf("%f %f\n", time2, thru) > "example1_dataset";
+	    printf("%f %f\n", time2, thru) > "example4_pre";
 	    time1=$2;
 	    bytes_counter=0;
 	}

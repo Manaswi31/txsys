@@ -1,6 +1,6 @@
 set title 'example4'
 set grid
-set ylabel 'bytes/sec'
+set ylabel 'Mbit/s'
 set xlabel 's'
 
 plot 'out0.tr' w lines title 'LAN.throughput' linetype 1, 'out1.tr' w lines title 'LAN.throughput' linetype 2
