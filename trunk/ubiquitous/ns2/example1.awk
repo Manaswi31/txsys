@@ -8,7 +8,7 @@ BEGIN {
 	time2 = $2;
 	if (time2 - time1 > 0.050) {
 	    thru = bytes_counter / (time2-time1);
-	    printf("%f %f\n", time2, thru) > "plot_dataset";
+	    printf("%f %f\n", time2, thru) > "example1_dataset";
 	    time1=$2;
 	    bytes_counter=0;
 	}

@@ -1,6 +1,7 @@
 set title 'ns2 live demo 1'
 set grid
-set ylabel 'bytes/sec'
+set ylabel 's'
 set xlabel 's'
 
-plot 'dataset' w linespoints title 'sink.throughput'
+plot 'example1_dataset' w lines title 'sink.e2e delay' linetype 1
+#plot 'example1_dataset_random2' w lines title 'sink.e2e delay' linetype 2

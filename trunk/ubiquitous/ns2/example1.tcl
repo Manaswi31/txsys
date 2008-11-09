@@ -1,12 +1,16 @@
+#
+#Initialize and create output files
 #Create a simulator instance
 set ns [new Simulator]
 
-#Crate a trace file and animation record:w
+#Crate a trace file and animation record
 set tracefd [open example1.tr w]
 $ns trace-all $tracefd
 set namtracefd [open example1.nam w]
 $ns namtrace-all $namtracefd
 
+#
+#Create Topology
 #Create two nodes: n0 and n1
 set n0 [$ns node]
 set n1 [$ns node]
@@ -29,7 +33,7 @@ $cbr0 attach-agent $udp0
 set null0 [new Agent/Null]
 $ns attach-agent $n1 $null0
 
-#Connet source and sink
+#Connet source and dest Agents
 $ns connect $udp0 $null0  
 
 #a procedure to close trace file and nam file
@@ -45,6 +49,9 @@ proc finish {} {
 	exit 0
 }
 
+#
+#Specify Discrete Event Simulation here
+
 #Schedule events for the CBR agent that starts at 0.5s and stops at 4.5s
 $ns at 0.5 "$cbr0 start"
 $ns at 4.5 "$cbr0 stop"
@@ -52,6 +59,7 @@ $ns at 4.5 "$cbr0 stop"
 #Call the finish procedure after 5s (of simulated time)
 $ns at 5.0 "finish"
 
+#
 #Run the simulation
 $ns run
 
