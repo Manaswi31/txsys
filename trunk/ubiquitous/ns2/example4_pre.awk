@@ -1,5 +1,5 @@
 BEGIN {
-    node = 4;
+    node = 2;
    }
 
     {
@@ -11,7 +11,7 @@ BEGIN {
 	}
 	
 
-	if ($1=="r" && $4==node && $5=="exp") {
+	if ($1=="+" && $3!=node && $5=="exp") {
 	    bytes_counter += $6;
 	}   
     }
