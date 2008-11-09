@@ -24,8 +24,8 @@ set n3 [$ns node]
 
 $ns duplex-link $n0 $n2 1Mb 10ms DropTail
 $ns duplex-link $n1 $n2 1Mb 10ms DropTail
-$ns duplex-link $n3 $n2 1Mb 10ms SFQ
-#$ns duplex-link $n3 $n2 1Mb 10ms DropTail
+#$ns duplex-link $n3 $n2 1Mb 10ms SFQ
+$ns duplex-link $n3 $n2 1Mb 10ms DropTail
 
 $ns duplex-link-op $n0 $n2 orient right-down
 $ns duplex-link-op $n1 $n2 orient right-up
@@ -38,6 +38,7 @@ $ns attach-agent $n0 $udp0
 set cbr0 [new Application/Traffic/CBR]
 $cbr0 set packetSize_ 500
 $cbr0 set interval_ 0.005
+$cbr0 set random_ 1
 $cbr0 attach-agent $udp0
 
 set udp1 [new Agent/UDP]
