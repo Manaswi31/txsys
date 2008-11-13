@@ -14,6 +14,9 @@ set shell=bash\ --rcfile\ ~/.vimshrc
 set tags=./tags,~/cvs/wjb/tags,$PARTYSIP_HOME/TAGS,$LIBOSIP/tags,$NS_HOME/tags
 set backupdir=~/.vim-bak
 
+set statusline=\[%l,%v]\ %F%m%r%h%w
+set laststatus=2
+
 set shiftwidth=4
 set softtabstop=4
 
