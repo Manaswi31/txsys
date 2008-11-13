@@ -92,9 +92,25 @@ if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
-export PATH=$PATH:/usr/opnet/14.5.A/sys/unix/bin
-export opnet_dir=/usr/opnet
-export LD_LIBRARY_PATH=$opnet_dir/14.5.A/sys/pc_intel_linux/lib:$LD_LIBRARY_PATH
 PS1='[31m${debian_chroot:+($debian_chroot)}\u[0m@\h:\w\$ '
 
-LC_CTYPE=zh_CN.gbk
+#support ns2 network simulator
+export NS_HOME=/usr/local/ns2
+
+#support OMNeT++
+OMNETPP_HOME=/usr/local/omnetpp
+PATH=$PATH:$OMNETPP_HOME/bin
+export TCL_LIBRARY=/usr/share/tcltk/tcl8.4
+export OMNETPP_HOME
+
+#support opnet modeler
+opnet_dir=/usr/opnet
+OPNET_VER=14.5.A
+PATH=$PATH:$opnet_dir/$OPNET_VER/sys/unix/bin
+LD_LIBRARY_PATH=$opnet_dir/$OPNET_VER/sys/pc_intel_linux/lib:$LD_LIBRARY_PATH
+export opnet_dir
+
+#export common system variables
+export LD_LIBRARY_PATH
+export PATH
+#LC_CTYPE=zh_CN.gbk
