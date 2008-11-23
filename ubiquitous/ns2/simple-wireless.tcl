@@ -84,6 +84,9 @@ $node_(1) set X_ 390.0
 $node_(1) set Y_ 385.0
 $node_(1) set Z_ 0.0
 
+$ns_ initial_node_pos $node_(0) 20
+$ns_ initial_node_pos $node_(1) 20
+
 #
 # Now produce some simple node movements
 # Node_(1) starts to move towards node_(0)
