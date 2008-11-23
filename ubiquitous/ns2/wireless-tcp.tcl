@@ -123,14 +123,16 @@ proc record {} {
 for {set i 0} {$i < $val(nn) } {incr i} {
     $ns_ at 150.0 "$node_($i) reset";
 }
-$ns_ at 150.0 "stop"
-$ns_ at 150.01 "puts \"NS EXITING...\" ; $ns_ halt"
+
+$ns_ at 150.01 "puts \"NS EXITING...\""
+$ns_ at 150.02 "stop"
 proc stop {} {
     global ns_ tracefd namfd f0
     $ns_ flush-trace
     close $namfd
     close $tracefd
     exec nam wireless.nam &
+    $ns_ halt
 }
 
 puts "Starting Simulation..."
