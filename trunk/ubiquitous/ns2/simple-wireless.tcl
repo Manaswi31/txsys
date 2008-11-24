@@ -1,9 +1,14 @@
 
 #illidan.modeler@gmail.com
 
+# Initialize some parameters
+Mac/802_11 set dataRate_ 5.5Mb
+
 # ======================================================================
 # Define options
 # ======================================================================
+set sim(end) 60.0
+
 set val(chan)           Channel/WirelessChannel    ;# channel type
 set val(prop)           Propagation/TwoRayGround   ;# radio-propagation model
 set val(netif)          Phy/WirelessPhy            ;# network interface type
@@ -46,6 +51,9 @@ create-god $val(nn)
 #  to the channel. 
 #  Here two nodes are created : node(0) and node(1)
 
+#Set Bandwidth
+#$val(mac) set dataRate_ 54E6
+
 # configure node
 
         $ns_ node-config -adhocRouting $val(rp) \
@@ -68,6 +76,7 @@ create-god $val(nn)
 		$node_($i) random-motion 0		;# disable random motion
 	}
 
+
 #
 # Provide initial (X,Y, for now Z=0) co-ordinates for mobilenodes
 #
@@ -79,22 +88,24 @@ $node_(1) set X_ 15.0
 $node_(1) set Y_ 15.0
 $node_(1) set Z_ 0.0
 
-$ns_ initial_node_pos $node_(0) 5
-$ns_ initial_node_pos $node_(1) 5
+$ns_ initial_node_pos $node_(0) 2
+$ns_ initial_node_pos $node_(1) 2
 
 
 # Setup traffic flow between nodes
 # TCP connections between node_(0) and node_(1)
-set tcp [new Agent/TCP]
-$tcp set class_ 2
-set sink [new Agent/TCPSink]
-$ns_ attach-agent $node_(0) $tcp
+set udp [new Agent/UDP]
+$udp set class_ 2
+set sink [new Agent/LossMonitor]
+$ns_ attach-agent $node_(0) $udp
 $ns_ attach-agent $node_(1) $sink
-$ns_ connect $tcp $sink
+$ns_ connect $udp $sink
 
-set ftp [new Application/FTP]
-$ftp attach-agent $tcp
-$ns_ at 10.0 "$ftp start" 
+set cbr [new Application/Traffic/CBR]
+$cbr attach-agent $udp
+$cbr set packetSize_ 500
+$cbr set interval_ 1.0E-3
+$ns_ at 10.0 "$cbr start" 
 
 proc record {} {
         global sink f0 
@@ -106,8 +117,8 @@ proc record {} {
         set bytes [$sink set bytes_]
         #Get the current time
         set now [$ns now]
-        #Calculate the bandwidth (in MBit/s) and write it to the files
-        puts $f0 "$now [expr $bytes/$time*8/1000000]"
+        #Calculate the bandwidth (in MByte/s) and write it to the files
+        puts $f0 "$now [expr $bytes/$time]"
         #Reset the bytes_ values on the traffic sinks
         $sink set bytes_ 0
 
@@ -121,16 +132,18 @@ proc record {} {
 # Tell nodes when the simulation ends
 #
 for {set i 0} {$i < $val(nn) } {incr i} {
-    $ns_ at 150.0 "$node_($i) reset";
+    $ns_ at $sim(end) "$node_($i) reset";
 }
-$ns_ at 150.0 "stop"
-$ns_ at 150.01 "puts \"NS EXITING...\" ; $ns_ halt"
+
+$ns_ at $sim(end) "puts \"NS EXITING...\" "
+$ns_ at $sim(end) "stop"
 proc stop {} {
     global ns_ tracefd namfd f0
     $ns_ flush-trace
     close $namfd
-    close $tracefd
-    exec nam wireless.nam &
+    close $tracefd 
+    exec xgraph wireless.data -geometry 800x400 &
+    $ns_ halt
 }
 
 puts "Starting Simulation..."
