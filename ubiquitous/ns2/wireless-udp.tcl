@@ -24,9 +24,10 @@ set val(rp)             AODV                       ;# routing protocol
 # Initialize Global Variables
 #
 set ns_		[new Simulator]
-set tracefd     [open wireless.tr w]
-set namfd	[open wireless.nam w]
-set f0 [open wireless.data w]
+set token wireless-udp
+set tracefd     [open $token.tr w]
+set namfd	[open $token.nam w]
+set f0 [open $token.data w]
 
 $ns_ trace-all $tracefd
 $ns_ namtrace-all-wireless $namfd 20 20
@@ -85,16 +86,16 @@ $ns_ initial_node_pos $node_(1) 5
 
 # Setup traffic flow between nodes
 # TCP connections between node_(0) and node_(1)
-set tcp [new Agent/TCP]
-$tcp set class_ 2
-set sink [new Agent/TCPSink]
-$ns_ attach-agent $node_(0) $tcp
+set s_agent [new Agent/UDP]
+$s_agent set class_ 2
+#set sink [new Agent/Null]
+set sink [new Agent/LossMonitor]
+$ns_ attach-agent $node_(0) $s_agent
 $ns_ attach-agent $node_(1) $sink
-$ns_ connect $tcp $sink
+$ns_ connect $s_agent $sink
 
-set ftp [new Application/FTP]
-$ftp attach-agent $tcp
-$ns_ at 10.0 "$ftp start" 
+set cbr [new Application/Traffic/CBR]
+$cbr attach-agent $s_agent
 
 proc record {} {
         global sink f0 
@@ -107,7 +108,7 @@ proc record {} {
         #Get the current time
         set now [$ns now]
         #Calculate the bandwidth (in MBit/s) and write it to the files
-        puts $f0 "$now [expr $bytes/$time*8/1000000]"
+        puts $f0 "$now [expr $bytes/$time*8]"
         #Reset the bytes_ values on the traffic sinks
         $sink set bytes_ 0
 
@@ -123,13 +124,16 @@ proc record {} {
 for {set i 0} {$i < $val(nn) } {incr i} {
     $ns_ at 150.0 "$node_($i) reset";
 }
+
+$ns_ at 10.0 "$cbr start" 
 $ns_ at 150.0 "stop"
-$ns_ at 150.01 "puts \"NS EXITING...\" ; $ns_ halt"
+$ns_ at 150.01 "puts \"NS EXITING...\""
 proc stop {} {
     global ns_ tracefd namfd f0
     $ns_ flush-trace
     close $namfd
     close $tracefd
+    $ns_ halt
     exec nam wireless.nam &
 }
 

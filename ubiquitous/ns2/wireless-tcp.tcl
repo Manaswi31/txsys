@@ -26,7 +26,7 @@ set val(rp)             AODV                       ;# routing protocol
 set ns_		[new Simulator]
 set tracefd     [open wireless.tr w]
 set namfd	[open wireless.nam w]
-set f0 [open wireless.data w]
+set f0 [open wireless-tcp.data w]
 
 $ns_ trace-all $tracefd
 $ns_ namtrace-all-wireless $namfd 20 20
@@ -107,7 +107,7 @@ proc record {} {
         #Get the current time
         set now [$ns now]
         #Calculate the bandwidth (in MBit/s) and write it to the files
-        puts $f0 "$now [expr $bytes/$time*8/1000000]"
+        puts $f0 "$now [expr $bytes/$time*8]"
         #Reset the bytes_ values on the traffic sinks
         $sink set bytes_ 0
 
@@ -124,6 +124,7 @@ for {set i 0} {$i < $val(nn) } {incr i} {
     $ns_ at 150.0 "$node_($i) reset";
 }
 
+$ns_ at 0.0 "record"
 $ns_ at 150.01 "puts \"NS EXITING...\""
 $ns_ at 150.02 "stop"
 proc stop {} {
@@ -136,7 +137,6 @@ proc stop {} {
 }
 
 puts "Starting Simulation..."
-$ns_ at 0.0 "record"
 $ns_ run
 
 
