@@ -2,12 +2,13 @@
 #illidan.modeler@gmail.com
 
 # Initialize some parameters
-Mac/802_11 set dataRate_ 5.5Mb
+Mac/802_11 set dataRate_ 11Mb
+Mac/802_11 set RTSThreshold_ 3000
 
 # ======================================================================
 # Define options
 # ======================================================================
-set sim(end) 60.0
+set sim(end) 30.0
 
 set val(chan)           Channel/WirelessChannel    ;# channel type
 set val(prop)           Propagation/TwoRayGround   ;# radio-propagation model
@@ -103,8 +104,11 @@ $ns_ connect $udp $sink
 
 set cbr [new Application/Traffic/CBR]
 $cbr attach-agent $udp
-$cbr set packetSize_ 500
-$cbr set interval_ 1.0E-3
+
+#800Kbps
+$cbr set packetSize_ 1440 
+$cbr set interval_ 0.1E-3
+
 $ns_ at 10.0 "$cbr start" 
 
 proc record {} {
