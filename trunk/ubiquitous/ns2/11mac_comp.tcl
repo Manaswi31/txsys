@@ -95,8 +95,8 @@ $ns_ attach-agent $node_(1) $sink
 $ns_ connect $s_agent $sink
 
 set cbr [new Application/Traffic/CBR]
-$cbr0 set packetSize_ 700
-$cbr0 set interval_ 0.001
+$cbr set packetSize_ 700
+$cbr set interval_ 0.001
 $cbr attach-agent $s_agent
 
 proc record {} {

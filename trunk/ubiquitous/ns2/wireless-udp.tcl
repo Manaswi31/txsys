@@ -1,6 +1,10 @@
 
 #illidan.modeler@gmail.com
 
+
+Mac/802_11 set RTSThreshold_ 3000
+Mac/802_11 set dataRate_ 2Mb
+
 # ======================================================================
 # Define options
 # ======================================================================
@@ -95,8 +99,8 @@ $ns_ attach-agent $node_(1) $sink
 $ns_ connect $s_agent $sink
 
 set cbr [new Application/Traffic/CBR]
-$cbr set packetSize_ 700
-$cbr set interval_ 0.001
+$cbr set packetSize_ 100
+$cbr set interval_ 0.01
 $cbr attach-agent $s_agent
 
 proc record {} {
