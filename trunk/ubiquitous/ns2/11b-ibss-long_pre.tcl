@@ -4,7 +4,7 @@
 # Initialize some parameters
 Mac/802_11 set dataRate_ 11Mb
 Mac/802_11 set RTSThreshold_ 3000
-Mac/802_11 set PreambleLength_        72
+Mac/802_11 set PreambleLength_        144
 
 Agent/UDP set packetSize_ 1500
 
@@ -13,7 +13,8 @@ set totalBytes 0
 # ======================================================================
 # Define options
 # ======================================================================
-set sim(end) 30.0
+set simDur 100.0 ;#simulation duration
+set trafStart 10.0 ;#traffic start time
 
 set val(chan)           Channel/WirelessChannel    ;# channel type
 set val(prop)           Propagation/TwoRayGround   ;# radio-propagation model
@@ -53,13 +54,7 @@ $topo load_flatgrid 20 20
 #
 create-god $val(nn)
 
-#
-#  Create the specified number of mobilenodes [$val(nn)] and "attach" them
-#  to the channel. 
-#  Here two nodes are created : node(0) and node(1)
-
-#Set Bandwidth
-#$val(mac) set dataRate_ 54E6
+set chan [new $val(chan)]
 
 # configure node
 
@@ -71,12 +66,12 @@ create-god $val(nn)
 			 -antType $val(ant) \
 			 -propType $val(prop) \
 			 -phyType $val(netif) \
-			 -channelType $val(chan) \
 			 -topoInstance $topo \
-			 -agentTrace ON \
-			 -routerTrace ON \
-			 -macTrace OFF \
-			 -movementTrace OFF			
+			 -agentTrace OFF \
+			 -routerTrace OFF \
+			 -macTrace ON \
+			 -movementTrace OFF \
+			 -channel $chan 
 			 
 	for {set i 0} {$i < $val(nn) } {incr i} {
 		set node_($i) [$ns_ node]	
@@ -115,7 +110,7 @@ $cbr attach-agent $udp
 $cbr set packetSize_ 1440 
 $cbr set interval_ 0.1E-3
 
-$ns_ at 10.0 "$cbr start" 
+$ns_ at $trafStart "$cbr start" 
 
 proc record {} {
         global sink f0 totalBytes 
@@ -125,7 +120,7 @@ proc record {} {
         set time 0.5
         #How many bytes have been received by the traffic sinks?
         set bytes [$sink set bytes_]
-	totalBytes += bytes
+	set totalBytes [expr $totalBytes +$bytes]
 
         #Get the current time
         set now [$ns now]
@@ -144,15 +139,17 @@ proc record {} {
 # Tell nodes when the simulation ends
 #
 for {set i 0} {$i < $val(nn) } {incr i} {
-    $ns_ at $sim(end) "$node_($i) reset";
+    $ns_ at $simDur "$node_($i) reset";
 }
 
-$ns_ at $sim(end) "puts \"NS EXITING...\" "
-$ns_ at $sim(end) "stop"
+$ns_ at $simDur "puts \"NS EXITING...\" "
+$ns_ at $simDur "stop"
 proc stop {} {
-    global ns_ tracefd namfd f0
+    global ns_ tracefd namfd f0 totalBytes simDur trafStart
 
-    puts "Average throughput over the whole simulation is [expr $totalBytes/$simDur ] bytes/sec"
+    puts "Total CBR traffic (bytes) : $totalBytes"
+    puts "$trafStart"
+    puts "Average throughput over the whole simulation is [expr $totalBytes/($simDur-$trafStart) ] bytes/sec"
 
     $ns_ flush-trace
     close $namfd
