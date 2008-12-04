@@ -1,28 +1,32 @@
+autostart=false
+
+[localhost]
+port=7200
+
   [[router R1]]
-        image = ~/dynamips/image/c3640-is-mz.123-10.bin
+        image = /home/wjb/dynamips/image/c3640-is-mz.123-10.bin
         model = 3640
         console = 3001
         ram = 80
         confreg = 0x2102
         exec_area = 64
         mmap = true
-        slot0 = NM-1FE-TX
-        f0/0 = R2 f0/0
+        slot1 = NM-4T
+        s1/1 = R2 s1/0
      
     [[router R2]]
-        image = ~/dynamips/image/c3640-is-mz.123-10.bin
+        image = ../image/c3640-is-mz.123-10.bin
         model = 3640
         console = 3002
         ram = 80
         confreg = 0x2102
         exec_area = 64
         mmap = true
-        slot0 = NM-1FE-TX
         slot1 = NM-4T
-        s1/0 = R3 s1/0
+        s1/1 = R3 s1/0
      
     [[router R3]]
-        image = ~/dynamips/image/c3640-is-mz.123-10.bin
+        image = ../image/c3640-is-mz.123-10.bin
         model = 3640
         console = 3003
         ram = 80
@@ -30,4 +34,4 @@
         exec_area = 64
         mmap = true
         slot1 = NM-4T
-        s1/1 = R4 s1/0 
+        s1/1 = R1 s1/0 
