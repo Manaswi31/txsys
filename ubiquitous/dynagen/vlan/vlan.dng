@@ -7,31 +7,31 @@ port=7200
 image = /home/wjb/dynamips/image/c3640-is-mz.123-6.bin
 ram = 96
 
-
-[[ROUTER DLS1]]
-model = 3640
-slot0 = NM-16ESW
-f0/11 = DLS2 f0/11
-f0/12 = DLS2 f0/12
-f0/9 = ALS2 f0/9
-f0/10 = ALS2 f0/10
-f0/7 = ALS1 f0/7
-f0/8 = ALS1 f0/8
-
-[[ROUTER DLS2]]
-model = 3640
-slot0 = NM-16ESW
-f0/9 = ALS1 f0/9
-f0/10 = ALS1 f0/10
-f0/7 = ALS2 f0/7
-f0/8 = ALS2 f0/8
-
-[[ROUTER ALS1]]
-model = 3640
-slot0 = NM-16ESW
-f0/11 = ALS2 f0/11
-f0/12 = ALS2 f0/12
-
-[[ROUTER ALS2]]
-model = 3640
-slot0 = NM-16ESW 
+  [[router R1]]
+        model = 3640
+        console = 3001
+        confreg = 0x2102
+        exec_area = 64
+        mmap = true
+        slot0 =  NM-16ESW 
+        f0/1 = R2 f0/0
+     
+    [[router R2]]
+        model = 3640
+        console = 3002
+        ram = 96
+        confreg = 0x2102
+        exec_area = 64
+        mmap = true
+        slot0 =  NM-16ESW 
+        f0/1 = R3 f0/0
+     
+    [[router R3]]
+        model = 3640
+        console = 3003
+        ram = 96
+        confreg = 0x2102
+        exec_area = 64
+        mmap = true
+        slot0 =  NM-16ESW 
+        f0/1 = R1 f0/0 
