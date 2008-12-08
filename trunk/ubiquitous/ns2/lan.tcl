@@ -1,12 +1,13 @@
 ##################
-set simDur 5.0
+set simDur 60.0
 
 set basename lan
 
 set statIntvl 1.0
 set cbrIntvl 1.0
 
-set val(chan)           Channel/WiredChannel    ;# channel type
+set val(bw)		100Mb
+set val(delay)		0.1ms
 set val(mac)            Mac/802_3                 ;# MAC type
 set val(ifq)            Queue/DropTail    ;# interface queue type
 set val(ll)             LL                         ;# link layer type
@@ -31,24 +32,20 @@ set outfd [open $basename.out w]
 
 
 for {set i 0} {$i < $val(nn) } {incr i} {
-	set node_($i) [$ns node]
-	lappend nodelist $(node($i))
+	set node($i) [$ns node]
+	lappend nodelist $node($i)
 }
 
-$node_(0) set X_ 200.0
-$node_(0) set Y_ 250.0
-$node_(0) set Z_ 0.0
+$ns make-lan $nodelist $val(bw) $val(delay) $val(ll) $val(ifq) $val(mac)
 
-$node_(1) set X_ 300.0
-$node_(1) set Y_ 250.0
-$node_(1) set Z_ 0.0
+set node_ex [$ns node]
 
-$ns_ initial_node_pos $node_(0) 5
-$ns_ initial_node_pos $node_(1) 5
+#$ns duplex-link $node_ex $node(0) 100Mb 0.1ms DropTail
+#$ns duplex-link-op $node_ex $node(0) orient right
 
 #Create a udp agent on node0
 set udp0 [new Agent/UDP]
-$ns attach-agent $node_(0) $udp0
+$ns attach-agent $node(0) $udp0
 
 # Create a CBR traffic source on node0
 set cbr0 [new Application/Traffic/CBR]
@@ -59,7 +56,7 @@ $cbr0 attach-agent $udp0
 
 #Create a Null agent (a traffic sink) on node1
 set sink0 [new Agent/LossMonitor]
-$ns attach-agent $node_(1) $sink0
+$ns attach-agent $node(7) $sink0
 
 #Connet source and dest Agents
 $ns connect $udp0 $sink0
@@ -68,7 +65,7 @@ proc record {} {
     global sink0 ns outfd statIntvl
     set bytes [$sink0 set bytes_]
     set now [$ns now]
-    puts $outfd $bytes
+    puts $outfd "$now $bytes"
     $sink0 set bytes_ 0
     $ns at [expr $now+$statIntvl] "record"
 }
@@ -95,7 +92,7 @@ $ns at 0.5 "$cbr0 start"
 $ns at 4.5 "$cbr0 stop"
 
 #Call the finish procedure after 5s (of simulated time)
-$ns at 5.0 "finish"
+$ns at $simDur "finish"
 
 #
 #Run the simulation
