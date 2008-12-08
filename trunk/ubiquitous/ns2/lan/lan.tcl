@@ -89,7 +89,7 @@ proc finish {} {
 #Schedule events for the CBR agent that starts at 0.5s and stops at 4.5s
 $ns at 0.5 "record"
 $ns at 0.5 "$cbr0 start"
-$ns at 4.5 "$cbr0 stop"
+$ns at $simDur "$cbr0 stop"
 
 #Call the finish procedure after 5s (of simulated time)
 $ns at $simDur "finish"
