@@ -1,0 +1,106 @@
+##################
+set simDur 5.0
+
+set basename lan
+
+set statIntvl 1.0
+set cbrIntvl 1.0
+
+set val(chan)           Channel/WiredChannel    ;# channel type
+set val(mac)            Mac/802_3                 ;# MAC type
+set val(ifq)            Queue/DropTail    ;# interface queue type
+set val(ll)             LL                         ;# link layer type
+set val(nn)  8 ;#number of nodes in the LAN
+
+
+###################
+#Initialize and create output files
+#Create a simulator instance
+set ns [new Simulator]
+
+#Crate a trace file and animation record
+set tracefd [open $basename.tr w]
+$ns trace-all $tracefd
+set namtracefd [open $basename.nam w]
+$ns namtrace-all $namtracefd
+
+set outfd [open $basename.out w]
+
+#######################
+#Create Topology
+
+
+for {set i 0} {$i < $val(nn) } {incr i} {
+	set node_($i) [$ns node]
+	lappend nodelist $(node($i))
+}
+
+$node_(0) set X_ 200.0
+$node_(0) set Y_ 250.0
+$node_(0) set Z_ 0.0
+
+$node_(1) set X_ 300.0
+$node_(1) set Y_ 250.0
+$node_(1) set Z_ 0.0
+
+$ns_ initial_node_pos $node_(0) 5
+$ns_ initial_node_pos $node_(1) 5
+
+#Create a udp agent on node0
+set udp0 [new Agent/UDP]
+$ns attach-agent $node_(0) $udp0
+
+# Create a CBR traffic source on node0
+set cbr0 [new Application/Traffic/CBR]
+$cbr0 set packetSize_ 500
+$cbr0 set interval_ $cbrIntvl
+$cbr0 set random_ 1
+$cbr0 attach-agent $udp0
+
+#Create a Null agent (a traffic sink) on node1
+set sink0 [new Agent/LossMonitor]
+$ns attach-agent $node_(1) $sink0
+
+#Connet source and dest Agents
+$ns connect $udp0 $sink0
+
+proc record {} {
+    global sink0 ns outfd statIntvl
+    set bytes [$sink0 set bytes_]
+    set now [$ns now]
+    puts $outfd $bytes
+    $sink0 set bytes_ 0
+    $ns at [expr $now+$statIntvl] "record"
+}
+
+#a procedure to close trace file and nam file
+proc finish {} {
+
+	global ns tracefd namtracefd basename
+	$ns flush-trace
+
+	close $tracefd
+	close $namtracefd
+	
+	exec nam $basename.nam &
+	exit 0
+}
+
+#
+#Schedule trigger events
+
+#Schedule events for the CBR agent that starts at 0.5s and stops at 4.5s
+$ns at 0.5 "record"
+$ns at 0.5 "$cbr0 start"
+$ns at 4.5 "$cbr0 stop"
+
+#Call the finish procedure after 5s (of simulated time)
+$ns at 5.0 "finish"
+
+#
+#Run the simulation
+$ns run
+
+
+
+

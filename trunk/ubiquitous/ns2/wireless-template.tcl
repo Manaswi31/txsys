@@ -3,7 +3,7 @@ set simDur 5.0
 
 set basename loss-monitor
 
-set statIntvl 1.0
+set val(statIntvl) 1.0
 set cbrIntvl 1.0
 
 set val(chan)           Channel/WirelessChannel    ;# channel type
@@ -103,18 +103,18 @@ $ns attach-agent $node_(1) $sink0
 $ns connect $udp0 $sink0
 
 proc record {} {
-    global sink0 ns outfd statIntvl
+    global sink0 ns outfd val
     set bytes [$sink0 set bytes_]
     set now [$ns now]
     puts $outfd $bytes
     $sink0 set bytes_ 0
-    $ns at [expr $now+$statIntvl] "record"
+    $ns at [expr $now+$val(statIntvl)] "record"
 }
 
 #a procedure to close trace file and nam file
 proc finish {} {
 
-	global ns tracefd namtracefd basename
+	global ns tracefd namtracefd basename val
 	$ns flush-trace
 
 	close $tracefd
