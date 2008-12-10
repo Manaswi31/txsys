@@ -3,8 +3,8 @@ set simDur 60.0
 
 set basename lan
 
-set statIntvl 1.0
-set cbrIntvl 1.0
+set statIntvl [expr $simDur/100]
+set cbrIntvl 0.0001
 
 set val(bw)		100Mb
 set val(delay)		0.1ms
