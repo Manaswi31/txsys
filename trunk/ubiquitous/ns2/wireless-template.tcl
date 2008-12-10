@@ -1,7 +1,7 @@
 ##################
-set simDur 5.0
+set val(simDur) 5.0
 
-set basename loss-monitor
+set val(basename) loss-monitor
 
 set val(statIntvl) 1.0
 set cbrIntvl 1.0
@@ -24,12 +24,12 @@ set val(rp)             DumbAgent                  ;# routing protocol
 set ns [new Simulator]
 
 #Crate a trace file and animation record
-set tracefd [open $basename.tr w]
+set tracefd [open $val(basename).tr w]
 $ns trace-all $tracefd
-set namtracefd [open $basename.nam w]
+set namtracefd [open $val(basename).nam w]
 $ns namtrace-all $namtracefd
 
-set outfd [open $basename.out w]
+set outfd [open $val(basename).out w]
 
 #######################
 #Create Topology
@@ -120,7 +120,7 @@ proc finish {} {
 	close $tracefd
 	close $namtracefd
 	
-	exec nam $basename.nam &
+	exec nam $val(basename).nam &
 	exit 0
 }
 
@@ -133,7 +133,7 @@ $ns at 0.5 "$cbr0 start"
 $ns at 4.5 "$cbr0 stop"
 
 #Call the finish procedure after 5s (of simulated time)
-$ns at 5.0 "finish"
+$ns at $val(simDur) "finish"
 
 #
 #Run the simulation
