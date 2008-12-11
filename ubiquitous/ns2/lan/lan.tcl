@@ -3,15 +3,16 @@ set simDur 60.0
 
 set basename lan
 
-set statIntvl [expr $simDur/100]
+set statIntvl [expr $simDur/100]  ;# interval of statistics collection
+set cbrStart 0.5
 set cbrIntvl 0.0001
 
-set val(bw)		100Mb
+set val(bw)		10Mb
 set val(delay)		0.1ms
 set val(ll)             LL                         ;# link layer type
 set val(ifq)            Queue/DropTail    ;# interface queue type
 set val(mac)            Mac/802_3                 ;# MAC type
-set val(chan)		Channel/WiredChannel
+set val(chan)			Channel
 set val(phy)            Phy/WiredPhy
 set val(ifqlen)		100    ;#max packets in a queue
 
@@ -40,7 +41,7 @@ for {set i 0} {$i < $val(nn) } {incr i} {
 	lappend nodelist $node($i)
 }
 
-$ns make-lan -trace on $nodelist $val(bw) $val(delay) $val(ll) $val(ifq) $val(mac) val(chan) val(phy) val(ifqlen)
+$ns make-lan -trace on $nodelist $val(bw) $val(delay) $val(ll) $val(ifq) $val(mac) val(chan) val(phy)
 
 set node_ex [$ns node]
 
@@ -83,7 +84,6 @@ proc finish {} {
 	close $tracefd
 	close $namtracefd
 	
-	exec nam $basename.nam &
 	exit 0
 }
 
@@ -91,11 +91,11 @@ proc finish {} {
 #Schedule trigger events
 
 #Schedule events for the CBR agent that starts at 0.5s and stops at 4.5s
-$ns at 0.5 "record"
-$ns at 0.5 "$cbr0 start"
+$ns at $cbrStart "record"
+$ns at $cbrStart "$cbr0 start"
 $ns at $simDur "$cbr0 stop"
 
-#Call the finish procedure after 5s (of simulated time)
+#Call the finish procedure at the end of simulation
 $ns at $simDur "finish"
 
 #
