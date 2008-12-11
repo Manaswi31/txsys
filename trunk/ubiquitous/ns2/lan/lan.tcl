@@ -1,14 +1,18 @@
 ##################
+
+Agent/UDP set packetSize_ 1500  ;# in order to use large CBR/UDP packet
+
+##################
 set simDur 60.0
 
 set basename lan
 
 set statIntvl [expr $simDur/100]  ;# interval of statistics collection
 set cbrStart 0.5
-set cbrIntvl 0.0001
+set cbrIntvl 0.001
 
 set val(bw)		10Mb
-set val(delay)		0.1ms
+set val(delay)		0.01ms
 set val(ll)             LL                         ;# link layer type
 set val(ifq)            Queue/DropTail    ;# interface queue type
 set val(mac)            Mac/802_3                 ;# MAC type
@@ -41,7 +45,7 @@ for {set i 0} {$i < $val(nn) } {incr i} {
 	lappend nodelist $node($i)
 }
 
-$ns make-lan -trace on $nodelist $val(bw) $val(delay) $val(ll) $val(ifq) $val(mac) val(chan) val(phy)
+$ns make-lan -trace on $nodelist $val(bw) $val(delay) $val(ll) $val(ifq) $val(mac) $val(chan) $val(phy)
 
 set node_ex [$ns node]
 
@@ -54,7 +58,7 @@ $ns attach-agent $node(0) $udp0
 
 # Create a CBR traffic source on node0
 set cbr0 [new Application/Traffic/CBR]
-$cbr0 set packetSize_ 500
+$cbr0 set packetSize_ 1440 ; #1440*8bit/1E-3s = 11.52Mbps
 $cbr0 set interval_ $cbrIntvl
 $cbr0 set random_ 1
 $cbr0 attach-agent $udp0
