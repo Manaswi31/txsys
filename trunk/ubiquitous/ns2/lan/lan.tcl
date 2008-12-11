@@ -1,4 +1,6 @@
 ##################
+# illidan.modeler [at] gmail.com
+##################
 
 Agent/UDP set packetSize_ 1500  ;# in order to use large CBR/UDP packet
 
@@ -58,7 +60,7 @@ $ns attach-agent $node(0) $udp0
 
 # Create a CBR traffic source on node0
 set cbr0 [new Application/Traffic/CBR]
-$cbr0 set packetSize_ 1440 ; #1440*8bit/1E-3s = 11.52Mbps
+$cbr0 set packetSize_ 128 ; #1440*8bit/1E-3s = 11.52Mbps
 $cbr0 set interval_ $cbrIntvl
 $cbr0 set random_ 1
 $cbr0 attach-agent $udp0
