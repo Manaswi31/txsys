@@ -8,9 +8,13 @@ set cbrIntvl 0.0001
 
 set val(bw)		100Mb
 set val(delay)		0.1ms
-set val(mac)            Mac/802_3                 ;# MAC type
-set val(ifq)            Queue/DropTail    ;# interface queue type
 set val(ll)             LL                         ;# link layer type
+set val(ifq)            Queue/DropTail    ;# interface queue type
+set val(mac)            Mac/802_3                 ;# MAC type
+set val(chan)		Channel/WiredChannel
+set val(phy)            Phy/WiredPhy
+set val(ifqlen)		100    ;#max packets in a queue
+
 set val(nn)  8 ;#number of nodes in the LAN
 
 
@@ -36,7 +40,7 @@ for {set i 0} {$i < $val(nn) } {incr i} {
 	lappend nodelist $node($i)
 }
 
-$ns make-lan $nodelist $val(bw) $val(delay) $val(ll) $val(ifq) $val(mac)
+$ns make-lan -trace on $nodelist $val(bw) $val(delay) $val(ll) $val(ifq) $val(mac) val(chan) val(phy) val(ifqlen)
 
 set node_ex [$ns node]
 
