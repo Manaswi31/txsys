@@ -3,8 +3,8 @@
  */
 
 
-#include <mflood.h>
-#include <mflood-packet.h>
+#include "mflood.h"
+#include "mflood-packet.h"
 #include <random.h>
 #include <cmu-trace.h>
 
