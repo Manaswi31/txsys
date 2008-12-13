@@ -10,7 +10,7 @@
 
 int hdr_mflood::offset_;
 
-static class MFloodHeaderClass : public PacketHearderClass {
+static class MFloodHeaderClass : public PacketHeaderClass {
     public:
 	MFloodHeaderClass() : PacketHeaderClass("PacketHeader/MFlood", sizeof (hdr_mflood)) {
 	    bind_offset(&hdr_mflood::offset_);
@@ -28,6 +28,10 @@ static class MFloodclass: public TclClass {
 }class_rtProtocolMFlood;
 
 int MFlood::command(int argc, const char* const* argv) {
+	
+	printf("Go!\n");
+	
+	
     Tcl & tcl = Tcl::instance();
     if (argc==2) {
 	if (strncasecmp(argv[1], "id", 2) == 0) {
@@ -51,7 +55,7 @@ int MFlood::command(int argc, const char* const* argv) {
 		target_ = 0;
 		return TCL_OK;
 	    }
-	    uptarget_ = (NSObject*) TclObject::lookup(argv[2]);
+	    uptarget_ = (NsObject*) TclObject::lookup(argv[2]);
 	    if (uptarget_ == 0) {
 		tcl.resultf("no such object %s", argv[2]);
 		return TCL_ERROR;
@@ -77,12 +81,12 @@ void MFlood::rt_resolve(Packet *p) {
 	MFlood_RTEntry * rt;
 
 	if (rt==NULL) {
-		rt = new MFlood_RTEntry(ih->saddr(), fh->seq_t);
+		rt = new MFlood_RTEntry(ih->saddr(), fh->seq_);
 		LIST_INSERT_HEAD(&rtable_.rthead, rt, rt_link);
 		forward(rt, p, FORWARD_DELAY);
 	} else if (rt->isNewSeq(fh->seq_)) {
 		forward(rt, p, FORWARD_DELAY);
-		rt->addSeq(fh->seq_t);
+		rt->addSeq(fh->seq_);
 	} else {
 		drop(p, "LOWSEQ");
 	}
@@ -91,12 +95,12 @@ void MFlood::rt_resolve(Packet *p) {
 void MFlood::recv(Packet* p, Handler*) {
 	struct hdr_cmn *ch = HDR_CMN(p);
 	struct hdr_ip *ih = HDR_IP(p);
-	struct hdr_mflood *fh = HDR_FLOOD(p);
+	struct hdr_mflood *fh = HDR_MFLOOD(p);
 	assert(initialized());
 
 	if ((ih->saddr()==index_) && (ch->num_forwards()==0)) {
 		ch->size() += IP_HDR_LEN;
-		ih->ttl_ = NEWWORK_DIAMETER;
+		ih->ttl_ = NETWORK_DIAMETER;
 		fh->seq_ = myseq_++;
 		forward((MFlood_RTEntry*)1, p, 0);
 		return;
@@ -122,9 +126,9 @@ void MFlood::forward(MFlood_RTEntry* rt, Packet *p, double delay) {
 	ch->addr_type() = NS_AF_INET;
 	ch->direction() = hdr_cmn::DOWN;
 	if (delay>0.0) {
-		Schedule::instance().schedule(target_, p, Random::uniform(delay*2));
+		Scheduler::instance().schedule(target_, p, Random::uniform(delay*2));
 	} else {
-		Schedule::instance().schedule(target_, p, 0);
+		Scheduler::instance().schedule(target_, p, 0);
 	}
 } //forward
 

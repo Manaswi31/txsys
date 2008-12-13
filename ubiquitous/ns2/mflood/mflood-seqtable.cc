@@ -33,23 +33,25 @@ void MFlood_RTEntry::addSeq(u_int32_t seq) {
 	u_int16_t min_it = 0;
 	if (seq < min_seqno) return;
 	if (seq > max_seqno) max_seqno = seq;
-	seq_it % = REM_SEQ_COUNT;
+	rt_seqnos[seq_it++] = seq;
+	seq_it =  seq_it % REM_SEQ_COUNT;
 	min_seqno = 0xffffffff;
+	
 	for (int i=0; i<REM_SEQ_COUNT; i++) {
-		if (min_seqno > rt_seqnos[i]) min_seqno = rt_seqnoss[i];
+		if (min_seqno > rt_seqnos[i]) min_seqno = rt_seqnos[i];
 	}
 } //addSeq
 
 MFlood_RTEntry* MFlood_RTable::rt_lookup(nsaddr_t id) {
 	MFlood_RTEntry* rt = rthead.lh_first;
-	for (; rt ; rt->rt_link.le_next) {
+	for (; rt ; rt= rt->rt_link.le_next) {
 		if (rt->src_ == id) break;
 	}
 	return rt;
 }
 
 
-void MFlood_RTEntry::rt_delete(nsaddr_t id) {
+void MFlood_RTable::rt_delete(nsaddr_t id) {
 	MFlood_RTEntry* rt = rt_lookup(id);
 	if (rt) {
 		LIST_REMOVE(rt, rt_link);
@@ -57,7 +59,7 @@ void MFlood_RTEntry::rt_delete(nsaddr_t id) {
 	}
 }
 
-void MFlood_RTEntry::rt_print() {
+void MFlood_RTable::rt_print() {
 	MFlood_RTEntry* rt = rthead.lh_first;
 	do {
 		printf("index: %d, seq: %d \n", rt->src_, rt->max_seqno);

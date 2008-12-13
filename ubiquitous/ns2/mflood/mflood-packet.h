@@ -2,10 +2,15 @@
  * mflood-packet.h
  */
 
+
+
 #ifndef __mflood_packet_h__
 #define __mflood_packet_h__
 
-#define HDR_FLOOD(p) ((struct hdr_mflood*)hdr_mflood::access(p))
+#include <packet.h>
+#include <stdio.h>
+
+#define HDR_MFLOOD(p) ((struct hdr_mflood*)hdr_mflood::access(p))
 
 struct hdr_mflood {
 	u_int32_t seq_;
@@ -15,4 +20,17 @@ struct hdr_mflood {
 		return (hdr_mflood*) p->access(offset_);
 	}
 };
+
+//std::cout << (unsigned) PT_TCP << std::endl;
+//extern static const packet_t PT_TCP;
+//printf("%d\n", i);
+//printf("%d\n", (unsigned) PT_TCP);
+
+//extern static packet_t PT_NTYPE;
+
+//PT_NTYPE = 62;
+
+//static const packet_t PT_MFLOOD = 61;
+
+
 #endif

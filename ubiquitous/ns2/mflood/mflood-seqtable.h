@@ -29,7 +29,7 @@ protected :
 	LIST_ENTRY(MFlood_RTEntry) rt_link;
 	nsaddr_t src_;
 	u_int32_t rt_seqnos[REM_SEQ_COUNT];
-	u_int32_t  max_sqeno;
+	u_int32_t  max_seqno;
 	u_int32_t  min_seqno;
 	u_int16_t  seq_it;
 };
@@ -42,7 +42,7 @@ public :
 	MFlood_RTEntry* rt_lookup(nsaddr_t id);
 	void rt_print();
 private : 
-	LIST_HEAD(MFlood_RTEntry) rthead;
+	LIST_HEAD(, MFlood_RTEntry) rthead;
 };
 #endif
 
