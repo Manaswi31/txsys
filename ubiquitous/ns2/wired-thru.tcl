@@ -1,10 +1,10 @@
 ##################
-set simDur 5.0
+set simDur 100.0 ;#simulation duration in seconds
 
 set basename wired-thru
 
 set statIntvl 1.0
-set cbrIntvl 1.0
+set cbrIntvl 1E-3
 set totalBytes 0
 
 set val(nn)             2                         ;# number of nodes
@@ -82,7 +82,6 @@ proc finish {} {
 	close $tracefd
 	close $namtracefd
 	
-	exec nam $basename.nam &
 	exit 0
 }
 
@@ -90,12 +89,12 @@ proc finish {} {
 #Schedule trigger events
 
 #Schedule events for the CBR agent that starts at 0.5s and stops at 4.5s
-$ns at 0.5 "record"
-$ns at 0.5 "$cbr0 start"
-$ns at 4.5 "$cbr0 stop"
+$ns at 10.0 "record"
+$ns at 10.0 "$cbr0 start"
+$ns at $simDur "$cbr0 stop"
 
 #Call the finish procedure after 5s (of simulated time)
-$ns at 5.0 "finish"
+$ns at $simDur "finish"
 
 #
 #Run the simulation
