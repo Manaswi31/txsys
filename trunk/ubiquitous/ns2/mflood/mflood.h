@@ -1,6 +1,7 @@
 #ifndef __mflood_h__
 #define __mflood_h__
 
+#include "mflood-seqtable.h"
 #include <sys/types.h>
 #include <cmu-trace.h>
 #include <priqueue.h>
@@ -9,6 +10,7 @@
 //#define NOW (Schedule::instance().clock())
 
 #define NETWORK_DIAMETER 30
+#define FORWARD_DELAY 0.01
 #define NO_DELAY -1.0
 
 class MFlood : public Agent {
