@@ -21,17 +21,4 @@ struct hdr_mflood {
 	}
 	inline u_int32_t seq_num() {return seq_;}
 };
-
-//std::cout << (unsigned) PT_TCP << std::endl;
-//extern static const packet_t PT_TCP;
-//printf("%d\n", i);
-//printf("%d\n", (unsigned) PT_TCP);
-
-//extern static packet_t PT_NTYPE;
-
-//PT_NTYPE = 62;
-
-//static const packet_t PT_MFLOOD = 61;
-
-
 #endif
