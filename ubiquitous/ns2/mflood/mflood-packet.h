@@ -10,7 +10,7 @@
 #include <packet.h>
 #include <stdio.h>
 
-#define HDR_MFLOOD(p) ((struct hdr_mflood*)hdr_mflood::access(p))
+#define HDR_MFLOOD_PKT(p) ((struct hdr_mflood*)hdr_mflood::access(p))
 
 struct hdr_mflood {
 	u_int32_t seq_;
