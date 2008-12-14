@@ -1,2 +1,2 @@
 typedef int packet_t;
-static const packet_t val = 1;
+static packet_t val = 1;

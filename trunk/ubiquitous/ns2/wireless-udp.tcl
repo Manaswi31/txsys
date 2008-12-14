@@ -17,7 +17,7 @@ set val(ll)             LL                         ;# link layer type
 set val(ant)            Antenna/OmniAntenna        ;# antenna model
 set val(ifqlen)         50                         ;# max packet in ifq
 set val(nn)             2                          ;# number of mobilenodes
-set val(rp)             AODV                       ;# routing protocol
+set val(rp)             MFlood                       ;# routing protocol
 
 # ======================================================================
 # Main Program
