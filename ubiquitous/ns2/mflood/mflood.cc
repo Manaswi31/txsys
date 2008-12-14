@@ -31,7 +31,7 @@ static class MFloodclass: public TclClass {
 
 int MFlood::command(int argc, const char* const* argv) {
 	
-	printf("Go!\n");
+	std::cout << "Go!" << std::endl;
 	
 	
     Tcl & tcl = Tcl::instance();
@@ -85,6 +85,7 @@ void MFlood::rt_resolve(Packet *p) {
 	struct hdr_ip * ih = HDR_IP(p);
 	struct hdr_mflood * fh = HDR_MFLOOD_PKT(p);
 	MFlood_RTEntry * rt;
+	rt = rtable_.rt_lookup(ih->saddr());
 
 	if (rt==NULL) {
 		rt = new MFlood_RTEntry(ih->saddr(), fh->seq_);

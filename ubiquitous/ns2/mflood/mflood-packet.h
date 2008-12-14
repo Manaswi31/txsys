@@ -19,6 +19,7 @@ struct hdr_mflood {
 	inline static hdr_mflood* access(const Packet *p) {
 		return (hdr_mflood*) p->access(offset_);
 	}
+	inline u_int32_t seq_num() {return seq_;}
 };
 
 //std::cout << (unsigned) PT_TCP << std::endl;

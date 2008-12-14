@@ -8,8 +8,8 @@ set val(ifqlen)         50                           ;# max packet in ifq
 
 set val(nn)             3                           ;# number of mobilenodes
 
-#set val(rp)             MFlood                       ;# routing protocol
-set val(rp)             AODV                       ;# routing protocol
+set val(rp)             MFlood                       ;# routing protocol
+#set val(rp)             AODV                       ;# routing protocol
 
 set val(chan)       Channel/WirelessChannel
 
@@ -47,13 +47,13 @@ set ns_ [new Simulator]
 
 set tracefd [open mflood.tr w]
 
-#$ns_ trace-all $tracefd
+$ns_ trace-all $tracefd
 
  
 
 set namtrace    [open mflood.nam w]
 
-#$ns_ namtrace-all-wireless $namtrace 1000 500
+$ns_ namtrace-all-wireless $namtrace 1000 500
 
  
 
@@ -173,7 +173,7 @@ set cbr_(0) [new Application/Traffic/CBR]
 
 $cbr_(0) set packetSize_ 512
 
-$cbr_(0) set interval_ 4.0
+$cbr_(0) set interval_ 0.5
 
 $cbr_(0) set random_ 1
 
