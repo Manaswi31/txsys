@@ -35,6 +35,7 @@ protected:
 	
 	Trace* logtarget;
 	NsObject* uptarget_;
+	NsObject* port_demux_;
 	
 private:
 	u_int32_t myseq_;

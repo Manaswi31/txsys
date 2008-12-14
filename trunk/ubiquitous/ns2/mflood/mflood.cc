@@ -7,6 +7,7 @@
 #include "mflood-packet.h"
 #include <random.h>
 #include <cmu-trace.h>
+#include <iostream>
 
 int hdr_mflood::offset_;
 
@@ -22,6 +23,7 @@ static class MFloodclass: public TclClass {
     public :
 	MFloodclass() : TclClass ("Agent/MFlood") {}
 	TclObject * create(int argc, const char* const* argv) {
+		std::cout<<"*********running**************"<<std::endl;
 	    assert(argc==5);
 	    return (new MFlood((nsaddr_t) atoi(argv[4])));
 	}
@@ -61,13 +63,17 @@ int MFlood::command(int argc, const char* const* argv) {
 		return TCL_ERROR;
 	    }
 	    return TCL_OK;
+	} else if (strcmp(argv[1], "port-dmux")==0) {
+		TclObject * obj;
+		port_demux_ = (NsObject*) obj;
+		return TCL_OK;
 	}
     }
     return Agent::command(argc, argv);
 
 } //command()
 
-MFlood::MFlood(nsaddr_t id) : Agent(PT_MFLOOD) {
+MFlood::MFlood(nsaddr_t id) : Agent(PT_MFLOOD), port_demux_(NULL) {
 	index_ = id;
 	logtarget = 0;
 	myseq_ = 0;
@@ -77,7 +83,7 @@ MFlood::MFlood(nsaddr_t id) : Agent(PT_MFLOOD) {
 void MFlood::rt_resolve(Packet *p) {
 	struct hdr_cmn * ch = HDR_CMN(p);
 	struct hdr_ip * ih = HDR_IP(p);
-	struct hdr_mflood * fh = HDR_MFLOOD(p);
+	struct hdr_mflood * fh = HDR_MFLOOD_PKT(p);
 	MFlood_RTEntry * rt;
 
 	if (rt==NULL) {
@@ -95,7 +101,7 @@ void MFlood::rt_resolve(Packet *p) {
 void MFlood::recv(Packet* p, Handler*) {
 	struct hdr_cmn *ch = HDR_CMN(p);
 	struct hdr_ip *ih = HDR_IP(p);
-	struct hdr_mflood *fh = HDR_MFLOOD(p);
+	struct hdr_mflood *fh = HDR_MFLOOD_PKT(p);
 	assert(initialized());
 
 	if ((ih->saddr()==index_) && (ch->num_forwards()==0)) {
