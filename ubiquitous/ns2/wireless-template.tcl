@@ -1,10 +1,12 @@
 ##################
-set val(simDur) 5.0
+set val(simDur) 5.0 ;#simulation duration
 
-set val(basename) loss-monitor
+set val(basename)  ;#basename for this project or scenario
 
-set val(statIntvl) 1.0
-set cbrIntvl 1.0
+set val(statIntvl) 1.0 ;#statistics collection interval
+
+set val(cbrStart) 0.5 ;#CBR start time
+set val(cbrIntvl) 1.0 ;#CBR traffic interval
 
 set val(chan)           Channel/WirelessChannel    ;# channel type
 set val(prop)           Propagation/TwoRayGround   ;# radio-propagation model
@@ -69,24 +71,24 @@ set chan_ [new $val(chan)]
                          -channel $chan_
 
         for {set i 0} {$i < $val(nn) } {incr i} {
-                set node_($i) [$ns node]
-                $node_($i) random-motion 0              ;# disable random motion
+                set node($i) [$ns node]
+                $node($i) random-motion 0              ;# disable random motion
         }
 
-$node_(0) set X_ 200.0
-$node_(0) set Y_ 250.0
-$node_(0) set Z_ 0.0
+$node(0) set X_ 200.0
+$node(0) set Y_ 250.0
+$node(0) set Z_ 0.0
 
-$node_(1) set X_ 300.0
-$node_(1) set Y_ 250.0
-$node_(1) set Z_ 0.0
+$node(1) set X_ 300.0
+$node(1) set Y_ 250.0
+$node(1) set Z_ 0.0
 
-$ns_ initial_node_pos $node_(0) 5
-$ns_ initial_node_pos $node_(1) 5
+$ns_ initial_nodepos $node(0) 5
+$ns_ initial_nodepos $node(1) 5
 
 #Create a udp agent on node0
 set udp0 [new Agent/UDP]
-$ns attach-agent $node_(0) $udp0
+$ns attach-agent $node(0) $udp0
 
 # Create a CBR traffic source on node0
 set cbr0 [new Application/Traffic/CBR]
@@ -97,7 +99,7 @@ $cbr0 attach-agent $udp0
 
 #Create a Null agent (a traffic sink) on node1
 set sink0 [new Agent/LossMonitor]
-$ns attach-agent $node_(1) $sink0
+$ns attach-agent $node(1) $sink0
 
 #Connet source and dest Agents
 $ns connect $udp0 $sink0
@@ -120,7 +122,6 @@ proc finish {} {
 	close $tracefd
 	close $namtracefd
 	
-	exec nam $val(basename).nam &
 	exit 0
 }
 
@@ -130,7 +131,7 @@ proc finish {} {
 #Schedule events for the CBR agent that starts at 0.5s and stops at 4.5s
 $ns at 0.5 "record"
 $ns at 0.5 "$cbr0 start"
-$ns at 4.5 "$cbr0 stop"
+$ns at $val(simDur) "$cbr0 stop"
 
 #Call the finish procedure after 5s (of simulated time)
 $ns at $val(simDur) "finish"

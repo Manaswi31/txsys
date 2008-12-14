@@ -1,4 +1,5 @@
+CC=g++
 hello: hello.o
-	gcc -o hello hello.o
-hello.o: hello.c header.h
-	gcc -c hello.c
+	$(CC) -o hello hello.o
+hello.o: hello.c hello.h header.h 
+	$(CC) -c hello.c
