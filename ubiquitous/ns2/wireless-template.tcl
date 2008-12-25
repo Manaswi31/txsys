@@ -51,7 +51,6 @@ set chan_ [new $val(chan)]
 #
 #  Create the specified number of mobilenodes [$val(nn)] and "attach" them
 #  to the channel. 
-#  Here two nodes are created : node(0) and node(1)
 
 # configure node
 
@@ -83,8 +82,8 @@ $node(1) set X_ 300.0
 $node(1) set Y_ 250.0
 $node(1) set Z_ 0.0
 
-$ns_ initial_nodepos $node(0) 5
-$ns_ initial_nodepos $node(1) 5
+$ns initial_node_pos $node(0) 5
+$ns initial_node_pos $node(1) 5
 
 #Create a udp agent on node0
 set udp0 [new Agent/UDP]
@@ -93,7 +92,7 @@ $ns attach-agent $node(0) $udp0
 # Create a CBR traffic source on node0
 set cbr0 [new Application/Traffic/CBR]
 $cbr0 set packetSize_ 500
-$cbr0 set interval_ $cbrIntvl
+$cbr0 set interval_ $val(cbrIntvl)
 $cbr0 set random_ 1
 $cbr0 attach-agent $udp0
 
