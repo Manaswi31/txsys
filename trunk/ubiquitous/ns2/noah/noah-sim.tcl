@@ -69,14 +69,29 @@ $ns node-config -adhocRouting $val(rp) \
 		 -movementTrace OFF \
 		 -channel $chan_
 
-        for {set i 0} {$i < $val(nn) } {incr i} {
-                set node($i) [$ns node]
-                $node($i) random-motion 0              ;# disable random motion
-        }
+for {set i 0} {$i < $val(nn) } {incr i} {
+	set node($i) [$ns node]
+	$node($i) random-motion 0              ;# disable random motion
+}
 
 
 
 # setup static routing for line of nodes
+#for {set i 0} {$i < $val(nn) } {incr i} {
+#    set cmd "[$node($i) set ragent_] routing $val(nn)"
+#    for {set to 0} {$to < $val(nn) } {incr to} {
+#	if {$to < $i} {
+#	    set hop [expr $i - 1]
+#	} elseif {$to > $i} {
+#	    set hop [expr $i + 1]
+#	} else {
+#	    set hop $i
+#	}
+#	set cmd "$cmd $to $hop"
+#    }
+#    eval $cmd
+#}
+
 for {set i 0} {$i < $val(nn) } {incr i} {
     set cmd "[$node($i) set ragent_] routing $val(nn)"
     for {set to 0} {$to < $val(nn) } {incr to} {
@@ -91,6 +106,8 @@ for {set i 0} {$i < $val(nn) } {incr i} {
     }
     eval $cmd
 }
+
+
 
 $node(0) set X_ 200.0
 $node(0) set Y_ 250.0
@@ -121,7 +138,7 @@ $cbr0 attach-agent $udp0
 
 #Create a Null agent (a traffic sink) on node1
 set sink0 [new Agent/LossMonitor]
-$ns attach-agent $node(1) $sink0
+$ns attach-agent $node(2) $sink0
 
 #Connet source and dest Agents
 $ns connect $udp0 $sink0
