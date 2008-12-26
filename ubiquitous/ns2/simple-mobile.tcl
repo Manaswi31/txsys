@@ -1,3 +1,4 @@
+# $Id: simple-mobile.tcl, v 100 2008/12/25 13:00:00 Illidan Exp$
 # Original copyright disclaimer shown at the bottom of this software
 
 # Modified by illidan.modeler@gmail.com
