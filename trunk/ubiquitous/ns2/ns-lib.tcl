@@ -194,6 +194,8 @@ source ns-namsupp.tcl
 source ../mobility/dsdv.tcl
 source ../mobility/dsr.tcl
 source ../mobility/com.tcl
+#noah
+source ../mobility/noah.tcl
 
 source ../plm/plm.tcl
 source ../plm/plm-ns.tcl
@@ -621,6 +623,12 @@ Simulator instproc create-wireless-node args {
 		set ragent [$self $rtAgentFunction_ $node]
 	} else {
 		switch -exact $routingAgent_ {
+		    MFlood {
+			    set ragent [$self create-mflood-agent $node]
+		    }
+		    NOAH {
+			set ragent [$self create-noah-agent $node]
+		    }
 		    DSDV {
 			    set ragent [$self create-dsdv-agent $node]
 		    }
@@ -789,6 +797,24 @@ Simulator instproc set-dsr-nodetype {} {
 		set nodetype Node/MobileNode/BaseStationNode
 	}
 	return $nodetype
+}
+
+#mflood
+Simulator instproc create-mflood-agent { node } {
+	set ragent [new Agent/MFlood [$node id]]
+	$node set ragent_ $ragent
+	return $ragent
+}
+
+Simulator instproc create-noah-agent { node } {
+	set ragent [new Agent/NOAH]
+#	set addr [$node node-addr]
+#	$ragent addr $addr
+#	$ragent node $node
+#	$node addr $addr
+#
+	$node set ragent_ $ragent
+	return $ragent
 }
 
 Simulator instproc create-tora-agent { node } {
