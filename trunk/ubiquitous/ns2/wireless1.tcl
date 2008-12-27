@@ -72,7 +72,7 @@ $ns_ node-config -adhocRouting $val(adhocRouting) \
                  -channelType $val(chan) \
 		 -topoInstance $topo \
 		 -agentTrace ON \
-                 -routerTrace OFF \
+                 -routerTrace ON \
                  -macTrace OFF 
 
 #
