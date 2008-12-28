@@ -18,7 +18,8 @@ set val(ll)             LL                         ;# link layer type
 set val(ant)            Antenna/OmniAntenna        ;# antenna model
 set val(nn)             2                          ;# number of mobilenodes
 set val(rp)             DumbAgent                  ;# routing protocol
-
+set val(topo_x_dim)	500
+set val(topo_y_dim)	500
 
 ###################
 #Initialize and create output files
@@ -29,7 +30,7 @@ set ns [new Simulator]
 set tracefd [open $val(basename).tr w]
 $ns trace-all $tracefd
 set namtracefd [open $val(basename).nam w]
-$ns namtrace-all $namtracefd
+$ns namtrace-all-wireless $namtracefd $val(topo_x_dim) $val(topo_y_dim)
 
 set outfd [open $val(basename).out w]
 
@@ -39,7 +40,7 @@ set outfd [open $val(basename).out w]
 # set up topography object
 set topo       [new Topography]
 
-$topo load_flatgrid 500 500
+$topo load_flatgrid $val(topo_x_dim) $val(topo_y_dim)
 
 #
 # Create God
