@@ -92,6 +92,21 @@ for {set i 0} {$i < $val(nn) } {incr i} {
 #    eval $cmd
 #}
 
+#for {set i 0} {$i < $val(nn) } {incr i} {
+#    set cmd "[$node($i) set ragent_] routing $val(nn)"
+#    for {set to 0} {$to < $val(nn) } {incr to} {
+#	if {$to < $i} {
+#	    set hop [expr $i - 1]
+#	} elseif {$to > $i} {
+#	    set hop [expr $i + 1]
+#	} else {
+#	    set hop $i
+#	}
+#	set cmd "$cmd $to $hop"
+#    }
+#    eval $cmd
+#}
+
 for {set i 0} {$i < $val(nn) } {incr i} {
     set cmd "[$node($i) set ragent_] routing $val(nn)"
     for {set to 0} {$to < $val(nn) } {incr to} {
