@@ -8,7 +8,7 @@ set val(statIntvl) 1.0 ;#statistics collection interval
 set val(cbrStart) 0.5 ;#CBR start time
 set val(cbrIntvl) 1.0 ;#CBR traffic interval
 
-set val(chan)           Channel/WirelessChannel    ;# channel type
+set val(chan)           [ new Channel/WirelessChannel]    ;# channel type
 set val(prop)           Propagation/TwoRayGround   ;# radio-propagation model
 set val(netif)          Phy/WirelessPhy            ;# network interface type
 set val(mac)            Mac/802_11                 ;# MAC type
@@ -46,8 +46,6 @@ $topo load_flatgrid 500 500
 #
 create-god $val(nn)
 
-set chan_ [new $val(chan)]
-
 #
 #  Create the specified number of mobilenodes [$val(nn)] and "attach" them
 #  to the channel. 
@@ -67,7 +65,7 @@ set chan_ [new $val(chan)]
                          -routerTrace OFF \
                          -macTrace ON \
                          -movementTrace OFF \
-                         -channel $chan_
+                         -channel $val(chan)
 
         for {set i 0} {$i < $val(nn) } {incr i} {
                 set node($i) [$ns node]

@@ -1,45 +1,45 @@
+##################
+set val(simDur) 5.0 ;#simulation duration
 
-#illidan.modeler@gmail.com
+set val(basename)  wireless-udp;#basename for this project or scenario
 
+set val(statIntvl) 1.0 ;#statistics collection interval
 
-Mac/802_11 set RTSThreshold_ 3000
-Mac/802_11 set dataRate_ 2Mb
+set val(cbrStart) 0.5 ;#CBR start time
+set val(cbrIntvl) 1.0 ;#CBR traffic interval
 
-# ======================================================================
-# Define options
-# ======================================================================
-set val(chan)           Channel/WirelessChannel    ;# channel type
+set val(chan)           [ new Channel/WirelessChannel]    ;# channel type
 set val(prop)           Propagation/TwoRayGround   ;# radio-propagation model
 set val(netif)          Phy/WirelessPhy            ;# network interface type
 set val(mac)            Mac/802_11                 ;# MAC type
 set val(ifq)            Queue/DropTail/PriQueue    ;# interface queue type
+set val(ifqlen)         50                         ;# max packet in ifq
 set val(ll)             LL                         ;# link layer type
 set val(ant)            Antenna/OmniAntenna        ;# antenna model
-set val(ifqlen)         50                         ;# max packet in ifq
 set val(nn)             2                          ;# number of mobilenodes
-set val(rp)             MFlood                       ;# routing protocol
-
-# ======================================================================
-# Main Program
-# ======================================================================
+set val(rp)             DumbAgent                  ;# routing protocol
 
 
-#
-# Initialize Global Variables
-#
-set ns_		[new Simulator]
-set token wireless-udp
-set tracefd     [open $token.tr w]
-set namfd	[open $token.nam w]
-set f0 [open $token.data w]
+###################
+#Initialize and create output files
+#Create a simulator instance
+set ns [new Simulator]
 
-$ns_ trace-all $tracefd
-$ns_ namtrace-all-wireless $namfd 20 20
+#Crate a trace file and animation record
+set tracefd [open $val(basename).tr w]
+$ns trace-all $tracefd
+set namtracefd [open $val(basename).nam w]
+$ns namtrace-all $namtracefd
+
+set outfd [open $val(basename).out w]
+
+#######################
+#Create Topology
 
 # set up topography object
 set topo       [new Topography]
 
-$topo load_flatgrid 20 20
+$topo load_flatgrid 500 500
 
 #
 # Create God
@@ -49,102 +49,94 @@ create-god $val(nn)
 #
 #  Create the specified number of mobilenodes [$val(nn)] and "attach" them
 #  to the channel. 
-#  Here two nodes are created : node(0) and node(1)
 
 # configure node
 
-        $ns_ node-config -adhocRouting $val(rp) \
-			 -llType $val(ll) \
-			 -macType $val(mac) \
-			 -ifqType $val(ifq) \
-			 -ifqLen $val(ifqlen) \
-			 -antType $val(ant) \
-			 -propType $val(prop) \
-			 -phyType $val(netif) \
-			 -channelType $val(chan) \
-			 -topoInstance $topo \
-			 -agentTrace ON \
-			 -routerTrace ON \
-			 -macTrace OFF \
-			 -movementTrace OFF			
-			 
-	for {set i 0} {$i < $val(nn) } {incr i} {
-		set node_($i) [$ns_ node]	
-		$node_($i) random-motion 0		;# disable random motion
-	}
+        $ns node-config -adhocRouting $val(rp) \
+                         -llType $val(ll) \
+                         -macType $val(mac) \
+                         -ifqType $val(ifq) \
+                         -ifqLen $val(ifqlen) \
+                         -antType $val(ant) \
+                         -propType $val(prop) \
+                         -phyType $val(netif) \
+                         -topoInstance $topo \
+                         -agentTrace ON \
+                         -routerTrace ON \
+                         -macTrace OFF \
+                         -movementTrace OFF \
+                         -channel $val(chan)
 
-#
-# Provide initial (X,Y, for now Z=0) co-ordinates for mobilenodes
-#
-$node_(0) set X_ 5.0
-$node_(0) set Y_ 5.0
-$node_(0) set Z_ 0.0
+        for {set i 0} {$i < $val(nn) } {incr i} {
+                set node($i) [$ns node]
+                $node($i) random-motion 0              ;# disable random motion
+        }
 
-$node_(1) set X_ 15.0
-$node_(1) set Y_ 15.0
-$node_(1) set Z_ 0.0
+$node(0) set X_ 200.0
+$node(0) set Y_ 250.0
+$node(0) set Z_ 0.0
 
-$ns_ initial_node_pos $node_(0) 5
-$ns_ initial_node_pos $node_(1) 5
+$node(1) set X_ 300.0
+$node(1) set Y_ 250.0
+$node(1) set Z_ 0.0
 
+$ns initial_node_pos $node(0) 5
+$ns initial_node_pos $node(1) 5
 
-# Setup traffic flow between nodes
-# TCP connections between node_(0) and node_(1)
-set s_agent [new Agent/UDP]
-$s_agent set class_ 2
-#set sink [new Agent/Null]
-set sink [new Agent/LossMonitor]
-$ns_ attach-agent $node_(0) $s_agent
-$ns_ attach-agent $node_(1) $sink
-$ns_ connect $s_agent $sink
+#Create a udp agent on node0
+set udp0 [new Agent/UDP]
+$ns attach-agent $node(0) $udp0
 
-set cbr [new Application/Traffic/CBR]
-$cbr set packetSize_ 100
-$cbr set interval_ 0.01
-$cbr attach-agent $s_agent
+# Create a CBR traffic source on node0
+set cbr0 [new Application/Traffic/CBR]
+$cbr0 set packetSize_ 500
+$cbr0 set interval_ $val(cbrIntvl)
+$cbr0 set random_ 1
+$cbr0 attach-agent $udp0
+
+#Create a Null agent (a traffic sink) on node1
+set sink0 [new Agent/LossMonitor]
+$ns attach-agent $node(1) $sink0
+
+#Connet source and dest Agents
+$ns connect $udp0 $sink0
 
 proc record {} {
-        global sink f0 
-        #Get an instance of the simulator
-        set ns [Simulator instance]
-        #Set the time after which the procedure should be called again
-        set time 0.5
-        #How many bytes have been received by the traffic sinks?
-        set bytes [$sink set bytes_]
-        #Get the current time
-        set now [$ns now]
-        #Calculate the bandwidth (in MBit/s) and write it to the files
-        puts $f0 "$now [expr $bytes/$time*8]"
-        #Reset the bytes_ values on the traffic sinks
-        $sink set bytes_ 0
+    global sink0 ns outfd val
+    set bytes [$sink0 set bytes_]
+    set now [$ns now]
+    puts $outfd $bytes
+    $sink0 set bytes_ 0
+    $ns at [expr $now+$val(statIntvl)] "record"
+}
 
-        #Re-schedule the procedure
-        $ns at [expr $now+$time] "record"
-    #    puts "getting out of record()"
-    #    puts "$now"
+#a procedure to close trace file and nam file
+proc finish {} {
+
+	global ns tracefd namtracefd basename val
+	$ns flush-trace
+
+	close $tracefd
+	close $namtracefd
+	
+	exit 0
 }
 
 #
-# Tell nodes when the simulation ends
+#Schedule trigger events
+
+#Schedule events for the CBR agent that starts at 0.5s and stops at 4.5s
+$ns at 0.5 "record"
+$ns at 0.5 "$cbr0 start"
+$ns at $val(simDur) "$cbr0 stop"
+
+#Call the finish procedure after 5s (of simulated time)
+$ns at $val(simDur) "finish"
+
 #
-for {set i 0} {$i < $val(nn) } {incr i} {
-    $ns_ at 150.0 "$node_($i) reset";
-}
+#Run the simulation
+$ns run
 
-$ns_ at 10.0 "$cbr start" 
-$ns_ at 150.0 "stop"
-$ns_ at 150.01 "puts \"NS EXITING...\""
-proc stop {} {
-    global ns_ tracefd namfd f0
-    $ns_ flush-trace
-    close $namfd
-    close $tracefd
-    $ns_ halt
-    exec nam wireless.nam &
-}
 
-puts "Starting Simulation..."
-$ns_ at 0.0 "record"
-$ns_ run
 
 
