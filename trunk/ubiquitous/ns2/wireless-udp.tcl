@@ -29,7 +29,7 @@ set ns [new Simulator]
 set tracefd [open $val(basename).tr w]
 $ns trace-all $tracefd
 set namtracefd [open $val(basename).nam w]
-$ns namtrace-all $namtracefd
+$ns namtrace-all-wireless $namtracefd
 
 set outfd [open $val(basename).out w]
 
@@ -72,12 +72,12 @@ create-god $val(nn)
                 $node($i) random-motion 0              ;# disable random motion
         }
 
-$node(0) set X_ 200.0
-$node(0) set Y_ 250.0
+$node(0) set X_ 10.0
+$node(0) set Y_ 25.0
 $node(0) set Z_ 0.0
 
-$node(1) set X_ 300.0
-$node(1) set Y_ 250.0
+$node(1) set X_ 10.0
+$node(1) set Y_ 25.0
 $node(1) set Z_ 0.0
 
 $ns initial_node_pos $node(0) 5
