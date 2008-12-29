@@ -35,7 +35,7 @@
 # ======================================================================
 # Define options
 # ======================================================================
-set val(chan)           Channel/WirelessChannel    ;# channel type
+set val(chan)          [new Channel/WirelessChannel]    ;# channel type
 set val(prop)           Propagation/TwoRayGround   ;# radio-propagation model
 set val(netif)          Phy/WirelessPhy            ;# network interface type
 set val(mac)            Mac/802_11                 ;# MAC type
@@ -83,12 +83,12 @@ create-god $val(nn)
 			 -antType $val(ant) \
 			 -propType $val(prop) \
 			 -phyType $val(netif) \
-			 -channelType $val(chan) \
 			 -topoInstance $topo \
 			 -agentTrace ON \
 			 -routerTrace ON \
 			 -macTrace OFF \
-			 -movementTrace OFF			
+			 -movementTrace OFF\
+			 -channel $val(chan)
 			 
 	for {set i 0} {$i < $val(nn) } {incr i} {
 		set node_($i) [$ns_ node]	
