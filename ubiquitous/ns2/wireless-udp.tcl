@@ -18,7 +18,8 @@ set val(ll)             LL                         ;# link layer type
 set val(ant)            Antenna/OmniAntenna        ;# antenna model
 set val(nn)             2                          ;# number of mobilenodes
 set val(rp)             DumbAgent                  ;# routing protocol
-
+set val(topo_x_dim)	500
+set val(topo_y_dim)	500
 
 ###################
 #Initialize and create output files
@@ -29,7 +30,7 @@ set ns [new Simulator]
 set tracefd [open $val(basename).tr w]
 $ns trace-all $tracefd
 set namtracefd [open $val(basename).nam w]
-$ns namtrace-all-wireless $namtracefd
+$ns namtrace-all-wireless $namtracefd $val(topo_x_dim) $val(topo_y_dim)
 
 set outfd [open $val(basename).out w]
 
@@ -39,7 +40,7 @@ set outfd [open $val(basename).out w]
 # set up topography object
 set topo       [new Topography]
 
-$topo load_flatgrid 500 500
+$topo load_flatgrid $val(topo_x_dim) $val(topo_y_dim)
 
 #
 # Create God
@@ -62,7 +63,7 @@ create-god $val(nn)
                          -phyType $val(netif) \
                          -topoInstance $topo \
                          -agentTrace ON \
-                         -routerTrace ON \
+                         -routerTrace OFF \
                          -macTrace OFF \
                          -movementTrace OFF \
                          -channel $val(chan)
@@ -72,12 +73,12 @@ create-god $val(nn)
                 $node($i) random-motion 0              ;# disable random motion
         }
 
-$node(0) set X_ 10.0
-$node(0) set Y_ 25.0
+$node(0) set X_ 200.0
+$node(0) set Y_ 250.0
 $node(0) set Z_ 0.0
 
-$node(1) set X_ 10.0
-$node(1) set Y_ 25.0
+$node(1) set X_ 300.0
+$node(1) set Y_ 250.0
 $node(1) set Z_ 0.0
 
 $ns initial_node_pos $node(0) 5
@@ -127,7 +128,7 @@ proc finish {} {
 
 #Schedule events for the CBR agent that starts at 0.5s and stops at 4.5s
 $ns at 0.5 "record"
-$ns at 0.5 "$cbr0 start"
+$ns at $val(cbrStart) "$cbr0 start"
 $ns at $val(simDur) "$cbr0 stop"
 
 #Call the finish procedure after 5s (of simulated time)

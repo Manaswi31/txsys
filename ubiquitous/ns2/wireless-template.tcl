@@ -1,7 +1,7 @@
 ##################
 set val(simDur) 5.0 ;#simulation duration
 
-set val(basename)  ;#basename for this project or scenario
+set val(basename)  wireless;#basename for this project or scenario
 
 set val(statIntvl) 1.0 ;#statistics collection interval
 
@@ -62,9 +62,9 @@ create-god $val(nn)
                          -propType $val(prop) \
                          -phyType $val(netif) \
                          -topoInstance $topo \
-                         -agentTrace OFF \
+                         -agentTrace ON \
                          -routerTrace OFF \
-                         -macTrace ON \
+                         -macTrace OFF \
                          -movementTrace OFF \
                          -channel $val(chan)
 
@@ -128,7 +128,7 @@ proc finish {} {
 
 #Schedule events for the CBR agent that starts at 0.5s and stops at 4.5s
 $ns at 0.5 "record"
-$ns at 0.5 "$cbr0 start"
+$ns at $val(cbrStart) "$cbr0 start"
 $ns at $val(simDur) "$cbr0 stop"
 
 #Call the finish procedure after 5s (of simulated time)
