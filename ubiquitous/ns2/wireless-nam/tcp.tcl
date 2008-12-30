@@ -90,7 +90,7 @@ set ftp [new Application/FTP]
 $ftp attach-agent $sa
 
 #Create a Null agent (a traffic sink) on node1
-set sink0 [new Agent/TCPSink]
+set sink0 [new Agent/LossMonitor]
 $ns attach-agent $node(1) $sink0
 
 #Connet source and dest Agents

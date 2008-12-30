@@ -10,7 +10,7 @@
 # ======================================================================
 # Define options
 # ======================================================================
-set val(chan)           Channel/WirelessChannel    ;# channel type
+set val(chan)           [new Channel/WirelessChannel]    ;# channel type
 set val(prop)           Propagation/TwoRayGround   ;# radio-propagation model
 set val(netif)          Phy/WirelessPhy            ;# network interface type
 set val(mac)            Mac/802_11                 ;# MAC type
@@ -33,12 +33,12 @@ set ns_         [new Simulator]
 set tracefd     [open simple.tr w]
 set namfd       [open simple.nam w]
 $ns_ trace-all $tracefd
-$ns_ namtrace-all-wireless $namfd 500 500
+$ns_ namtrace-all-wireless $namfd 100 100
 
 # set up topography object
 set topo       [new Topography]
 
-$topo load_flatgrid 500 500
+$topo load_flatgrid 100 100
 
 #
 # Create God
@@ -60,7 +60,7 @@ create-god $val(nn)
                          -antType $val(ant) \
                          -propType $val(prop) \
                          -phyType $val(netif) \
-                         -channelType $val(chan) \
+                         -channel $val(chan) \
                          -topoInstance $topo \
                          -agentTrace ON \
                          -routerTrace ON \
@@ -75,12 +75,12 @@ create-god $val(nn)
 #
 # Provide initial (X,Y, for now Z=0) co-ordinates for mobilenodes
 #
-$node_(0) set X_ 385.0
-$node_(0) set Y_ 382.0
+$node_(0) set X_ 50.0
+$node_(0) set Y_ 20.0
 $node_(0) set Z_ 0.0
 
-$node_(1) set X_ 390.0
-$node_(1) set Y_ 385.0
+$node_(1) set X_ 30.0
+$node_(1) set Y_ 20.0
 $node_(1) set Z_ 0.0
 
 $ns_ initial_node_pos $node_(0) 5
@@ -122,7 +122,7 @@ proc stop {} {
     $ns_ flush-trace
     close $namfd
     close $tracefd
-    exec nam simple.nam &
+    #exec nam simple.nam &
 }
 
 puts "Starting Simulation..."
