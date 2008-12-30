@@ -63,8 +63,8 @@ create-god $val(nn)
                          -phyType $val(netif) \
                          -topoInstance $topo \
                          -agentTrace ON \
-                         -routerTrace OFF \
-                         -macTrace OFF \
+                         -routerTrace ON \
+                         -macTrace ON \
                          -movementTrace OFF \
                          -channel $val(chan)
 
@@ -96,20 +96,12 @@ $cbr0 set random_ 1
 $cbr0 attach-agent $udp0
 
 #Create a Null agent (a traffic sink) on node1
-set sink0 [new Agent/LossMonitor]
+set sink0 [new Agent/Null]
 $ns attach-agent $node(1) $sink0
 
 #Connet source and dest Agents
 $ns connect $udp0 $sink0
 
-proc record {} {
-    global sink0 ns outfd val
-    set bytes [$sink0 set bytes_]
-    set now [$ns now]
-    puts $outfd $bytes
-    $sink0 set bytes_ 0
-    $ns at [expr $now+$val(statIntvl)] "record"
-}
 
 #a procedure to close trace file and nam file
 proc finish {} {
@@ -127,7 +119,6 @@ proc finish {} {
 #Schedule trigger events
 
 #Schedule events for the CBR agent that starts at 0.5s and stops at 4.5s
-$ns at 0.5 "record"
 $ns at $val(cbrStart) "$cbr0 start"
 $ns at $val(simDur) "$cbr0 stop"
 
