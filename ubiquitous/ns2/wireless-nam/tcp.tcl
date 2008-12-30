@@ -1,7 +1,8 @@
 ##################
 set val(simDur) 5.0 ;#simulation duration
 
-set val(basename)  udp;#basename for this project or scenario
+set val(trafStart) 0.5;#traffic start time
+set val(basename)  tcp;#basename for this project or scenario
 
 set val(chan)           [ new Channel/WirelessChannel]    ;# channel type
 set val(prop)           Propagation/TwoRayGround   ;# radio-propagation model
@@ -12,7 +13,7 @@ set val(ifqlen)         50                         ;# max packet in ifq
 set val(ll)             LL                         ;# link layer type
 set val(ant)            Antenna/OmniAntenna        ;# antenna model
 set val(nn)             2                          ;# number of mobilenodes
-set val(rp)             DumbAgent                  ;# routing protocol
+set val(rp)             DSDV                  ;# routing protocol
 set val(topo_x_dim)	500
 set val(topo_y_dim)	500
 
@@ -58,7 +59,7 @@ create-god $val(nn)
                          -phyType $val(netif) \
                          -topoInstance $topo \
                          -agentTrace ON \
-                         -routerTrace OFF \
+                         -routerTrace ON \
                          -macTrace OFF \
                          -movementTrace OFF \
                          -channel $val(chan)
@@ -76,35 +77,24 @@ $node(1) set X_ 300.0
 $node(1) set Y_ 250.0
 $node(1) set Z_ 0.0
 
-$ns initial_node_pos $node(0) 5
-$ns initial_node_pos $node(1) 5
+$ns initial_node_pos $node(0) 20
+$ns initial_node_pos $node(1) 20
 
 #Create a udp agent on node0
-set udp0 [new Agent/UDP]
-$ns attach-agent $node(0) $udp0
+set sa [new Agent/TCP]
+$sa set class_ 2
+$ns attach-agent $node(0) $sa
 
 # Create a CBR traffic source on node0
-set cbr0 [new Application/Traffic/CBR]
-$cbr0 set packetSize_ 500
-$cbr0 set interval_ $val(cbrIntvl)
-$cbr0 set random_ 1
-$cbr0 attach-agent $udp0
+set ftp [new Application/FTP]
+$ftp attach-agent $sa
 
 #Create a Null agent (a traffic sink) on node1
-set sink0 [new Agent/LossMonitor]
+set sink0 [new Agent/TCPSink]
 $ns attach-agent $node(1) $sink0
 
 #Connet source and dest Agents
-$ns connect $udp0 $sink0
-
-proc record {} {
-    global sink0 ns outfd val
-    set bytes [$sink0 set bytes_]
-    set now [$ns now]
-    puts $outfd $bytes
-    $sink0 set bytes_ 0
-    $ns at [expr $now+$val(statIntvl)] "record"
-}
+$ns connect $sa $sink0
 
 #a procedure to close trace file and nam file
 proc finish {} {
@@ -122,9 +112,7 @@ proc finish {} {
 #Schedule trigger events
 
 #Schedule events for the CBR agent that starts at 0.5s and stops at 4.5s
-$ns at 0.5 "record"
-$ns at $val(cbrStart) "$cbr0 start"
-$ns at $val(simDur) "$cbr0 stop"
+$ns at $val(trafStart) "$ftp start"
 
 #Call the finish procedure after 5s (of simulated time)
 $ns at $val(simDur) "finish"
