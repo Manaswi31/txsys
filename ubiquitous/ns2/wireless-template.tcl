@@ -3,7 +3,8 @@ set val(simDur) 5.0 ;#simulation duration
 
 set val(basename)  wireless;#basename for this project or scenario
 
-set val(statIntvl) 1.0 ;#statistics collection interval
+set val(statIntvl) 0.5 ;#statistics collection interval
+set val(statStart) 0.5 ;
 
 set val(cbrStart) 0.5 ;#CBR start time
 set val(cbrIntvl) 1.0 ;#CBR traffic interval
