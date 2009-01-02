@@ -64,7 +64,7 @@ $ns node-config -adhocRouting $val(rp) \
 		 -phyType $val(netif) \
 		 -topoInstance $topo \
 		 -agentTrace ON \
-		 -routerTrace OFF \
+		 -routerTrace ON \
 		 -macTrace OFF \
 		 -movementTrace OFF \
 		 -channel $val(chan)

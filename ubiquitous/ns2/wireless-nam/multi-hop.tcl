@@ -1,7 +1,8 @@
-##################
+#######################
+#######################
 set val(simDur) 5.0 ;#simulation duration
 
-set val(basename)  wireless;#basename for this project or scenario
+set val(basename)  multi-hop;#basename for this project or scenario
 
 set val(statIntvl) 0.1 ;#statistics collection interval
 set val(statStart) 0.5 ;
@@ -18,11 +19,12 @@ set val(ifqlen)         50                         ;# max packet in ifq
 set val(ll)             LL                         ;# link layer type
 set val(ant)            Antenna/OmniAntenna        ;# antenna model
 set val(nn)             3                          ;# number of mobilenodes
-set val(rp)             DSDV                  ;# routing protocol
+set val(rp)             AODV                  ;# routing protocol
 set val(topo_x_dim)	600
 set val(topo_y_dim)	600
 
-###################
+#######################
+#######################
 #Initialize and create output files
 #Create a simulator instance
 set ns [new Simulator]
@@ -35,6 +37,7 @@ $ns namtrace-all-wireless $namtracefd $val(topo_x_dim) $val(topo_y_dim)
 
 set outfd [open $val(basename).out w]
 
+#######################
 #######################
 #Create Topology
 
@@ -79,10 +82,10 @@ $node(0) set Y_ 250.0
 $node(0) set Z_ 0.0
 
 $node(1) set X_ 250.0
-$node(1) set Y_ 250.0
+$node(1) set Y_ 200.0
 $node(1) set Z_ 0.0
 
-$node(2) set X_ 500.0
+$node(2) set X_ 400.0
 $node(2) set Y_ 250.0
 $node(2) set Z_ 0.0
 
@@ -90,22 +93,66 @@ $ns initial_node_pos $node(0) 10
 $ns initial_node_pos $node(1) 10
 $ns initial_node_pos $node(2) 10
 
-#Create a udp agent on node0
-set sa [new Agent/TCP]
-$sa set class_ 2
-$ns attach-agent $node(0) $sa
+#########################
+#########################
+#Modify these variables accordingly
+#########################
+set proto "tcp"
+set src $node(0)
+set dst $node(2)
+#########################
 
-# Create a CBR traffic source on node0
-set app0 [new Application/FTP]
-$app0 attach-agent $sa
+if {$proto=="udp"} {
+    #Create a udp agent on node0
+    set udp [new Agent/UDP]
+    $ns attach-agent $src $udp
 
-#Create a Null agent (a traffic sink) on node1
-set sink0 [new Agent/TCPSink]
-$ns attach-agent $node(2) $sink0
+    # Create a CBR traffic source on node0
+    set cbr0 [new Application/Traffic/CBR]
+    $cbr0 set packetSize_ 500
+    $cbr0 set interval_ $val(cbrIntvl)
+    $cbr0 set random_ 1
+    $cbr0 attach-agent $udp
 
-#Connet source and dest Agents
-$ns connect $sa $sink0
+    #Create a Null agent (a traffic sink) on node1
+    set sink0 [new Agent/LossMonitor]
+    $ns attach-agent $dst $sink0
 
+    #Connet source and dest Agents
+    $ns connect $udp $sink0
+    $ns at $val(trafStart) "$cbr0 start"
+    $ns at $val(simDur) "$cbr0 stop"
+} elseif {$proto=="tcp"} {
+    #Create a tcp agent on the source node
+    set tcp [new Agent/TCP]
+    $tcp set class_ 2
+    $ns attach-agent $src $tcp
+
+    # Create a CBR traffic source on node0
+    set ftp [new Application/FTP]
+    $ftp attach-agent $tcp
+
+    #Create a sink(a traffic sink) on the destination node
+    set sink0 [new Agent/TCPSink]
+    $ns attach-agent $dst $sink0
+
+    #Connet source and dest Agents
+    $ns connect $tcp $sink0
+    $ns at $val(trafStart) "$ftp start"
+}
+
+#########################
+#a procedure to record stats
+proc record {} {
+    global sink0 ns outfd val
+    set bytes [$sink0 set bytes_]
+    set now [$ns now]
+    puts $outfd "$now $bytes"
+    $sink0 set bytes_ 0
+    $ns at [expr $now+$val(statIntvl)] "record"
+}
+
+#########################
 #a procedure to close trace file and nam file
 proc finish {} {
 
@@ -120,12 +167,11 @@ proc finish {} {
 
 #
 #Schedule trigger events
+$ns at $val(statStart) "record"
 
 #Call the finish procedure after 5s (of simulated time)
-$ns at $val(trafStart) "$app0 start"
 $ns at $val(simDur) "finish"
 
-#
 #Run the simulation
 $ns run
 
