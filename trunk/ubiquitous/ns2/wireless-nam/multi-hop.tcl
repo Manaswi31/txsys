@@ -18,7 +18,7 @@ set val(ifqlen)         50                         ;# max packet in ifq
 set val(ll)             LL                         ;# link layer type
 set val(ant)            Antenna/OmniAntenna        ;# antenna model
 set val(nn)             3                          ;# number of mobilenodes
-set val(rp)             MFlood                  ;# routing protocol
+set val(rp)             DSDV                  ;# routing protocol
 set val(topo_x_dim)	600
 set val(topo_y_dim)	600
 

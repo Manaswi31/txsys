@@ -3,13 +3,13 @@ set val(simDur) 5.0 ;#simulation duration
 
 set val(basename)  wireless;#basename for this project or scenario
 
-set val(statIntvl) 0.5 ;#statistics collection interval
+set val(statIntvl) 0.1 ;#statistics collection interval
 set val(statStart) 0.5 ;
 
 set val(cbrStart) 0.5 ;#CBR start time
 set val(cbrIntvl) 1.0 ;#CBR traffic interval
 
-set val(chan)           [ new Channel/WirelessChannel]    ;# channel type
+set val(chan)           [ new Channel/WirelessChannel]    ;# channel model
 set val(prop)           Propagation/TwoRayGround   ;# radio-propagation model
 set val(netif)          Phy/WirelessPhy            ;# network interface type
 set val(mac)            Mac/802_11                 ;# MAC type
@@ -18,9 +18,9 @@ set val(ifqlen)         50                         ;# max packet in ifq
 set val(ll)             LL                         ;# link layer type
 set val(ant)            Antenna/OmniAntenna        ;# antenna model
 set val(nn)             2                          ;# number of mobilenodes
-set val(rp)             DumbAgent                  ;# routing protocol
-set val(topo_x_dim)	500
-set val(topo_y_dim)	500
+set val(rp)             DSDV                  ;# routing protocol
+set val(topo_x_dim)	600
+set val(topo_y_dim)	600
 
 ###################
 #Initialize and create output files
@@ -54,54 +54,54 @@ create-god $val(nn)
 
 # configure node
 
-        $ns node-config -adhocRouting $val(rp) \
-                         -llType $val(ll) \
-                         -macType $val(mac) \
-                         -ifqType $val(ifq) \
-                         -ifqLen $val(ifqlen) \
-                         -antType $val(ant) \
-                         -propType $val(prop) \
-                         -phyType $val(netif) \
-                         -topoInstance $topo \
-                         -agentTrace ON \
-                         -routerTrace OFF \
-                         -macTrace OFF \
-                         -movementTrace OFF \
-                         -channel $val(chan)
+$ns node-config -adhocRouting $val(rp) \
+		 -llType $val(ll) \
+		 -macType $val(mac) \
+		 -ifqType $val(ifq) \
+		 -ifqLen $val(ifqlen) \
+		 -antType $val(ant) \
+		 -propType $val(prop) \
+		 -phyType $val(netif) \
+		 -topoInstance $topo \
+		 -agentTrace ON \
+		 -routerTrace ON \
+		 -macTrace OFF \
+		 -movementTrace OFF \
+		 -channel $val(chan)
 
-        for {set i 0} {$i < $val(nn) } {incr i} {
-                set node($i) [$ns node]
-                $node($i) random-motion 0              ;# disable random motion
-        }
+for {set i 0} {$i < $val(nn) } {incr i} {
+	set node($i) [$ns node]
+	$node($i) random-motion 0              ;# disable random motion
+}
 
-$node(0) set X_ 200.0
+$node(0) set X_ 100.0
 $node(0) set Y_ 250.0
 $node(0) set Z_ 0.0
 
-$node(1) set X_ 300.0
+$node(1) set X_ 250.0
 $node(1) set Y_ 250.0
 $node(1) set Z_ 0.0
 
-$ns initial_node_pos $node(0) 5
-$ns initial_node_pos $node(1) 5
+$ns initial_node_pos $node(0) 10
+$ns initial_node_pos $node(1) 10
 
 #Create a udp agent on node0
-set udp0 [new Agent/UDP]
-$ns attach-agent $node(0) $udp0
+set sa [new Agent/UDP]
+$ns attach-agent $node(0) $sa
 
 # Create a CBR traffic source on node0
 set cbr0 [new Application/Traffic/CBR]
 $cbr0 set packetSize_ 500
 $cbr0 set interval_ $val(cbrIntvl)
 $cbr0 set random_ 1
-$cbr0 attach-agent $udp0
+$cbr0 attach-agent $sa
 
 #Create a Null agent (a traffic sink) on node1
 set sink0 [new Agent/LossMonitor]
-$ns attach-agent $node(1) $sink0
+$ns attach-agent $node(2) $sink0
 
 #Connet source and dest Agents
-$ns connect $udp0 $sink0
+$ns connect $sa $sink0
 
 proc record {} {
     global sink0 ns outfd val
@@ -128,7 +128,7 @@ proc finish {} {
 #Schedule trigger events
 
 #Schedule events for the CBR agent that starts at 0.5s and stops at 4.5s
-$ns at 0.5 "record"
+$ns at $val(statStart) "record"
 $ns at $val(cbrStart) "$cbr0 start"
 $ns at $val(simDur) "$cbr0 stop"
 
