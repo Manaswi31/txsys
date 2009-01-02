@@ -85,29 +85,52 @@ $node(1) set Z_ 0.0
 $ns initial_node_pos $node(0) 10
 $ns initial_node_pos $node(1) 10
 
-#Create a udp agent on node0
-set sa [new Agent/UDP]
-$ns attach-agent $node(0) $sa
+set proto "udp"
 
-# Create a CBR traffic source on node0
-set cbr0 [new Application/Traffic/CBR]
-$cbr0 set packetSize_ 500
-$cbr0 set interval_ $val(cbrIntvl)
-$cbr0 set random_ 1
-$cbr0 attach-agent $sa
+if {$proto=="udp"} {
+    #Create a udp agent on node0
+    set udp [new Agent/UDP]
+    $ns attach-agent $node(0) $udp
 
-#Create a Null agent (a traffic sink) on node1
-set sink0 [new Agent/LossMonitor]
-$ns attach-agent $node(2) $sink0
+    # Create a CBR traffic source on node0
+    set cbr0 [new Application/Traffic/CBR]
+    $cbr0 set packetSize_ 500
+    $cbr0 set interval_ $val(cbrIntvl)
+    $cbr0 set random_ 1
+    $cbr0 attach-agent $udp
 
-#Connet source and dest Agents
-$ns connect $sa $sink0
+    #Create a Null agent (a traffic sink) on node1
+    set sink0 [new Agent/LossMonitor]
+    $ns attach-agent $node(1) $sink0
+
+    #Connet source and dest Agents
+    $ns connect $udp $sink0
+} elseif {$proto=="tcp"} {
+    global ns val node
+
+    #Create a tcp agent on the source node
+    set tcp [new Agent/TCP]
+    $tcp set class_ 2
+    $ns attach-agent $node(0) $tcp
+
+    # Create a CBR traffic source on node0
+    set ftp [new Application/FTP]
+    $cbr0 attach-agent $tcp
+
+    #Create a sink(a traffic sink) on the destination node
+    set sink0 [new Agent/TCPSink]
+    $ns attach-agent $node(1) $sink0
+
+    #Connet source and dest Agents
+    $ns connect $tcp $sink0
+
+}
 
 proc record {} {
     global sink0 ns outfd val
     set bytes [$sink0 set bytes_]
     set now [$ns now]
-    puts $outfd $bytes
+    puts $outfd $now $bytes
     $sink0 set bytes_ 0
     $ns at [expr $now+$val(statIntvl)] "record"
 }
