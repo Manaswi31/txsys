@@ -6,7 +6,7 @@ set val(basename)  wireless;#basename for this project or scenario
 set val(statIntvl) 0.1 ;#statistics collection interval
 set val(statStart) 0.5 ;
 
-set val(cbrStart) 0.5 ;#CBR start time
+set val(trafStart) 0.5 ;#CBR start time
 set val(cbrIntvl) 1.0 ;#CBR traffic interval
 
 set val(chan)           [ new Channel/WirelessChannel]    ;# channel model
@@ -85,12 +85,18 @@ $node(1) set Z_ 0.0
 $ns initial_node_pos $node(0) 10
 $ns initial_node_pos $node(1) 10
 
-set proto "udp"
+#########################
+#Modify these variables accordingly
+#########################
+set proto "tcp"
+set src $node(0)
+set dst $node(1)
+#########################
 
 if {$proto=="udp"} {
     #Create a udp agent on node0
     set udp [new Agent/UDP]
-    $ns attach-agent $node(0) $udp
+    $ns attach-agent $src $udp
 
     # Create a CBR traffic source on node0
     set cbr0 [new Application/Traffic/CBR]
@@ -105,8 +111,10 @@ if {$proto=="udp"} {
 
     #Connet source and dest Agents
     $ns connect $udp $sink0
+    $ns at $val(trafStart) "$cbr0 start"
+    $ns at $val(simDur) "$cbr0 stop"
+    puts "udp block exectued"
 } elseif {$proto=="tcp"} {
-    global ns val node
 
     #Create a tcp agent on the source node
     set tcp [new Agent/TCP]
@@ -115,7 +123,7 @@ if {$proto=="udp"} {
 
     # Create a CBR traffic source on node0
     set ftp [new Application/FTP]
-    $cbr0 attach-agent $tcp
+    $ftp attach-agent $tcp
 
     #Create a sink(a traffic sink) on the destination node
     set sink0 [new Agent/TCPSink]
@@ -123,18 +131,19 @@ if {$proto=="udp"} {
 
     #Connet source and dest Agents
     $ns connect $tcp $sink0
-
+    $ns at $val(trafStart) "$ftp start"
+    puts "tcp block exectued"
 }
 
 proc record {} {
     global sink0 ns outfd val
     set bytes [$sink0 set bytes_]
     set now [$ns now]
-    puts $outfd $now $bytes
+    puts $outfd "$now $bytes"
     $sink0 set bytes_ 0
     $ns at [expr $now+$val(statIntvl)] "record"
 }
-
+#
 #a procedure to close trace file and nam file
 proc finish {} {
 
@@ -152,8 +161,6 @@ proc finish {} {
 
 #Schedule events for the CBR agent that starts at 0.5s and stops at 4.5s
 $ns at $val(statStart) "record"
-$ns at $val(cbrStart) "$cbr0 start"
-$ns at $val(simDur) "$cbr0 stop"
 
 #Call the finish procedure after 5s (of simulated time)
 $ns at $val(simDur) "finish"
