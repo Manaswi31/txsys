@@ -107,19 +107,17 @@ if {$proto=="udp"} {
 
     #Create a Null agent (a traffic sink) on node1
     set sink0 [new Agent/LossMonitor]
-    $ns attach-agent $node(1) $sink0
+    $ns attach-agent $dst $sink0
 
     #Connet source and dest Agents
     $ns connect $udp $sink0
     $ns at $val(trafStart) "$cbr0 start"
     $ns at $val(simDur) "$cbr0 stop"
-    puts "udp block exectued"
 } elseif {$proto=="tcp"} {
-
     #Create a tcp agent on the source node
     set tcp [new Agent/TCP]
     $tcp set class_ 2
-    $ns attach-agent $node(0) $tcp
+    $ns attach-agent $src $tcp
 
     # Create a CBR traffic source on node0
     set ftp [new Application/FTP]
@@ -127,12 +125,11 @@ if {$proto=="udp"} {
 
     #Create a sink(a traffic sink) on the destination node
     set sink0 [new Agent/TCPSink]
-    $ns attach-agent $node(1) $sink0
+    $ns attach-agent $dst $sink0
 
     #Connet source and dest Agents
     $ns connect $tcp $sink0
     $ns at $val(trafStart) "$ftp start"
-    puts "tcp block exectued"
 }
 
 proc record {} {
