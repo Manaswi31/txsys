@@ -1,4 +1,5 @@
-##################
+#######################
+#######################
 set val(simDur) 5.0 ;#simulation duration
 
 set val(basename)  wireless;#basename for this project or scenario
@@ -22,7 +23,8 @@ set val(rp)             DSDV                  ;# routing protocol
 set val(topo_x_dim)	600
 set val(topo_y_dim)	600
 
-###################
+#######################
+#######################
 #Initialize and create output files
 #Create a simulator instance
 set ns [new Simulator]
@@ -35,6 +37,7 @@ $ns namtrace-all-wireless $namtracefd $val(topo_x_dim) $val(topo_y_dim)
 
 set outfd [open $val(basename).out w]
 
+#######################
 #######################
 #Create Topology
 
@@ -86,6 +89,7 @@ $ns initial_node_pos $node(0) 10
 $ns initial_node_pos $node(1) 10
 
 #########################
+#########################
 #Modify these variables accordingly
 #########################
 set proto "tcp"
@@ -132,6 +136,8 @@ if {$proto=="udp"} {
     $ns at $val(trafStart) "$ftp start"
 }
 
+#########################
+#a procedure to record stats
 proc record {} {
     global sink0 ns outfd val
     set bytes [$sink0 set bytes_]
@@ -140,7 +146,8 @@ proc record {} {
     $sink0 set bytes_ 0
     $ns at [expr $now+$val(statIntvl)] "record"
 }
-#
+
+#########################
 #a procedure to close trace file and nam file
 proc finish {} {
 
@@ -155,14 +162,11 @@ proc finish {} {
 
 #
 #Schedule trigger events
-
-#Schedule events for the CBR agent that starts at 0.5s and stops at 4.5s
 $ns at $val(statStart) "record"
 
 #Call the finish procedure after 5s (of simulated time)
 $ns at $val(simDur) "finish"
 
-#
 #Run the simulation
 $ns run
 
