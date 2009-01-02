@@ -12,9 +12,9 @@ set val(mac)            Mac/802_11                 ;# MAC type
 set val(ifq)            Queue/DropTail/PriQueue    ;# interface queue type
 set val(ifqlen)         50                         ;# max packet in ifq
 set val(ll)             LL                         ;# link layer type
-set val(nn)             2                          ;# number of mobilenodes
 set val(topo_x_dim)	500
 set val(topo_y_dim)	500
+set val(nn) 2
 
 ###################
 #Initialize and create output files
@@ -38,35 +38,22 @@ set topo       [new Topography]
 $topo load_flatgrid $val(topo_x_dim) $val(topo_y_dim)
 
 #
-# Create God
-#
-create-god $val(nn)
-
-#
 #  Create the specified number of mobilenodes [$val(nn)] and "attach" them
 #  to the channel. 
 
 # configure node
 
-        $ns node-config -adhocRouting $val(rp) \
-                         -llType $val(ll) \
+        $ns node-config -llType $val(ll) \
                          -macType $val(mac) \
                          -ifqType $val(ifq) \
                          -ifqLen $val(ifqlen) \
-                         -antType $val(ant) \
-                         -propType $val(prop) \
-                         -phyType $val(netif) \
-                         -topoInstance $topo \
                          -agentTrace ON \
-                         -routerTrace OFF \
-                         -macTrace OFF \
-                         -movementTrace OFF \
-                         -channel $val(chan)
+                         -routerTrace ON \
+                         -macTrace OFF
 
-        for {set i 0} {$i < $val(nn) } {incr i} {
-                set node($i) [$ns node]
-                $node($i) random-motion 0              ;# disable random motion
-        }
+for {set i 0} {$i < $val(nn)} {incr i} {
+    set node($i) [$ns node]
+}
 
 $node(0) set X_ 200.0
 $node(0) set Y_ 250.0
