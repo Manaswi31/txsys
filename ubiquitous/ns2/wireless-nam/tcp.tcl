@@ -1,7 +1,8 @@
-##################
+#######################
+#######################
 set val(simDur) 5.0 ;#simulation duration
 
-set val(basename)  tcp;#basename for this project or scenario
+set val(basename)  wireless;#basename for this project or scenario
 
 set val(statIntvl) 0.1 ;#statistics collection interval
 set val(statStart) 0.5 ;
@@ -22,7 +23,8 @@ set val(rp)             DSDV                  ;# routing protocol
 set val(topo_x_dim)	600
 set val(topo_y_dim)	600
 
-###################
+#######################
+#######################
 #Initialize and create output files
 #Create a simulator instance
 set ns [new Simulator]
@@ -35,6 +37,7 @@ $ns namtrace-all-wireless $namtracefd $val(topo_x_dim) $val(topo_y_dim)
 
 set outfd [open $val(basename).out w]
 
+#######################
 #######################
 #Create Topology
 
@@ -70,27 +73,28 @@ $ns node-config -adhocRouting $val(rp) \
 		 -channel $val(chan)
 
 for {set i 0} {$i < $val(nn) } {incr i} {
-	set node($i) [$ns node]
-	$node($i) random-motion 0              ;# disable random motion
+	set node_($i) [$ns node]
+	$node_($i) random-motion 0              ;# disable random motion
 }
 
-$node(0) set X_ 100.0
-$node(0) set Y_ 250.0
-$node(0) set Z_ 0.0
+$node_(0) set X_ 100.0
+$node_(0) set Y_ 250.0
+$node_(0) set Z_ 0.0
 
-$node(1) set X_ 250.0
-$node(1) set Y_ 250.0
-$node(1) set Z_ 0.0
+$node_(1) set X_ 250.0
+$node_(1) set Y_ 250.0
+$node_(1) set Z_ 0.0
 
-$ns initial_node_pos $node(0) 10
-$ns initial_node_pos $node(1) 10
+$ns initial_node_pos $node_(0) 10
+$ns initial_node_pos $node_(1) 10
 
+#########################
 #########################
 #Modify these variables accordingly
 #########################
 set proto "tcp"
-set src $node(0)
-set dst $node(1)
+set src $node_(0)
+set dst $node_(1)
 #########################
 
 if {$proto=="udp"} {
@@ -132,6 +136,8 @@ if {$proto=="udp"} {
     $ns at $val(trafStart) "$ftp start"
 }
 
+#########################
+#a procedure to record stats
 proc record {} {
     global sink0 ns outfd val
     set bytes [$sink0 set bytes_]
@@ -140,7 +146,8 @@ proc record {} {
     $sink0 set bytes_ 0
     $ns at [expr $now+$val(statIntvl)] "record"
 }
-#
+
+#########################
 #a procedure to close trace file and nam file
 proc finish {} {
 
@@ -155,14 +162,11 @@ proc finish {} {
 
 #
 #Schedule trigger events
-
-#Schedule events for the CBR agent that starts at 0.5s and stops at 4.5s
 $ns at $val(statStart) "record"
 
 #Call the finish procedure after 5s (of simulated time)
 $ns at $val(simDur) "finish"
 
-#
 #Run the simulation
 $ns run
 
