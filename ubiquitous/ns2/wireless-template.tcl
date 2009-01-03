@@ -19,7 +19,7 @@ set val(ifqlen)         50                         ;# max packet in ifq
 set val(ll)             LL                         ;# link layer type
 set val(ant)            Antenna/OmniAntenna        ;# antenna model
 set val(nn)             2                          ;# number of mobilenodes
-set val(rp)             DSDV                  ;# routing protocol
+set val(rp)             AODV                  ;# routing protocol
 set val(topo_x_dim)	600
 set val(topo_y_dim)	600
 
@@ -73,28 +73,28 @@ $ns node-config -adhocRouting $val(rp) \
 		 -channel $val(chan)
 
 for {set i 0} {$i < $val(nn) } {incr i} {
-	set node($i) [$ns node]
-	$node($i) random-motion 0              ;# disable random motion
+	set node_($i) [$ns node]
+	$node_($i) random-motion 0              ;# disable random motion
 }
 
-$node(0) set X_ 100.0
-$node(0) set Y_ 250.0
-$node(0) set Z_ 0.0
+$node_(0) set X_ 100.0
+$node_(0) set Y_ 250.0
+$node_(0) set Z_ 0.0
 
-$node(1) set X_ 250.0
-$node(1) set Y_ 250.0
-$node(1) set Z_ 0.0
+$node_(1) set X_ 250.0
+$node_(1) set Y_ 250.0
+$node_(1) set Z_ 0.0
 
-$ns initial_node_pos $node(0) 10
-$ns initial_node_pos $node(1) 10
+$ns initial_node_pos $node_(0) 10
+$ns initial_node_pos $node_(1) 10
 
 #########################
 #########################
 #Modify these variables accordingly
 #########################
 set proto "tcp"
-set src $node(0)
-set dst $node(1)
+set src $node_(0)
+set dst $node_(1)
 #########################
 
 if {$proto=="udp"} {
