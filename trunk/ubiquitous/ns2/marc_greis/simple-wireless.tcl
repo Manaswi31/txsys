@@ -33,12 +33,12 @@ set ns_         [new Simulator]
 set tracefd     [open simple.tr w]
 set namfd       [open simple.nam w]
 $ns_ trace-all $tracefd
-$ns_ namtrace-all-wireless $namfd 100 100
+$ns_ namtrace-all-wireless $namfd 500 500
 
 # set up topography object
 set topo       [new Topography]
 
-$topo load_flatgrid 100 100
+$topo load_flatgrid 500 500
 
 #
 # Create God
@@ -75,26 +75,26 @@ create-god $val(nn)
 #
 # Provide initial (X,Y, for now Z=0) co-ordinates for mobilenodes
 #
-$node_(0) set X_ 50.0
-$node_(0) set Y_ 20.0
+$node_(0) set X_ 5.0
+$node_(0) set Y_ 2.0
 $node_(0) set Z_ 0.0
 
-$node_(1) set X_ 30.0
-$node_(1) set Y_ 20.0
+$node_(1) set X_ 390.0
+$node_(1) set Y_ 385.0
 $node_(1) set Z_ 0.0
 
-$ns_ initial_node_pos $node_(0) 5
-$ns_ initial_node_pos $node_(1) 5
-
+$ns_ initial_node_pos $node_(0) 10
+$ns_ initial_node_pos $node_(1) 10
+#
 #
 # Now produce some simple node movements
 # Node_(1) starts to move towards node_(0)
 #
-#$ns_ at 50.0 "$node_(1) setdest 25.0 20.0 15.0"
-#$ns_ at 10.0 "$node_(0) setdest 20.0 18.0 1.0"
+$ns_ at 50.0 "$node_(1) setdest 25.0 20.0 15.0"
+$ns_ at 10.0 "$node_(0) setdest 20.0 18.0 1.0"
 
 # Node_(1) then starts to move away from node_(0)
-#$ns_ at 100.0 "$node_(1) setdest 490.0 480.0 15.0"
+$ns_ at 100.0 "$node_(1) setdest 490.0 480.0 15.0"
 
 # Setup traffic flow between nodes
 # TCP connections between node_(0) and node_(1)
