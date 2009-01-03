@@ -1,6 +1,6 @@
 #######################
 #######################
-set val(simDur) 5.0 ;#simulation duration
+set val(simDur) 50.0 ;#simulation duration
 
 set val(basename)  multi-hop;#basename for this project or scenario
 

@@ -18,8 +18,8 @@ set val(ll)             LL                         ;# link layer type
 set val(ant)            Antenna/OmniAntenna        ;# antenna model
 set val(nn)             2                          ;# number of mobilenodes
 set val(rp)             DSDV                  ;# routing protocol
-set val(topo_x_dim)	500
-set val(topo_y_dim)	500
+set val(topo_x_dim)	300
+set val(topo_y_dim)	300
 
 ###################
 #Initialize and create output files
@@ -73,16 +73,16 @@ create-god $val(nn)
                 $node($i) random-motion 0              ;# disable random motion
         }
 
-$node(0) set X_ 200.0
+$node(0) set X_ 100.0
 $node(0) set Y_ 250.0
 $node(0) set Z_ 0.0
 
-$node(1) set X_ 300.0
+$node(1) set X_ 200.0
 $node(1) set Y_ 250.0
 $node(1) set Z_ 0.0
 
-$ns initial_node_pos $node(0) 5
-$ns initial_node_pos $node(1) 5
+$ns initial_node_pos $node(0) 10
+$ns initial_node_pos $node(1) 10
 
 #Create a udp agent on node0
 set udp0 [new Agent/UDP]
