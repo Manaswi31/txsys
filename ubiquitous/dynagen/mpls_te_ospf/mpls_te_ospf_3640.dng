@@ -16,7 +16,7 @@ port=7200
     [[router Pauillac]]
         image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
         model = 3640
-        console = 3002
+        console = 3001
         ram = 96
         confreg = 0x2102
         exec_area = 64
@@ -27,7 +27,7 @@ port=7200
     [[router Pulligny]]
         image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
         model = 3640
-        console = 3002
+        console = 3001
         ram = 96
         confreg = 0x2102
         exec_area = 64
@@ -37,7 +37,7 @@ port=7200
     [[router Pomerol]]
         image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
         model = 3640
-        console = 3002
+        console = 3001
         ram = 96
         confreg = 0x2102
         exec_area = 64
@@ -47,7 +47,7 @@ port=7200
     [[router Pesaro]]
         image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
         model = 3640
-        console = 3002
+        console = 3001
         ram = 96
         confreg = 0x2102
         exec_area = 64
