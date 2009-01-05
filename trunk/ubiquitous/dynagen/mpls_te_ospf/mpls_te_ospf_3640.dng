@@ -2,6 +2,7 @@ autostart=false
 
 [localhost]
 port=7200
+workdir=temp
 
  [[router Pescara]]
         image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
