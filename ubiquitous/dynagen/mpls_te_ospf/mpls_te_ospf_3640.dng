@@ -2,7 +2,7 @@ autostart=false
 
 [localhost]
 port=7200
-workdir=temp
+workingdir=temp
 
  [[router Pescara]]
         image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
@@ -13,7 +13,7 @@ workdir=temp
         exec_area = 64
         mmap = true
         slot0 = NM-4T
-        s0/1.1 = Pauillac s0/0.3
+        s0/0 = Pauillac s0/2
     [[router Pauillac]]
         image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
         model = 3640
@@ -23,8 +23,8 @@ workdir=temp
         exec_area = 64
         mmap = true
         slot0 = NM-4T
-	s0/0.1 = Pulligny s0/0.3
-	s0/0.2 = Pomerol s0/1.1
+	s0/0 = Pulligny s0/0
+	s0/1 = Pomerol s0/0
     [[router Pulligny]]
         image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
         model = 3640
@@ -34,7 +34,7 @@ workdir=temp
         exec_area = 64
         mmap = true
         slot0 = NM-4T
-	s0/1.2 = Pomerol s0/1.2
+	s0/1 = Pomerol s0/1
     [[router Pomerol]]
         image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
         model = 3640
@@ -44,7 +44,7 @@ workdir=temp
         exec_area = 64
         mmap = true
         slot0 = NM-4T
-	s0/1.2 = Pesaro s0/0.1
+	s0/2 = Pesaro s0/0
     [[router Pesaro]]
         image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
         model = 3640
