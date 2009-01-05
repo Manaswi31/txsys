@@ -24,7 +24,7 @@ workdir=temp
         mmap = true
         slot0 = NM-4T
 	s0/0.1 = Pulligny s0/0.3
-	s0/0.2 = Pulligny s0/1.1
+	s0/0.2 = Pomerol s0/1.1
     [[router Pulligny]]
         image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
         model = 3640
