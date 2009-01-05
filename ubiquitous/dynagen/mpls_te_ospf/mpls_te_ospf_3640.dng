@@ -1,0 +1,25 @@
+autostart=false
+
+[localhost]
+port=3640
+
+ [[router Pescara]]
+        image = /home/wjb/dynamips/image/c3640-is-mz.123-6.bin
+        model = 3640
+        console = 3001
+        ram = 96
+        confreg = 0x2102
+        exec_area = 64
+        mmap = true
+        slot0 = NM-4T
+        s0/1.1 = Pauillac s0/0.3
+     
+    [[router Pauillac]]
+        image = /home/wjb/dynamips/image/c3640-is-mz.123-6.bin
+        model = 3640
+        console = 3002
+        ram = 96
+        confreg = 0x2102
+        exec_area = 64
+        mmap = true
+        slot0 = NM-4T
