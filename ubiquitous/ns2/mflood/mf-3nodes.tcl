@@ -1,7 +1,7 @@
 ##################
 set val(simDur) 5.0 ;#simulation duration
 
-set val(basename)  wireless;#basename for this project or scenario
+set val(basename)  mf-3nodes;#basename for this project or scenario
 
 set val(statIntvl) 0.1 ;#statistics collection interval
 set val(statStart) 0.5 ;
