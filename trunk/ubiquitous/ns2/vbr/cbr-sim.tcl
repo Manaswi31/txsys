@@ -11,7 +11,7 @@ set val(statIntvl) 1.0 ;#statistics collection interval
 set val(statStart) 10.0 ;
 
 set val(trafStart) 10.0 ;#CBR start time
-set val(cbrIntvl) 1E-3 ;#CBR traffic interval
+set val(cbrIntvl) 0.1 ;#CBR traffic interval
 
 set val(mac)            Mac/802_3                 ;# MAC type
 set val(ifq)            DropTail		   ;# interface queue type
