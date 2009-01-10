@@ -9,7 +9,7 @@
 using namespace std;
 
 //type of random distribution
- enum cbrIntvlDistr
+ enum vbrIntvlDistr
  {
      CBR_INTVL_UNIFORM = 1,
      CBR_INTVL_NORMAL,
