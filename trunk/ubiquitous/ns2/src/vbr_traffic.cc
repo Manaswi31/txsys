@@ -4,8 +4,9 @@
 #include "random.h"
 #include "trafgen.h"
 #include "ranvar.h"
+//#include <math>
 #include <iostream>
-
+using namespace std;
 
 //type of random distribution
  enum cbrIntvlDistr
@@ -79,15 +80,40 @@ double VBR_Traffic::next_interval(int& size)
 	{
 	    case CBR_INTVL_UNIFORM :
 	    {
-		//std::cout << "Generating uniform distribution." << std::endl;
 		t = Random::uniform(para1_, para2_);
+
+		//for debug
+		if (verbose >=2 )
+		    cout << "Generating uniform distribution." << endl;
+
+	        break;
+	    }
+	    case CBR_INTVL_NORMAL :
+	    {
+		t = Random::normal(para1_, para2_);
+
+		//for debug
+		if (verbose >= 2)
+		{
+		    cout << "normal output: " << t << endl;
+		}
+		else if (verbose >= 1)
+		    cout << "Generating normal distribution." << endl;
+
 	        break;
 	    }
 	    case CBR_INTVL_EXPO :
 	    {
-		if (verbose >= 1)
-		    std::cout << "Generating exponential distribution." << std::endl;
 		t = Random::exponential(para1_);
+
+		//for debug
+		if (verbose >= 2)
+		{
+		    cout << "exponential output: " << t << endl;
+		}
+		else if (verbose >= 1)
+		    cout << "Generating exponential distribution." << endl;
+
 	        break;
 	    }
 	    default :
@@ -95,7 +121,11 @@ double VBR_Traffic::next_interval(int& size)
 	}
 	size = size_;
 	if (++seqno_ < maxpkts_)
+	{
+	    if (verbose >=2 )
+		cout << "Returning random interval" << endl;
 		return(t);
+	}
 	else
 		return(-1);
 }
