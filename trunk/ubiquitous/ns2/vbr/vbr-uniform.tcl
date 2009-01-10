@@ -5,7 +5,7 @@ Agent/UDP set packetSize_ 1500
 
 set val(simDur) 100.0 ;#simulation duration
 
-set val(basename)  vbr-sim;#basename for this project or scenario
+set val(basename)  vbr-uniform;#basename for this project or scenario
 
 set val(statIntvl) 1.0 ;#statistics collection interval
 set val(statStart) 10.0 ;
@@ -93,8 +93,10 @@ if {$proto=="udp"} {
     set vbr0 [new Application/Traffic/VBR]
     $vbr0 set packetSize_ 1440
     $vbr0 set interval_ $val(cbrIntvl)
-    $vbr0 set random_ 3
-    $vbr0 set para1_ $val(cbrIntvl)
+    $vbr0 set random_ 1
+    set delta [expr (0.1 * $val(cbrIntvl))]
+    $vbr0 set para1_ [expr ($val(cbrIntvl) - $delta)]
+    $vbr0 set para2_ [expr ($val(cbrIntvl) + $delta)]
     $vbr0 set verbose 0
     $vbr0 attach-agent $udp
 

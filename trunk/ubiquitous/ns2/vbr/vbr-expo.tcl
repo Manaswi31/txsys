@@ -5,7 +5,7 @@ Agent/UDP set packetSize_ 1500
 
 set val(simDur) 100.0 ;#simulation duration
 
-set val(basename)  vbr-sim;#basename for this project or scenario
+set val(basename)  vbr-expo;#basename for this project or scenario
 
 set val(statIntvl) 1.0 ;#statistics collection interval
 set val(statStart) 10.0 ;
