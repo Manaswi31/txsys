@@ -93,7 +93,7 @@ if {$proto=="udp"} {
     set cbr0 [new Application/Traffic/CBR]
     $cbr0 set packetSize_ 1440
     $cbr0 set interval_ $val(cbrIntvl)
-    $cbr0 set random_ 1
+    $cbr0 set random_ 0
     $cbr0 attach-agent $udp
 
     #Create a Null agent (a traffic sink) on node1
