@@ -11,7 +11,7 @@ set val(statIntvl) 1.0 ;#statistics collection interval
 set val(statStart) 10.0 ;
 
 set val(trafStart) 10.0 ;#CBR start time
-set val(cbrIntvl) 1E-3 ;#CBR traffic interval
+set val(cbrIntvl) 0.1 ;#CBR traffic interval
 
 set val(mac)            Mac/802_3                 ;# MAC type
 set val(ifq)            DropTail		   ;# interface queue type
@@ -93,8 +93,9 @@ if {$proto=="udp"} {
     set vbr0 [new Application/Traffic/VBR]
     $vbr0 set packetSize_ 1440
     $vbr0 set interval_ $val(cbrIntvl)
-    $vbr0 set random_ 1
-    $vbr0 set re_ $val(cbrIntvl)
+    $vbr0 set random_ 3
+    $vbr0 set para1_ $val(cbrIntvl)
+    $vbr0 set verbose 0
     $vbr0 attach-agent $udp
 
     #Create a Null agent (a traffic sink) on node1
