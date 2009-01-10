@@ -29,8 +29,8 @@ class VBR_Traffic : public TrafficGenerator {
 	int random_; //type of random distribution
 	int seqno_;
 	int maxpkts_;
-	double re_; //expectation of the random interval
-	double rvar_; //variance of the random interval
+	double para1_; //expectation of the random interval; in case of unifrom distribution, it's the lower bound
+	double para2_; //variance of the random interval; in case of unifrom distribution, it's the upper bound
 };
 
 
@@ -48,8 +48,8 @@ VBR_Traffic::VBR_Traffic() : seqno_(0)
 	bind("random_", &random_);
 	bind("packetSize_", &size_);
 	bind("maxpkts_", &maxpkts_);
-	bind("re_",  &re_);
-	bind("rvar_", &rvar_);
+	bind("para1_",  &para1_);
+	bind("para2_", &para2_);
 	std::cout << "finished with running binding..." << std::endl;
 }
 
@@ -78,7 +78,8 @@ double VBR_Traffic::next_interval(int& size)
 	{
 	    case CBR_INTVL_UNIFORM :
 	    {
-		t = Random::uniform(re_);
+		//std::cout << "Generating uniform distribution." << std::endl;
+		t = Random::uniform(para1_, para2_);
 	        break;
 	    }
 	    default :
