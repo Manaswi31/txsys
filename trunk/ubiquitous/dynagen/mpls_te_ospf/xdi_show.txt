@@ -1,0 +1,7 @@
+show running-config
+show version
+show cdp neighbors detail
+show interfaces
+show standby
+show mpls traffic-eng tunnels
+
