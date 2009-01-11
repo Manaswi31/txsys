@@ -11,9 +11,9 @@ using namespace std;
 //type of random distribution
  enum vbrIntvlDistr
  {
-     CBR_INTVL_UNIFORM = 1,
-     CBR_INTVL_NORMAL,
-     CBR_INTVL_EXPO
+     VBR_INTVL_UNIFORM = 1,
+     VBR_INTVL_NORMAL,
+     VBR_INTVL_EXPO
  };
 
 class VBR_Traffic : public TrafficGenerator {
@@ -78,7 +78,7 @@ double VBR_Traffic::next_interval(int& size)
 	double t = interval_;
 	switch (random_)
 	{
-	    case CBR_INTVL_UNIFORM :
+	    case VBR_INTVL_UNIFORM :
 	    {
 		t = Random::uniform(para1_, para2_);
 
@@ -88,7 +88,7 @@ double VBR_Traffic::next_interval(int& size)
 
 	        break;
 	    }
-	    case CBR_INTVL_NORMAL :
+	    case VBR_INTVL_NORMAL :
 	    {
 		t = Random::normal(para1_, para2_);
 
@@ -102,7 +102,7 @@ double VBR_Traffic::next_interval(int& size)
 
 	        break;
 	    }
-	    case CBR_INTVL_EXPO :
+	    case VBR_INTVL_EXPO :
 	    {
 		t = Random::exponential(para1_);
 
@@ -124,7 +124,7 @@ double VBR_Traffic::next_interval(int& size)
 	{
 	    if (verbose >=2 )
 		cout << "Returning random interval" << endl;
-		return(t);
+	    return(t);
 	}
 	else
 		return(-1);
