@@ -62,7 +62,8 @@ void VBR_Traffic::init()
 	if (agent_)
 		if (agent_->get_pkttype() != PT_TCP &&
  		    agent_->get_pkttype() != PT_TFRC)
-			agent_->set_pkttype(PT_CBR);
+			agent_->set_pkttype(PT_VBR);
+	cout << "PT_VBR: " << PT_VBR << endl;
 }
 
 void VBR_Traffic::start()
