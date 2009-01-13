@@ -3,9 +3,11 @@ autostart = False
 [localhost]
  port = 7200
  workingdir = temp
+
+    [[3640]]
+    image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
  
  [[router S1]]
-  image = /home/wjb/dynamips/image/unzip-c3640-js-mz.124-10.bin
   model = 3640
   console = 3001
   ram = 96
@@ -16,7 +18,6 @@ autostart = False
   s0/0 = R1 s0/0
   idlepc = 0x604b99e8
  [[router R1]]
-  image = /home/wjb/dynamips/image/unzip-c3640-js-mz.124-10.bin
   model = 3640
   console = 3002
   ram = 96
@@ -28,7 +29,6 @@ autostart = False
   s0/2 = R20 s0/0
   idlepc = 0x604eafc4
  [[router R10]]
-  image = /home/wjb/dynamips/image/unzip-c3640-js-mz.124-10.bin
   model = 3640
   console = 3003
   ram = 96
@@ -39,7 +39,6 @@ autostart = False
   s0/1 = D1 s0/0
   idlepc = 0x604e3f40
  [[router R20]]
-  image = /home/wjb/dynamips/image/unzip-c3640-js-mz.124-10.bin
   model = 3640
   console = 3004
   ram = 96
@@ -50,7 +49,6 @@ autostart = False
   s0/1 = R21 s0/0
   idlepc = 0x6059a998
  [[router R21]]
-  image = /home/wjb/dynamips/image/unzip-c3640-js-mz.124-10.bin
   model = 3640
   console = 3005
   ram = 96
@@ -60,7 +58,6 @@ autostart = False
   slot0 = NM-4T
   s0/1 = D1 s0/1
  [[router D1]]
-  image = /home/wjb/dynamips/image/unzip-c3640-js-mz.124-10.bin
   model = 3640
   console = 3006
   ram = 96
