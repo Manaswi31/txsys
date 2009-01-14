@@ -1,25 +1,26 @@
 #######################
 #######################
 
-Agent/UDP set packetSize_ 1500
+set val(simDur) 5.0 ;#simulation duration
 
-set val(simDur) 100.0 ;#simulation duration
+set val(basename)  dumb-bell;#basename for this project or scenario
 
-set val(basename)  cbr-sim;#basename for this project or scenario
+set val(statIntvl) 0.5 ;#statistics collection interval
+set val(statStart) 0.1 ;
 
-set val(statIntvl) 1.0 ;#statistics collection interval
-set val(statStart) 10.0 ;
+set val(cbrStart) 0.1 ;#CBR start time
+set val(cbrStop) 4.5 ;#CBR start time
+set val(ftpStart) 1.0 ;#CBR start time
+set val(ftpStop) 1.0 ;#CBR start time
 
-set val(trafStart) 10.0 ;#CBR start time
-set val(cbrIntvl) 0.1 ;#CBR traffic interval
+set val(cbrIntvl) 0.001 ;#CBR traffic interval
+set val(cbrRate) 1mb ;#
 
 set val(mac)            Mac/802_3                 ;# MAC type
 set val(ifq)            DropTail		   ;# interface queue type
 set val(ifqlen)         50                         ;# max packet in ifq
 set val(ll)             LL                         ;# link layer type
-set val(nn)             2                          ;# number of mobilenodes
-set val(topo_x_dim)	600
-set val(topo_y_dim)	600
+set val(nn)             4                          ;# number of mobilenodes
 
 #######################
 #######################
@@ -31,68 +32,57 @@ set ns [new Simulator]
 set tracefd [open $val(basename).tr w]
 $ns trace-all $tracefd
 set namtracefd [open $val(basename).nam w]
-$ns namtrace-all-wireless $namtracefd $val(topo_x_dim) $val(topo_y_dim)
+$ns namtrace-all $namtracefd 
 
-set outfd [open $val(basename).out w]
+set outfd0 [open udp.out w]
+set outfd1 [open tcp.out w]
 
 #######################
 #######################
-#Create Topology
-
-# set up topography object
-set topo       [new Topography]
-
-$topo load_flatgrid $val(topo_x_dim) $val(topo_y_dim)
-
 #
 #  Create the specified number of mobilenodes [$val(nn)] and "attach" them
 #  to the channel. 
 
 # configure node
 
-$ns node-config -llType $val(ll) \
-		 -macType $val(mac) \
-		 -ifqType $val(ifq) \
-		 -ifqLen $val(ifqlen) \
-		 -agentTrace ON \
-		 -routerTrace ON \
-		 -macTrace OFF
-
+#$ns node-config -llType $val(ll) \
+#		 -macType $val(mac) \
+#		 -ifqType $val(ifq) \
+#		 -ifqLen $val(ifqlen) \
+#		 -agentTrace ON \
+#		 -routerTrace OFF \
+#		 -macTrace OFF
+#
 for {set i 0} {$i < $val(nn) } {incr i} {
 	set node($i) [$ns node]
 }
 
-$node(0) set X_ 100.0
-$node(0) set Y_ 250.0
-$node(0) set Z_ 0.0
 
-$node(1) set X_ 250.0
-$node(1) set Y_ 250.0
-$node(1) set Z_ 0.0
+$ns duplex-link $node(0) $node(2) 2M 10ms $val(ifq)
+$ns duplex-link $node(1) $node(2) 2M 10ms $val(ifq)
+$ns duplex-link $node(2) $node(3) 1.7M 20ms $val(ifq)
 
-$ns duplex-link $node(0) $node(1) 10M 0.1ms $val(ifq)
-
-$ns initial_node_pos $node(0) 10
-$ns initial_node_pos $node(1) 10
+$ns duplex-link-op $node(0) $node(2) orient right-down
+$ns duplex-link-op $node(1) $node(2) orient right-up
+$ns duplex-link-op $node(2) $node(3) orient right
 
 #########################
 #########################
 #Modify these variables accordingly
 #########################
-set proto "udp"
-set src $node(0)
-set dst $node(1)
+set src $node(1)
+set dst $node(3)
 #########################
 
-if {$proto=="udp"} {
     #Create a udp agent on node0
     set udp [new Agent/UDP]
     $ns attach-agent $src $udp
 
     # Create a CBR traffic source on node0
     set cbr0 [new Application/Traffic/CBR]
-    $cbr0 set packetSize_ 1440
-    $cbr0 set interval_ $val(cbrIntvl)
+    $cbr0 set type_ CBR
+    $cbr0 set packetSize_ 1000
+    $cbr0 set rate_ $val(cbrRate)
     $cbr0 set random_ 0
     $cbr0 attach-agent $udp
 
@@ -102,9 +92,10 @@ if {$proto=="udp"} {
 
     #Connet source and dest Agents
     $ns connect $udp $sink0
-    $ns at $val(trafStart) "$cbr0 start"
-    $ns at $val(simDur) "$cbr0 stop"
-} elseif {$proto=="tcp"} {
+    $ns at $val(cbrStart) "$cbr0 start"
+    $ns at $val(cbrStop) "$cbr0 stop"
+
+    set src $node(0)
     #Create a tcp agent on the source node
     set tcp [new Agent/TCP]
     $tcp set class_ 2
@@ -115,22 +106,25 @@ if {$proto=="udp"} {
     $ftp attach-agent $tcp
 
     #Create a sink(a traffic sink) on the destination node
-    set sink0 [new Agent/TCPSink]
-    $ns attach-agent $dst $sink0
+    set sink1 [new Agent/TCPSink]
+    $ns attach-agent $dst $sink1
 
     #Connet source and dest Agents
-    $ns connect $tcp $sink0
-    $ns at $val(trafStart) "$ftp start"
-}
+    $ns connect $tcp $sink1
+    $ns at $val(ftpStart) "$ftp start"
+    $ns at $val(ftpStop) "$ftp stop"
 
 #########################
 #a procedure to record stats
 proc record {} {
-    global sink0 ns outfd val
-    set bytes [$sink0 set bytes_]
+    global sink0 sink1 ns outfd0 outfd1 val
+    set bytes_(0) [$sink0 set bytes_]
+    set bytes_(1) [$sink1 set bytes_]
     set now [$ns now]
-    puts $outfd "$now $bytes"
+    puts $outfd0 "$now $bytes_(0)"
+    puts $outfd1 "$now $bytes_(1)"
     $sink0 set bytes_ 0
+    $sink1 set bytes_ 0
     $ns at [expr $now+$val(statIntvl)] "record"
 }
 
