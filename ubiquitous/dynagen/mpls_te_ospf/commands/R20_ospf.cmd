@@ -4,10 +4,12 @@ interface Loopback0
 !
 interface Serial0/0
  no shut
+ bandwidth 512
  ip address 10.1.1.10 255.255.255.252
 !
 interface Serial0/1
  no shut
+ bandwidth 512
  ip address 10.1.1.17 255.255.255.252
 !
 router ospf 9

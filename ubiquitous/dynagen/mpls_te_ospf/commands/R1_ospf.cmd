@@ -1,7 +1,4 @@
 hostname R1
-!
-ip cef
-
 interface Loopback0
  no shut
  ip address 10.10.10.1 255.255.255.255
@@ -15,10 +12,10 @@ interface Serial0/1
  no shut
  bandwidth 512
  ip address 10.1.1.5 255.255.255.252
- serial restart-delay 0
 !
 interface Serial0/2
  no shut
+ bandwidth 512
  ip address 10.1.1.9 255.255.255.252
 !
 router ospf 9
