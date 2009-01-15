@@ -5,7 +5,7 @@ autostart = False
  workingdir = temp
 
     [[3640]]
-    image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
+    image = /home/wjb/dynamips/image/unzip-c3640-js-mz.124-10.bin
  
  [[router S1]]
   model = 3640

@@ -6,6 +6,7 @@ interface Loopback0
 !
 interface Serial0/0
  no shut
+ bandwidth 512
  ip address 10.1.1.1 255.255.255.252
  serial restart-delay 0
 !
