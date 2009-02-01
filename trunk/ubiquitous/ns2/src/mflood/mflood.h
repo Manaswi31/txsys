@@ -5,7 +5,6 @@
 #include <sys/types.h>
 #include <cmu-trace.h>
 #include <priqueue.h>
-//#include <wireless-mcast/mprflood-seqtable.h>
 
 //#define NOW (Schedule::instance().clock())
 
