@@ -23,17 +23,12 @@ static class MFloodclass: public TclClass {
     public :
 	MFloodclass() : TclClass ("Agent/MFlood") {}
 	TclObject * create(int argc, const char* const* argv) {
-		std::cout<<"*********running**************"<<std::endl;
 	    assert(argc==5);
 	    return (new MFlood((nsaddr_t) atoi(argv[4])));
 	}
 }class_rtProtocolMFlood;
 
 int MFlood::command(int argc, const char* const* argv) {
-	
-	std::cout << "Go!" << std::endl;
-	
-	
     Tcl & tcl = Tcl::instance();
     if (argc==2) {
 	if (strncasecmp(argv[1], "id", 2) == 0) {
@@ -104,6 +99,8 @@ void MFlood::recv(Packet* p, Handler*) {
 	struct hdr_ip *ih = HDR_IP(p);
 	struct hdr_mflood *fh = HDR_MFLOOD_PKT(p);
 	assert(initialized());
+
+	//std::cout << "recv called." << std:endl;
 
 	if ((ih->saddr()==index_) && (ch->num_forwards()==0)) {
 		ch->size() += IP_HDR_LEN;
