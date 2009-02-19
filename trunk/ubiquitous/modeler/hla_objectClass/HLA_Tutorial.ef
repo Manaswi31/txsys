@@ -1,0 +1,25 @@
+# Fill in with your working directory
+"HLA Class Mapping File"				:	"HLA_Tutorial.map"
+
+# Predefined values
+"HLA Abort On Failure" 					:	false
+"HLA Callback Set"						:	511
+"HLA Create Federation" 				:	true
+"HLA Create Init Synchronization Point"	:	false
+"HLA Destroy Federation"				:	true
+"HLA Factory"							:	hla13_cosim_compat
+"HLA Fed File Name"						:	""
+"HLA Federate Name"						:	OPNET
+"HLA Federation Name"					:	HLA_Tutorial
+"HLA Init Synchronization Point"		:	""
+"HLA Inter-event Tick"					:	false
+"HLA Join Attempts"						:	10
+"HLA Max Time Advance Request"			:	0.1
+"HLA Standard"							:	"DOD 1.3"
+"HLA Time Constrained"					:	true
+"HLA Time Lookahead"					:	0.1
+"HLA Time Quantum"						:	0.0
+"HLA Time Regulating"					:	true
+"HLA Update Check Interval"				:	-1.0
+"HLA Verbose"							:	false
+"HLA Verbosity Level"					:	0
