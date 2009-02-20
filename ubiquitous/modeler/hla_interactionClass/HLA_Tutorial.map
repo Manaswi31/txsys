@@ -1,0 +1,9 @@
+(mapping version 2
+  (interactions
+	 (class posUpdate pos_update
+	   (parameter  posX posX double)
+	   (parameter  posY posY double)
+	   (parameter  posZ posZ double)
+    )
+  )
+)
