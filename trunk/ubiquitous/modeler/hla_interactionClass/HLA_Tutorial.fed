@@ -207,6 +207,15 @@
         )
       )
 ;;  user interaction classes here
+      (class Order reliable timestamp
+        (parameter bearing)
+    	(parameter speed)
+      )
+      (class Order_Reply reliable timestamp
+    	(parameter id)
+    	(parameter change_lat)
+    	(parameter change_long)
+      )
       (class PosUpdate reliable timestamp
         (parameter posX)
     	(parameter posY)
