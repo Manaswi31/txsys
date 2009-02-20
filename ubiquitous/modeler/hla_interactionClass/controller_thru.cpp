@@ -63,7 +63,7 @@ static RTI::Boolean timeAdvanceOutstanding = RTI::RTI_FALSE;
 static RTI::FederateHandle federateId;
 
 // Interarctions
-enum PosUpdateAttributes { POS_X=0, POS_Y, POS_Z, NbPosUpdateAttributes };
+enum PosUpdateAttributes { POS_X, POS_Y, POS_Z, NbPosUpdateAttributes };
 static const char * const posAttrTypeStr [] = { "posX", "posY","posZ" };
 
 /*interaction class handle and param handles*/
@@ -78,8 +78,11 @@ static Vehicle vehicle2;
 enum OrderAttributes { Bearing, Speed, NbOrderAttributes };
 enum ReplyAttributes { Id, ChangeLat, ChangeLong, NbReplyAttributes };
 
-//static const char * const posAttrTypeStr [] = { "posX", "posY","posZ" };
 
+static const char * const orderAttrTypeStr [] =
+	{ "bearing", "speed" };
+static const char * const replyAttrTypeStr [] =
+	{ "id", "change_lat", "change_long" };
 
 static RTI::InteractionClassHandle order_handle;
 static RTI::ParameterHandle order_parameters [NbOrderAttributes];
@@ -514,7 +517,7 @@ cease_federation_participation ()
 	}
     catch ( RTI::Exception& e )
 	{
-		cerr << "Error:" << &e << endl;
+		cerr << "Error 1: resignFederation" << endl << &e << endl;
 		return;
 	}
 
@@ -529,7 +532,7 @@ cease_federation_participation ()
 	}
 	catch ( RTI::Exception & e)
 	{
-		cerr << "Error:" << &e << endl;
+		cerr << "Error 2: destroyFederation " << endl << &e << endl;
 	}
 }
 
@@ -564,6 +567,7 @@ void update_pos()
     double network_order;
     RTIfedTime fedTime (timeToGo);
     vehicle1.updatePos();
+    /*
     do
 	    {
 	    rti_amb.nextEventRequest (fedTime);
@@ -572,16 +576,22 @@ void update_pos()
 		    rti_amb.tick(0.5,1.0);
 	    }
     while (currentTime != timeToGo);
+    */
+
+    cout << "Starting creating interaction." << endl;
     RTI::ParameterHandleValuePairSet * iParams;
-    iParams = RTI::ParameterSetFactory::create (2);
+    iParams = RTI::ParameterSetFactory::create (3);
     // need to convert to network order
     network_order = htond (vehicle1.getX());
     iParams->add (posUpateParams [POS_X], (char *)&network_order,  sizeof (vehicle1.getX()));
+    cout << "Size of getX()" << sizeof (vehicle1.getX()) << endl;
     network_order = htond (vehicle1.getY());
     iParams->add (posUpateParams [POS_Y], (char *)&network_order,  sizeof (vehicle1.getY()));
     network_order = htond (vehicle1.getZ());
     iParams->add (posUpateParams [POS_Z], (char *)&network_order,  sizeof (vehicle1.getZ()));
+    //rti_amb.sendInteraction (posUpdateICH, *iParams, fedTime, "");
     rti_amb.sendInteraction (posUpdateICH, *iParams, fedTime, "");
+    cout << "Finished with sending interaction." << endl;
 }
 
 
@@ -659,7 +669,8 @@ process_events ()
 			case 'g':
 			case 'G':
 				{
-				    update_pos();
+				    next_time();
+					update_pos();
 				    break;
 				}
 			case '\0':
@@ -693,7 +704,6 @@ void publish_and_subscribe ()
 {
 	unsigned short i;
 
-	// declare two interactions, one published, one subscribed
 	posUpdateICH = rti_amb.getInteractionClassHandle ("PosUpdate");
 	for (i = 0; i < NbPosUpdateAttributes; i++)
 	{
@@ -708,7 +718,43 @@ void publish_and_subscribe ()
 	    }
 	}
 	rti_amb.publishInteractionClass (posUpdateICH);
-	rti_amb.subscribeInteractionClass (posUpdateICH);
+	//rti_amb.subscribeInteractionClass (posUpdateICH);
+	
+order_handle = rti_amb.getInteractionClassHandle ("Order");
+	for (i = 0; i < NbOrderAttributes; i++)
+		{
+		try
+			{
+			order_parameters [i]
+				= rti_amb.getParameterHandle ((char * const)orderAttrTypeStr [i],
+					order_handle);
+			}
+		catch (RTI::Exception & e)
+			{
+			cerr << "Order param " << orderAttrTypeStr [i] << " causes: " << &e << endl;
+			exit (-1);
+			}
+		}
+	rti_amb.publishInteractionClass (order_handle);
+
+	reply_handle = rti_amb.getInteractionClassHandle ("Order_Reply");
+	for (i = 0; i < NbReplyAttributes; i++)
+		{
+		try
+			{
+			reply_parameters [i]
+				= rti_amb.getParameterHandle ((char * const)replyAttrTypeStr [i],
+					reply_handle);
+			}
+		catch (RTI::Exception & e)
+			{
+			cerr << "Reply param " << replyAttrTypeStr [i] << " causes: " << &e << endl;
+			exit (-1);
+			}
+		}
+			
+	rti_amb.subscribeInteractionClass (reply_handle);
+
 }
 
 
@@ -748,7 +794,7 @@ main(int argc, char* argv[])
     
 	    /* exercise the appropriate declaration management services to articulate
 	       the capabilities and interests of the federate */
-	    //publish_and_subscribe ();
+	    publish_and_subscribe ();
 	process_events();
 	
 	    cout << "Done with event loop, leaving the federation" << endl;
