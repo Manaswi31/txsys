@@ -27,7 +27,7 @@ using namespace std;
 
 #include "s_hla_stream.hpp"
 
-static int verbose = 1;
+static int verbose = 2;
 
 const static double MIN_TICK_TIME = 0.051;
 const static double MAX_TICK_TIME = 0.085;
@@ -563,7 +563,7 @@ htond (double host_val)
 
 void update_pos()
 {
-    double timeToGo = 10.0;
+    double timeToGo = 5.0;
     double network_order;
     RTIfedTime fedTime (timeToGo);
     vehicle1.updatePos();
@@ -589,8 +589,8 @@ void update_pos()
     iParams->add (posUpateParams [POS_Y], (char *)&network_order,  sizeof (vehicle1.getY()));
     network_order = htond (vehicle1.getZ());
     iParams->add (posUpateParams [POS_Z], (char *)&network_order,  sizeof (vehicle1.getZ()));
-    //rti_amb.sendInteraction (posUpdateICH, *iParams, fedTime, "");
     rti_amb.sendInteraction (posUpdateICH, *iParams, fedTime, "");
+    //rti_amb.sendInteraction (posUpdateICH, *iParams, fedTime, "");
     cout << "Finished with sending interaction." << endl;
 }
 
@@ -718,7 +718,7 @@ void publish_and_subscribe ()
 	    }
 	}
 	rti_amb.publishInteractionClass (posUpdateICH);
-	//rti_amb.subscribeInteractionClass (posUpdateICH);
+	rti_amb.subscribeInteractionClass (posUpdateICH);
 	
 order_handle = rti_amb.getInteractionClassHandle ("Order");
 	for (i = 0; i < NbOrderAttributes; i++)
