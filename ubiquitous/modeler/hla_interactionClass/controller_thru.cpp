@@ -560,7 +560,7 @@ htond (double host_val)
 
 void update_pos()
 {
-    double timeToGo = 60.0;
+    double timeToGo = 10.0;
     double network_order;
     RTIfedTime fedTime (timeToGo);
     vehicle1.updatePos();
@@ -656,6 +656,12 @@ process_events ()
 					}
 				break;
 				}
+			case 'g':
+			case 'G':
+				{
+				    update_pos();
+				    break;
+				}
 			case '\0':
 				{
 				break;
@@ -742,8 +748,8 @@ main(int argc, char* argv[])
     
 	    /* exercise the appropriate declaration management services to articulate
 	       the capabilities and interests of the federate */
-	    publish_and_subscribe ();
-	update_pos();
+	    //publish_and_subscribe ();
+	process_events();
 	
 	    cout << "Done with event loop, leaving the federation" << endl;
 		
