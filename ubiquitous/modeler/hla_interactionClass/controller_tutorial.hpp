@@ -330,4 +330,23 @@ private:
 private:
 };
 
+
+class  Vehicle
+{
+public:
+    Vehicle();
+    void updatePos();
+    void setPos(double x, double y, double z) {posX=x; posY=y; posZ=z;}
+    double getX() {return posX;}
+    double getY() {return posY;}
+    double getZ() {return posZ;}
+    void publishAndSubscribe() ;
+private:
+    double posX;
+    double posY;
+    double posZ;
+};
+
+
+
 #endif /* HDR_CONTROLLER_HPP */

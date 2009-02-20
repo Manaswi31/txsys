@@ -27,7 +27,7 @@ using namespace std;
 
 #include "s_hla_stream.hpp"
 
-static int verbose = 0;
+static int verbose = 1;
 
 const static double MIN_TICK_TIME = 0.051;
 const static double MAX_TICK_TIME = 0.085;
@@ -63,13 +63,23 @@ static RTI::Boolean timeAdvanceOutstanding = RTI::RTI_FALSE;
 static RTI::FederateHandle federateId;
 
 // Interarctions
+enum PosUpdateAttributes { POS_X=0, POS_Y, POS_Z, NbPosUpdateAttributes };
+static const char * const posAttrTypeStr [] = { "posX", "posY","posZ" };
+
+/*interaction class handle and param handles*/
+static RTI::InteractionClassHandle posUpdateICH ;
+static RTI::ParameterHandle posUpateParams [NbPosUpdateAttributes];
+
+static Vehicle vehicle1;
+static Vehicle vehicle2;
+
+
+
 enum OrderAttributes { Bearing, Speed, NbOrderAttributes };
 enum ReplyAttributes { Id, ChangeLat, ChangeLong, NbReplyAttributes };
 
-static const char * const orderAttrTypeStr [] =
-	{ "bearing", "speed" };
-static const char * const replyAttrTypeStr [] =
-	{ "id", "change_lat", "change_long" };
+//static const char * const posAttrTypeStr [] = { "posX", "posY","posZ" };
+
 
 static RTI::InteractionClassHandle order_handle;
 static RTI::ParameterHandle order_parameters [NbOrderAttributes];
@@ -229,12 +239,12 @@ Master_FA::receiveInteraction (
 	RTIfedTime fed_time(theTime);
 	if (verbose >= VERBOSE_LVL2 ) 
 	    cout << "Incoming interaction at time " << fed_time.getTime() << endl;
-	if (theInteraction != reply_handle)
+	if (theInteraction != posUpdateICH)
 		{
 		cerr << "Received unknown interaction " << theInteraction << endl;
 		return;
 		}
-	if (theParameters.size() != 3)
+	if (theParameters.size() != NbPosUpdateAttributes)
 		{
 		cerr << "Unexpected number of parameters " 
 			 << theParameters.size() << endl;
@@ -242,33 +252,34 @@ Master_FA::receiveInteraction (
 		}
 
 	// extract values
-	RTI::ULong	id;
-	RTI::Double	change_lat;
-	RTI::Double	change_long;
+	RTI::Double	posX;
+	RTI::Double	posY;
+	RTI::Double	posZ;
+	
 	unsigned long length;
 	RTI::ParameterHandle handle;
     char buffer [2000];
 
-	for (unsigned long i = 0; i < 3; i++)
+	for (unsigned long i = 0; i <  NbPosUpdateAttributes; i++)
 		{
 		handle = theParameters.getHandle (i);
-		if (handle == reply_parameters [Id])
+		if (handle == posUpateParams[POS_X])
 			{
 			theParameters.getValue (i, buffer, length);
 			Sim_Hla_Istream is (buffer, length);
-			is >> id;
+			is >> posX;
 			}
-		else if (handle == reply_parameters [ChangeLat])
+		else if (handle == posUpateParams[POS_Y])
 			{
 			theParameters.getValue (i, buffer, length);
 			Sim_Hla_Istream is (buffer, length);
-			is >> change_lat;
+			is >> posY;
 			}
-		else if (handle == reply_parameters [ChangeLong])
+		else if (handle == posUpateParams[POS_Z])
 			{
 			theParameters.getValue (i, buffer, length);
 			Sim_Hla_Istream is (buffer, length);
-			is >> change_long;
+			is >> posZ;
 			}
 		else
 			{
@@ -276,8 +287,12 @@ Master_FA::receiveInteraction (
 			return;
 			}
 		}
+
+	vehicle2.setPos(posX, posY, posZ);
+
 	if (verbose >= VERBOSE_LVL1)
 	{
+	    cout <<  "posX=" << posX << "," << endl;
 	}
 	/*
 	cout << "Node " << id << " has changed movement at  " 
@@ -521,52 +536,13 @@ cease_federation_participation ()
 
 /******* Declaration Management Services *****/
 
-void
-publish_and_subscribe ()
-	{
-	unsigned short i;
-
-	// declare two interactions, one published, one subscribed
-	order_handle = rti_amb.getInteractionClassHandle ("Order");
-	for (i = 0; i < NbOrderAttributes; i++)
-		{
-		try
-			{
-			order_parameters [i]
-				= rti_amb.getParameterHandle ((char * const)orderAttrTypeStr [i],
-					order_handle);
-			}
-		catch (RTI::Exception & e)
-			{
-			cerr << "Order param " << orderAttrTypeStr [i] << " causes: " << &e << endl;
-			exit (-1);
-			}
-		}
-	rti_amb.publishInteractionClass (order_handle);
-
-	reply_handle = rti_amb.getInteractionClassHandle ("Order_Reply");
-	for (i = 0; i < NbReplyAttributes; i++)
-		{
-		try
-			{
-			reply_parameters [i]
-				= rti_amb.getParameterHandle ((char * const)replyAttrTypeStr [i],
-					reply_handle);
-			}
-		catch (RTI::Exception & e)
-			{
-			cerr << "Reply param " << replyAttrTypeStr [i] << " causes: " << &e << endl;
-			exit (-1);
-			}
-		}
-			
-	rti_amb.subscribeInteractionClass (reply_handle);
-	}
 
 
 /****** Object Management Services *******/
 
 /******* Time Management, Attribute Updates, Interactions *********/
+
+
 
 double
 htond (double host_val)
@@ -580,6 +556,35 @@ htond (double host_val)
 #endif
 	return network_val;
 	}
+
+
+void update_pos()
+{
+    double timeToGo = 60.0;
+    double network_order;
+    RTIfedTime fedTime (timeToGo);
+    vehicle1.updatePos();
+    do
+	    {
+	    rti_amb.nextEventRequest (fedTime);
+	    timeAdvanceOutstanding = RTI::RTI_TRUE;
+	    while (timeAdvanceOutstanding)
+		    rti_amb.tick(0.5,1.0);
+	    }
+    while (currentTime != timeToGo);
+    RTI::ParameterHandleValuePairSet * iParams;
+    iParams = RTI::ParameterSetFactory::create (2);
+    // need to convert to network order
+    network_order = htond (vehicle1.getX());
+    iParams->add (posUpateParams [POS_X], (char *)&network_order,  sizeof (vehicle1.getX()));
+    network_order = htond (vehicle1.getY());
+    iParams->add (posUpateParams [POS_Y], (char *)&network_order,  sizeof (vehicle1.getY()));
+    network_order = htond (vehicle1.getZ());
+    iParams->add (posUpateParams [POS_Z], (char *)&network_order,  sizeof (vehicle1.getZ()));
+    rti_amb.sendInteraction (posUpdateICH, *iParams, fedTime, "");
+}
+
+
 
 void
 process_events ()
@@ -676,6 +681,47 @@ process_events ()
 		}
 	}
 
+
+
+void publish_and_subscribe ()
+{
+	unsigned short i;
+
+	// declare two interactions, one published, one subscribed
+	posUpdateICH = rti_amb.getInteractionClassHandle ("PosUpdate");
+	for (i = 0; i < NbPosUpdateAttributes; i++)
+	{
+	    try
+	    {
+		posUpateParams [i] = rti_amb.getParameterHandle ((char * const)posAttrTypeStr [i], posUpdateICH);
+	    }
+	    catch (RTI::Exception & e)
+	    {
+		cerr << "Order param " << posAttrTypeStr [i] << " causes: " << &e << endl;
+		exit (-1);
+	    }
+	}
+	rti_amb.publishInteractionClass (posUpdateICH);
+	rti_amb.subscribeInteractionClass (posUpdateICH);
+}
+
+
+/********** class Vehicle **************/
+
+Vehicle::Vehicle() : posX(0), posY(0), posZ(0)
+{
+}
+
+void Vehicle::updatePos()
+{
+	posX ++;
+	posY ++;
+	posZ ++;
+}
+
+
+
+
 /********** MAIN **************/
 
 int
@@ -697,10 +743,9 @@ main(int argc, char* argv[])
 	    /* exercise the appropriate declaration management services to articulate
 	       the capabilities and interests of the federate */
 	    publish_and_subscribe ();
+	update_pos();
 	
-		process_events ();
-
-		cout << "Done with event loop, leaving the federation" << endl;
+	    cout << "Done with event loop, leaving the federation" << endl;
 		
 	    /* resign from the federation execution and attempt to destroy */
 	    cease_federation_participation();
