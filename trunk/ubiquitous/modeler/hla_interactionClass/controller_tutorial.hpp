@@ -337,6 +337,8 @@ public:
     Vehicle();
     void updatePos();
     void setPos(double x, double y, double z) {posX=x; posY=y; posZ=z;}
+    void showPos() ; 
+
     double getX() {return posX;}
     double getY() {return posY;}
     double getZ() {return posZ;}

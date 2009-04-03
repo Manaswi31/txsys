@@ -1,0 +1,551 @@
+
+___________________________ (ODB 14.5.A: Event) ____________________________
+
+   * Time   :  0.0 sec, [0s]
+   * Event  :  execution ID (0), schedule ID (#5), type (remote intrpt), (Forced)
+   * Source :  Simulation Kernel
+   * Data   :  code (123), ev state (0x0012E7B0)
+   > Module :  top.subnet_0.HLA Interface.hla13 [Objid=5] (esys module)
+
+
+db> tst 5
+dded breakpoint #0: stop at time = (5.0 sec. [5s])
+
+db> f
+ull trace is now enabled
+
+db> c
+
+       _________Invoking process ID (0)_________
+
+       +- process ("hla13_cosim_compat")
+       |
+       | _________state (listen): enter executives_________
+       |
+       | +- op_intrpt_type ()
+       | |       intrpt type      (remote intrpt)
+       | +-------
+       |
+       | +- op_intrpt_code ()
+       | |       code             (123)
+       | +-------
+       |
+       | +- op_intrpt_state_ptr_get ()
+       | |       State Ptr        (0x0012E7B0)
+       | +-------
+       |
+       | +- op_ima_sim_attr_get (attr_type, attr_name, value_ptr)
+       | |       attr type        (OPC_IMA_STRING)
+       | |       attr name        (HLA Class Mapping File)
+       | |       completion code  (success)
+       | |       value            (HLA_Tutorial.map)
+       | +-------
+       |
+       | +- op_pk_create_fmt (format_name)
+       | |       format name      (pos_update)
+       | |       packet ID        (0)
+       | +-------
+       |
+       | +- op_pk_nfd_type (pkptr, fd_name)
+       | |       packet ID        (0)
+       | |       field name       (posX)
+       | |       field type       (floating point)
+       | +-------
+       |
+       | +- op_pk_nfd_type (pkptr, fd_name)
+       | |       packet ID        (0)
+       | |       field name       (posY)
+       | |       field type       (floating point)
+       | +-------
+       |
+       | +- op_pk_nfd_type (pkptr, fd_name)
+       | |       packet ID        (0)
+       | |       field name       (posZ)
+       | |       field type       (floating point)
+       | +-------
+       |
+       | * Kernel Action: Destroying Packet
+       |       packet ID        (0)
+       |
+       | +- op_ima_sim_attr_exists (attr_name)
+       | |       attr name        (HLA Update Check Interval)
+       | |       exists           (true)
+       | +-------
+       |
+       | +- op_ima_sim_attr_get_dbl (attr_name, value_ptr)
+       | |       attr name        (HLA Update Check Interval)
+       | |       completion code  (success)
+       | |       value            (-1.0)
+       | +-------
+       |
+       +-------
+
+       _________Returning from process ID (0)_________
+
+
+___________________________ (ODB 14.5.A: Event) ____________________________
+
+   * Time   :  0.0 sec, [0s]
+   * Event  :  execution ID (-), type (HLA integration)
+   * Source :  HLA module
+   * Data   :  none
+   > Module :  none
+
+       +- op_ev_state_install (state_ptr)
+       |       state_ptr        (0x00000000)
+       |       previous state_ptr (0x0012E7B0)
+       +-------
+
+       +-------
+
+
+___________________________ (ODB 14.5.A: Event) ____________________________
+
+   * Time   :  0.0 sec, [0s]
+   * Event  :  execution ID (1), schedule ID (#0), type (begin sim intrpt)
+   * Source :  Simulation Kernel
+   * Data   :  none
+   > Module :  top.subnet_0.vehicle1.proc [Objid=9] (processor)
+
+       _________Invoking process ID (1)_________
+
+       +- process ("vehicle_pos")
+       |
+       | _________state (init): enter executives_________
+       |
+       | +- op_id_self ()
+       | |       object ID        (9)
+       | +-------
+       |
+       | +- op_topo_parent (objid)
+       | |       child objid      (9)
+       | |       parent objid     (3)
+       | +-------
+       |
+       | +- op_ima_obj_attr_get_int32 (objid, attr_name, value_ptr)
+       | |       objid            (3)
+       | |       attr_name        (user id)
+       | |       value            (1)
+       | |       completion code  (success)
+       | +-------
+       |
+       | +- op_id_self ()
+       | |       object ID        (9)
+       | +-------
+       |
+       | +- op_hla_interaction_pk_register (objid, pk_format_name, stream_index)
+       | |       objid            (9)
+       | |       packet format    (pos_update)
+       | |       stream index     (0)
+       | |       completion code  (success)
+       | +-------
+       |
+       | _________state (init): exit executives_________
+       |
+       | _________transition from state (init) to state (wait)_________
+       |
+       | * condition: "default"
+       |
+       | _________state (wait): enter executives_________
+       |
+       +-------
+
+       _________Returning from process ID (1)_________
+
+
+___________________________ (ODB 14.5.A: Event) ____________________________
+
+   * Time   :  0.0 sec, [0s]
+   * Event  :  execution ID (2), schedule ID (#2), type (begin sim intrpt)
+   * Source :  Simulation Kernel
+   * Data   :  none
+   > Module :  top.subnet_0.vehicle2.proc [Objid=18] (processor)
+
+       _________Invoking process ID (2)_________
+
+       +- process ("vehicle_pos")
+       |
+       | _________state (init): enter executives_________
+       |
+       | +- op_id_self ()
+       | |       object ID        (18)
+       | +-------
+       |
+       | +- op_topo_parent (objid)
+       | |       child objid      (18)
+       | |       parent objid     (4)
+       | +-------
+       |
+       | +- op_ima_obj_attr_get_int32 (objid, attr_name, value_ptr)
+       | |       objid            (4)
+       | |       attr_name        (user id)
+       | |       value            (2)
+       | |       completion code  (success)
+       | +-------
+       |
+       | _________state (init): exit executives_________
+       |
+       | _________transition from state (init) to state (wait)_________
+       |
+       | * condition: "default"
+       |
+       | _________state (wait): enter executives_________
+       |
+       +-------
+
+       _________Returning from process ID (2)_________
+
+
+___________________________ (ODB 14.5.A: Event) ____________________________
+
+   * Time   :  0.0 sec, [0s]
+   * Event  :  execution ID (3), schedule ID (#4), type (begin sim intrpt)
+   * Source :  Simulation Kernel
+   * Data   :  none
+   > Module :  top.subnet_0.HLA Interface.hla13 [Objid=5] (esys module)
+
+       _________Invoking process ID (0)_________
+
+       +- process ("hla13_cosim_compat")
+       |
+       | _________state (listen): exit executives_________
+       |
+       | _________transition from state (listen) to state (listen)_________
+       |
+       | * condition: "default"
+       |
+       | _________state (listen): enter executives_________
+       |
+       | +- op_intrpt_type ()
+       | |       intrpt type      (begin sim intrpt)
+       | +-------
+       |
+       | +- op_intrpt_type ()
+       | |       intrpt type      (begin sim intrpt)
+       | +-------
+       |
+       | +- op_sim_message (line1, line2)
+       | |       line 1           (HLA Interface: hla_cosim process model: unknown event type 8)
+       | |       line 2           ()
+-----------------------------------------------------------------------------|
+ Module (5), (top.subnet_0.HLA Interface.hla13)                              |
+ From procedure: hla13_cosim_compat [listen enter execs]                     |
+ HLA Interface: hla_cosim process model: unknown event type 8                |
+-----------------------------------------------------------------------------|
+       | +-------
+       |
+       +-------
+
+       _________Returning from process ID (0)_________
+
+
+___________________________ (ODB 14.5.A: Event) ____________________________
+
+   * Time   :  0.0 sec, [0s]
+   * Event  :  execution ID (4), schedule ID (#1), type (regular intrpt)
+   * Source :  Simulation Kernel
+   * Data   :  none
+   > Module :  top.subnet_0.vehicle1.proc [Objid=9] (processor)
+
+       _________Invoking process ID (1)_________
+
+       +- process ("vehicle_pos")
+       |
+       | _________state (wait): exit executives_________
+       |
+       | +- op_intrpt_type ()
+       | |       intrpt type      (regular intrpt)
+       | +-------
+       |
+       | _________transition from state (wait) to state (wait)_________
+       |
+       | * condition: "default"
+       |
+       | _________state (wait): enter executives_________
+       |
+       +-------
+
+       _________Returning from process ID (1)_________
+
+
+___________________________ (ODB 14.5.A: Event) ____________________________
+
+   * Time   :  0.0 sec, [0s]
+   * Event  :  execution ID (5), schedule ID (#3), type (regular intrpt)
+   * Source :  Simulation Kernel
+   * Data   :  none
+   > Module :  top.subnet_0.vehicle2.proc [Objid=18] (processor)
+
+       _________Invoking process ID (2)_________
+
+       +- process ("vehicle_pos")
+       |
+       | _________state (wait): exit executives_________
+       |
+       | +- op_intrpt_type ()
+       | |       intrpt type      (regular intrpt)
+       | +-------
+       |
+       | _________transition from state (wait) to state (wait)_________
+       |
+       | * condition: "default"
+       |
+       | _________state (wait): enter executives_________
+       |
+       +-------
+
+       _________Returning from process ID (2)_________
+
+
+___________________________ (ODB 14.5.A: Event) ____________________________
+
+   * Time   :  1.0 sec, [1s]
+   * Event  :  execution ID (6), schedule ID (#6), type (regular intrpt)
+   * Source :  Simulation Kernel
+   * Data   :  none
+   > Module :  top.subnet_0.vehicle1.proc [Objid=9] (processor)
+
+       _________Invoking process ID (1)_________
+
+       +- process ("vehicle_pos")
+       |
+       | _________state (wait): exit executives_________
+       |
+       | +- op_intrpt_type ()
+       | |       intrpt type      (regular intrpt)
+       | +-------
+       |
+       | _________transition from state (wait) to state (wait)_________
+       |
+       | * condition: "default"
+       |
+       | _________state (wait): enter executives_________
+       |
+       +-------
+
+       _________Returning from process ID (1)_________
+
+
+___________________________ (ODB 14.5.A: Event) ____________________________
+
+   * Time   :  1.0 sec, [1s]
+   * Event  :  execution ID (7), schedule ID (#7), type (regular intrpt)
+   * Source :  Simulation Kernel
+   * Data   :  none
+   > Module :  top.subnet_0.vehicle2.proc [Objid=18] (processor)
+
+       _________Invoking process ID (2)_________
+
+       +- process ("vehicle_pos")
+       |
+       | _________state (wait): exit executives_________
+       |
+       | +- op_intrpt_type ()
+       | |       intrpt type      (regular intrpt)
+       | +-------
+       |
+       | _________transition from state (wait) to state (wait)_________
+       |
+       | * condition: "default"
+       |
+       | _________state (wait): enter executives_________
+       |
+       +-------
+
+       _________Returning from process ID (2)_________
+
+
+___________________________ (ODB 14.5.A: Event) ____________________________
+
+   * Time   :  2.0 sec, [2s]
+   * Event  :  execution ID (8), schedule ID (#8), type (regular intrpt)
+   * Source :  Simulation Kernel
+   * Data   :  none
+   > Module :  top.subnet_0.vehicle1.proc [Objid=9] (processor)
+
+       _________Invoking process ID (1)_________
+
+       +- process ("vehicle_pos")
+       |
+       | _________state (wait): exit executives_________
+       |
+       | +- op_intrpt_type ()
+       | |       intrpt type      (regular intrpt)
+       | +-------
+       |
+       | _________transition from state (wait) to state (wait)_________
+       |
+       | * condition: "default"
+       |
+       | _________state (wait): enter executives_________
+       |
+       +-------
+
+       _________Returning from process ID (1)_________
+
+
+___________________________ (ODB 14.5.A: Event) ____________________________
+
+   * Time   :  2.0 sec, [2s]
+   * Event  :  execution ID (9), schedule ID (#9), type (regular intrpt)
+   * Source :  Simulation Kernel
+   * Data   :  none
+   > Module :  top.subnet_0.vehicle2.proc [Objid=18] (processor)
+
+       _________Invoking process ID (2)_________
+
+       +- process ("vehicle_pos")
+       |
+       | _________state (wait): exit executives_________
+       |
+       | +- op_intrpt_type ()
+       | |       intrpt type      (regular intrpt)
+       | +-------
+       |
+       | _________transition from state (wait) to state (wait)_________
+       |
+       | * condition: "default"
+       |
+       | _________state (wait): enter executives_________
+       |
+       +-------
+
+       _________Returning from process ID (2)_________
+
+
+___________________________ (ODB 14.5.A: Event) ____________________________
+
+   * Time   :  3.0 sec, [3s]
+   * Event  :  execution ID (10), schedule ID (#10), type (regular intrpt)
+   * Source :  Simulation Kernel
+   * Data   :  none
+   > Module :  top.subnet_0.vehicle1.proc [Objid=9] (processor)
+
+       _________Invoking process ID (1)_________
+
+       +- process ("vehicle_pos")
+       |
+       | _________state (wait): exit executives_________
+       |
+       | +- op_intrpt_type ()
+       | |       intrpt type      (regular intrpt)
+       | +-------
+       |
+       | _________transition from state (wait) to state (wait)_________
+       |
+       | * condition: "default"
+       |
+       | _________state (wait): enter executives_________
+       |
+       +-------
+
+       _________Returning from process ID (1)_________
+
+
+___________________________ (ODB 14.5.A: Event) ____________________________
+
+   * Time   :  3.0 sec, [3s]
+   * Event  :  execution ID (11), schedule ID (#11), type (regular intrpt)
+   * Source :  Simulation Kernel
+   * Data   :  none
+   > Module :  top.subnet_0.vehicle2.proc [Objid=18] (processor)
+
+       _________Invoking process ID (2)_________
+
+       +- process ("vehicle_pos")
+       |
+       | _________state (wait): exit executives_________
+       |
+       | +- op_intrpt_type ()
+       | |       intrpt type      (regular intrpt)
+       | +-------
+       |
+       | _________transition from state (wait) to state (wait)_________
+       |
+       | * condition: "default"
+       |
+       | _________state (wait): enter executives_________
+       |
+       +-------
+
+       _________Returning from process ID (2)_________
+
+
+___________________________ (ODB 14.5.A: Event) ____________________________
+
+   * Time   :  4.0 sec, [4s]
+   * Event  :  execution ID (12), schedule ID (#12), type (regular intrpt)
+   * Source :  Simulation Kernel
+   * Data   :  none
+   > Module :  top.subnet_0.vehicle1.proc [Objid=9] (processor)
+
+       _________Invoking process ID (1)_________
+
+       +- process ("vehicle_pos")
+       |
+       | _________state (wait): exit executives_________
+       |
+       | +- op_intrpt_type ()
+       | |       intrpt type      (regular intrpt)
+       | +-------
+       |
+       | _________transition from state (wait) to state (wait)_________
+       |
+       | * condition: "default"
+       |
+       | _________state (wait): enter executives_________
+       |
+       +-------
+
+       _________Returning from process ID (1)_________
+
+
+___________________________ (ODB 14.5.A: Event) ____________________________
+
+   * Time   :  4.0 sec, [4s]
+   * Event  :  execution ID (13), schedule ID (#13), type (regular intrpt)
+   * Source :  Simulation Kernel
+   * Data   :  none
+   > Module :  top.subnet_0.vehicle2.proc [Objid=18] (processor)
+
+       _________Invoking process ID (2)_________
+
+       +- process ("vehicle_pos")
+       |
+       | _________state (wait): exit executives_________
+       |
+       | +- op_intrpt_type ()
+       | |       intrpt type      (regular intrpt)
+       | +-------
+       |
+       | _________transition from state (wait) to state (wait)_________
+       |
+       | * condition: "default"
+       |
+       | _________state (wait): enter executives_________
+       |
+       +-------
+
+       _________Returning from process ID (2)_________
+
+       +- Hla13_Cosim_Compat_Federate_Ambassador::receiveInteraction (theInteraction, theParamet
+ theTime, theTag)
+       |
+       | +- op_ev_state_install (state_ptr)
+       | |       state_ptr        (0x0012B0E8)
+       | |       previous state_ptr (0x00000000)
+       | +-------
+       |
+       | +- op_intrpt_force_remote (code, mod_objid)
+       | |       code             (123)
+       | |       module objid     (5)
+       | |       module           (top.subnet_0.HLA Interface.hla13 [Objid=5])
+
+
+___________________________ (ODB 14.5.A: Event) ____________________________
+
+   * Time   :  5.0 sec, [5s]
+   * Event  :  execution ID (14), schedule ID (#16), type (remote intrpt), (Forced)
+   * Source :  Simulation Kernel
+   * Data   :  code (123), ev state (0x0012B0E8)
+   > Module :  top.subnet_0.HLA Interface.hla13 [Objid=5] (esys module)

@@ -334,16 +334,15 @@ class  Vehicle
 {
 public:
     Vehicle();
-    double updatePos();
-    double getX() {return posX};
-    double getY() {return posY};
-    double getZ() {return posZ};
+    void updatePos();
+    double getX() {return posX;}
+    double getY() {return posY;}
+    double getZ() {return posZ;}
+    void Init() ;
 private:
-    const RTI::FedTime & theTime,
     double posX;
     double posY;
     double posZ;
-
 };
 
 

@@ -480,7 +480,7 @@ cease_federation_participation ()
 	}
     catch ( RTI::Exception& e )
 	{
-		cerr << "Error:" << &e << endl;
+		cerr << "Error 1:" << &e << endl;
 		return;
 	}
 
@@ -492,10 +492,11 @@ cease_federation_participation ()
 	catch ( RTI::FederatesCurrentlyJoined &)
 	{
 		// not an error, other federates remaining
+		cerr << "Error: other federates remaining" << endl;
 	}
 	catch ( RTI::Exception & e)
 	{
-		cerr << "Error:" << &e << endl;
+		cerr << "Error 2:" << &e << endl;
 	}
 }
 
@@ -662,13 +663,57 @@ process_events ()
 Vehicle::Vehicle() : posX(0), posY(0), posZ(0)
 {
     //To get FA instance. Retrieving Federation time to compute position.
-    RTIfedTime fed_time(theTime);
 }
 
-double Vehicle::updatePos()
+void Vehicle::Init()
 {
 }
 
+void Vehicle::updatePos()
+{
+
+    double timeToGo = currentTime.getTime();
+    double delta = 0.0;
+    double oldTime, newTime;
+    RTIfedTime fedTime (timeToGo);
+    timeToGo += 60.0;
+    do {
+    rti_amb.nextEventRequest (fedTime);
+    delta = fedTime.getTime() - oldTime;
+    oldTime = fedTime.getTime();
+    timeAdvanceOutstanding = RTI::RTI_TRUE;
+    this->posX += 1.0*delta;
+    while (timeAdvanceOutstanding) { rti_amb.tick(0.5,1.0); }
+    } while (currentTime != timeToGo);
+}
+
+void processEvents()
+{
+	try
+	{
+		RTI::ObjectClassHandle hPlaneClass = rti_amb->getObjectClassHandle("Vehicle");
+		g_hxPos = rti_amb->getAttributeHandle(hPlaneClass, "xPos");					//获取对象类参数句柄
+		//g_hyPos = rti_amb->getAttributeHandle(hPlaneClass, "yPos");				//获取对象类参数句柄
+
+		AttributeHandleSet theAttributes;
+		theAttributes.push_back(g_hxPos);	//可以使用insert插入多个属性句柄，不需要考虑顺序。
+		//theAttributes.insert(g_hyPos);
+
+		rti_amb->publishObjectClass(hPlaneClass, theAttributes);			//公布plane类的xPos属性
+		rti_amb->subscribeObjectClassAttributes(g_hxPos, theAttributes);		//定购plane类的xPos属性
+
+		//登记3个实体（即1516标准中的对象）
+		//以缺省方式登记，对象实例名由RTI自动分配；
+		g_hInstance1 = rti_amb->registerObjectInstance(hPlaneClass);					
+		g_hInstance1 = rti_amb->registerObjectInstance(hPlaneClass);					
+	}
+	catch(...)
+	{
+		cerr << "Error in publishSubscribeRegister"<<endl;
+		return (1);
+	}
+	return (0);
+}
 
 
 /********** MAIN **************/
@@ -676,13 +721,15 @@ double Vehicle::updatePos()
 int
 main(int argc, char* argv[])
 	{
+	    /*
 	if (argc < 2)
 		{
 		cerr << "Usage : " << argv[0] << " <FederationName>" << endl;
 		return 1;
 		}
+		*/
 
-	fedExecName = argv [1];
+	fedExecName = "HLA_Tutorial";
 
   	try
 		{
@@ -696,9 +743,12 @@ main(int argc, char* argv[])
     
 	    /* exercise the appropriate declaration management services to articulate
 	       the capabilities and interests of the federate */
-	    publish_and_subscribe ();
+	    //publish_and_subscribe ();
+	    Vehicle vh1;
+	    vh1.updatePos();
+	    Vehicle vh2;
 	
-		process_events ();
+		//process_events ();
 
 		cout << "Done with event loop, leaving the federation" << endl;
 		
