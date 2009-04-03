@@ -295,8 +295,9 @@ Master_FA::receiveInteraction (
 
 	if (verbose >= VERBOSE_LVL1)
 	{
-	    cout <<  "posX=" << posX << "," << endl;
+	    vehicle2.showPos();
 	}
+
 	/*
 	cout << "Node " << id << " has changed movement at  " 
 		 << change_lat << ", " << change_long << endl << "******" << endl;
@@ -524,7 +525,7 @@ cease_federation_participation ()
 	// then try to destroy the federation
 	try
 	{
-		rti_amb.destroyFederationExecution ((char * const) fedExecName);
+		//rti_amb.destroyFederationExecution ((char * const) fedExecName);
 	}
 	catch ( RTI::FederatesCurrentlyJoined &)
 	{
@@ -769,6 +770,13 @@ void Vehicle::updatePos()
 	posX ++;
 	posY ++;
 	posZ ++;
+}
+
+void Vehicle::showPos() 
+{ 
+    cout << "posX=" << posX << endl
+    << "posY=" << posY << endl
+    << "posZ=" << posZ << endl;
 }
 
 

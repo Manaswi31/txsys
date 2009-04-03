@@ -1,18 +1,10 @@
 (mapping version 2
- ( types  
-    ( Info_Type 
-      ( attribute number_units "Number Units" long ) 
-      ( attribute cost          Cost          double ) 
-      ( attribute brand         Brand         string ) 
-    ) 
-  ) 
   ( objects 
-    ( class hla_object node mobile  
-      ( class_set ( model == HLA_Object string ) ) 
+    ( class Vehicle node mobile  
+      ( class_set ( name contains vehicle string ) ) 
       ( creation_mode dynamic name_match name string ) 
-      ( attribute update_request  "Update Request"  long         S ) 
-      ( attribute update_time     "Update Time"     double       P ) 
-      ( attribute information      Information      Info_Type    P ) 
+      ( attribute posX  "x position" double         S ) 
+      ( attribute posX  "x position" double         P ) 
     ) 
   ) 
     
