@@ -15,7 +15,8 @@ using namespace std;
      VBR_INTVL_EXPO
  };
 
-class VBR_Traffic : public TrafficGenerator {
+class VBR_Traffic : public TrafficGenerator 
+{
  public:
 	VBR_Traffic();
 	virtual double next_interval(int&);
@@ -35,10 +36,12 @@ class VBR_Traffic : public TrafficGenerator {
 };
 
 
-static class VBRTrafficClass : public TclClass {
+static class VBRTrafficClass : public TclClass 
+{
  public:
 	VBRTrafficClass() : TclClass("Application/Traffic/VBR") {}
-	TclObject* create(int, const char*const*) {
+	TclObject* create(int, const char*const*) 
+	{
 		return (new VBR_Traffic());
 	}
 } class_vbr_traffic;
@@ -58,10 +61,11 @@ void VBR_Traffic::init()
 {
         // compute inter-packet interval
 	interval_ = (double)(size_ << 3)/(double)rate_;
-	if (agent_)
+	if (agent_) {
 		if (agent_->get_pkttype() != PT_TCP &&
  		    agent_->get_pkttype() != PT_TFRC)
 			agent_->set_pkttype(PT_VBR);
+	}
 }
 
 void VBR_Traffic::start()
@@ -75,10 +79,8 @@ double VBR_Traffic::next_interval(int& size)
 {
 	//interval_ = (double)(size_ << 3)/(double)rate_;
 	double t = interval_;
-	switch (random_)
-	{
-	    case VBR_INTVL_UNIFORM :
-	    {
+	switch (random_) {
+	    case VBR_INTVL_UNIFORM : {
 		t = Random::uniform(para1_, para2_);
 
 		//for debug
@@ -86,9 +88,7 @@ double VBR_Traffic::next_interval(int& size)
 		    cout << "Generating uniform distribution." << endl;
 
 	        break;
-	    }
-	    case VBR_INTVL_NORMAL :
-	    {
+	    } case VBR_INTVL_NORMAL : {
 		t = Random::normal(para1_, para2_);
 
 		//for debug
@@ -100,19 +100,14 @@ double VBR_Traffic::next_interval(int& size)
 		    cout << "Generating normal distribution." << endl;
 
 	        break;
-	    }
-	    case VBR_INTVL_EXPO :
-	    {
+	    } case VBR_INTVL_EXPO : {
 		t = Random::exponential(para1_);
 
 		//for debug
-		if (verbose >= 2)
-		{
+		if (verbose >= 2) {
 		    cout << "exponential output: " << t << endl;
-		}
-		else if (verbose >= 1)
+		} else if (verbose >= 1)
 		    cout << "Generating exponential distribution." << endl;
-
 	        break;
 	    }
 	    default :
@@ -120,13 +115,11 @@ double VBR_Traffic::next_interval(int& size)
 	} //switch case
 
 	size = size_;
-	if (++seqno_ < maxpkts_)
-	{
+	if (++seqno_ < maxpkts_) {
 	    if (verbose >=2 )
 		cout << "Returning random interval" << endl;
 	    return(t);
 	}
-	else
-		return(-1);
+	else return(-1);
 }
 
