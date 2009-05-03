@@ -92,8 +92,7 @@ double VBR_Traffic::next_interval(int& size)
 		t = Random::normal(para1_, para2_);
 
 		//for debug
-		if (verbose >= 2)
-		{
+		if (verbose >= 2) {
 		    cout << "normal output: " << t << endl;
 		}
 		else if (verbose >= 1)
