@@ -1,56 +1,57 @@
-autostart=false
+autostart = False
 
 [localhost]
-port=7200
-workingdir=temp
-
+ port = 7200
+ workingdir = temp
+ 
  [[router Pescara]]
-        image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
-        model = 3640
-        console = 3001
-        ram = 96
-        confreg = 0x2102
-        exec_area = 64
-        mmap = true
-        slot0 = NM-4T
-        s0/0 = Pauillac s0/2
-    [[router Pauillac]]
-        image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
-        model = 3640
-        console = 3002
-        ram = 96
-        confreg = 0x2102
-        exec_area = 64
-        mmap = true
-        slot0 = NM-4T
-	s0/0 = Pulligny s0/0
-	s0/1 = Pomerol s0/0
-    [[router Pulligny]]
-        image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
-        model = 3640
-        console = 3003
-        ram = 96
-        confreg = 0x2102
-        exec_area = 64
-        mmap = true
-        slot0 = NM-4T
-	s0/1 = Pomerol s0/1
-    [[router Pomerol]]
-        image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
-        model = 3640
-        console = 3004
-        ram = 96
-        confreg = 0x2102
-        exec_area = 64
-        mmap = true
-        slot0 = NM-4T
-	s0/2 = Pesaro s0/0
-    [[router Pesaro]]
-        image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
-        model = 3640
-        console = 3005
-        ram = 96
-        confreg = 0x2102
-        exec_area = 64
-        mmap = true
-        slot0 = NM-4T
+  image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
+  model = 3640
+  console = 3001
+  ram = 96
+  confreg = 0x2102
+  exec_area = 64
+  mmap = True
+  slot0 = NM-4T
+  s0/0 = Pauillac s0/2
+  idlepc = 0xffffffff8000bc5c
+ [[router Pauillac]]
+  image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
+  model = 3640
+  console = 3002
+  ram = 96
+  confreg = 0x2102
+  exec_area = 64
+  mmap = True
+  slot0 = NM-4T
+  s0/0 = Pulligny s0/0
+  s0/1 = Pomerol s0/0
+ [[router Pulligny]]
+  image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
+  model = 3640
+  console = 3003
+  ram = 96
+  confreg = 0x2102
+  exec_area = 64
+  mmap = True
+  slot0 = NM-4T
+  s0/1 = Pomerol s0/1
+ [[router Pomerol]]
+  image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
+  model = 3640
+  console = 3004
+  ram = 96
+  confreg = 0x2102
+  exec_area = 64
+  mmap = True
+  slot0 = NM-4T
+  s0/2 = Pesaro s0/0
+ [[router Pesaro]]
+  image = /home/wjb/dynamips/image/c3640-jk9s-mz.124-8.bin
+  model = 3640
+  console = 3005
+  ram = 96
+  confreg = 0x2102
+  exec_area = 64
+  mmap = True
+  slot0 = NM-4T

@@ -1,37 +1,38 @@
-autostart=false
+autostart = False
 
 [localhost]
-port=7200
-
-[[3725]]
-image = /home/wjb/dynamips/image/c3725-adventerprisek9-mz.124-15.T5.bin
-ram = 256
-
+  port = 7200
+  
+  [[3725]]
+    image = /home/wjb/dynamips/image/c3725-adventerprisek9-mz.124-15.T5.bin
+    ram = 256
+  
   [[router R1]]
-        model = 3725
-        console = 3001
-        confreg = 0x2102
-        exec_area = 64
-        mmap = true
-        slot1 =  NM-16ESW 
-        f0/1 = R2 f0/0
-     
-    [[router R2]]
-        model = 3725
-        console = 3002
-        ram = 96
-        confreg = 0x2102
-        exec_area = 64
-        mmap = true
-        slot1 =  NM-16ESW 
-        f0/1 = R3 f0/0
-     
-    [[router R3]]
-        model = 3725
-        console = 3003
-        ram = 96
-        confreg = 0x2102
-        exec_area = 64
-        mmap = true
-        slot1 =  NM-16ESW 
-        f0/1 = R1 f0/0 
+    model = 3725
+    console = 3001
+    confreg = 0x2102
+    exec_area = 64
+    mmap = True
+    slot1 = NM-16ESW
+    f0/1 = R2 f0/0
+    idlepc = 0xffffffff8000b1dc
+  
+  [[router R2]]
+    model = 3725
+    console = 3002
+    ram = 96
+    confreg = 0x2102
+    exec_area = 64
+    mmap = True
+    slot1 = NM-16ESW
+    f0/1 = R3 f0/0
+  
+  [[router R3]]
+    model = 3725
+    console = 3003
+    ram = 96
+    confreg = 0x2102
+    exec_area = 64
+    mmap = True
+    slot1 = NM-16ESW
+    f0/1 = R1 f0/0

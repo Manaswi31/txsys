@@ -1,11 +1,16 @@
+
+#include <stdio.h>
+#include <stdarg.h>
+
 void arg_test(int i, ...);
 int main(int argc,char *argv[])
 {
- int int_size = _INTSIZEOF(int);
+ //int int_size = _INTSIZEOF(int);
+ int int_size = sizeof (int);
  printf("int_size=%d\n", int_size);
  arg_test(0, 4);
  
- arg_cnt(4,1,2,3,4);
+ //arg_cnt(4,1,2,3,4);
  return 0;
 }
 void arg_test(int i, ...)
