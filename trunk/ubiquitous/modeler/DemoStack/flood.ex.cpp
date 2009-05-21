@@ -32,3 +32,24 @@ void FloodRTEntry::addSeq(seq_t seq)
     if (seq < minSeq_) return; /*This is a past seq_num, ignore it*/
     else if (seq > maxSeq_) maxSeq_ = seq;
 }
+
+FloodRTEntry FloodRTable::rtLoopUp(Rid id)
+{
+    list<int>::interator it ;
+    for (it= rTable.begin(); it!=rTable.end();it++) {
+	if (it->src_==id) break;
+    }
+    return *it;
+
+}
+
+void FloodRTable::rtDelete(Rid id)
+{
+    FloodRTEntry * rt = rtLoopUp(id);
+    if (rt != NULL) {
+    }
+}
+
+
+//EOF
+
