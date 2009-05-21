@@ -30,7 +30,6 @@ bool MFlood_RTEntry::isNewSeq(u_int32_t seq) {
 }
 
 void MFlood_RTEntry::addSeq(u_int32_t seq) {
-	u_int16_t min_it = 0;
 	if (seq < min_seqno) return;
 	if (seq > max_seqno) max_seqno = seq;
 	rt_seqnos[seq_it++] = seq;
