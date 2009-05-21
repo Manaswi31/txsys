@@ -59,8 +59,18 @@ static void press_call_button(void)
 static void gen(void)
 	{
 	Packet * pkptr;
+
 	FIN(gen());
-	pkptr = op_pk_create(114);
+
+	/*partitioning and interleaving are currently not modeled.*/
+	/*payload of a normal burst is 114 bits*/
+	pkptr = op_pk_create(0);
+
+	/*For a normal burst, the contents of fields are not modeled*/
+	op_pk_fd_set(pkptr, Openbts_Burst_Fd_Index_Category, OPC_FIELD_TYPE_UNSPEC, 0);
+	op_pk_fd_set(pkptr, Openbts_Burst_Fd_Index_Overhead, OPC_FIELD_TYPE_UNSPEC, 34);
+	op_pk_fd_set(pkptr, Openbts_Burst_Fd_Index_Payload, OPC_FIELD_TYPE_UNSPEC, 114);
+
 	op_pk_send(pkptr, sv_out_strm);
 	
 	
