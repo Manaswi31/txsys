@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <process-model model-name="openbts_ms_user" code-language="C" tv-in-db="no" tv-in-tb="no">
-	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="5" OPNET-model-data-version="14.0.A"/>
+	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="8" OPNET-model-data-version="14.0.A"/>
 	<model-attributes>
 		<attribute name="On_Off" group="User Traffic" type="toggle">
 			<properties type="toggle" auto-assign="no" symbolic-only="no">
@@ -26,46 +26,89 @@
 <![CDATA[
 Boolean	\sv_traf_on_flag;
 
+Objid	\sv_phy_objid;
+
+int	\sv_out_strm;
+
 ]]>
 	</state-variables>
+	<temporary-variables>
+<![CDATA[
+int intrpt_code;
+]]>
+	</temporary-variables>
 	<header-block>
 <![CDATA[
+#include "../include/openbts_support.h"
 #define NO_TRAFFIC (sv_traf_on_flag==OPC_FALSE)
+#define CALL_SUCCESS (intrpt_code==User_Conn_Inited)
 ]]>
 	</header-block>
 	<function-block>
 <![CDATA[
+static void press_call_button(void)
+{
+    FIN(press_call_button());
+
+    /*Tell PHY that I'd like to make a call*/
+    op_intrpt_schedule_remote (op_sim_time(), Phy_Conn_Req, sv_phy_objid);
+
+    FOUT;
+}
+
 static void gen(void)
 	{
 	Packet * pkptr;
 	FIN(gen());
 	pkptr = op_pk_create(114);
-	op_pk_send(pkptr);
+	op_pk_send(pkptr, sv_out_strm);
 	
 	
-	op_intrpt_schedule_self(op_sim_time()+VOICE_INTVL, 0);
+	op_intrpt_schedule_self(op_sim_time() + VOICE_INTVL, 0);
 	
 	FOUT;
 	}
 ]]>
 	</function-block>
 	<states initial-state-id="0">
-		<state id="0" x="210" y="150">
+		<state id="0" x="90" y="90">
 			<attribute name="name" type="string" value="Init"/>
 			<attribute name="Enter Execs" type="textlist">
 				<value-text>
 <![CDATA[
+Objid node_objid;
+node_objid = op_topo_parent(op_id_self());
+sv_phy_objid = op_id_from_name (node_objid, OPC_OBJTYPE_PROC, "phy");
 op_ima_obj_attr_get_toggle(op_id_self(), "On_Off", & sv_traf_on_flag);
+sv_out_strm = 0;
+
 ]]>
 				</value-text>
 			</attribute>
 			<attribute name="status" type="toggle" value="1"/>
 		</state>
 		<state id="1" x="390" y="210">
-			<attribute name="name" type="string" value="Idle"/>
+			<attribute name="name" type="string" value="Wait"/>
 		</state>
 		<state id="2" x="270" y="330">
 			<attribute name="name" type="string" value="No_traf"/>
+		</state>
+		<state id="3" x="390" y="90">
+			<attribute name="name" type="string" value="Wait_Call_Setup"/>
+			<attribute name="Enter Execs" type="textlist">
+				<value-text>
+<![CDATA[
+press_call_button();
+]]>
+				</value-text>
+			</attribute>
+			<attribute name="Exit Execs" type="textlist">
+				<value-text>
+<![CDATA[
+intrpt_code = op_intrpt_code();
+]]>
+				</value-text>
+			</attribute>
 		</state>
 	</states>
 	<transitions>
@@ -77,17 +120,23 @@ op_ima_obj_attr_get_toggle(op_id_self(), "On_Off", & sv_traf_on_flag);
 			<attribute name="name" type="string" value="tr_0"/>
 			<attribute name="executive" type="string" value="gen()"/>
 		</transition>
-		<transition source-state-id="0" destination-state-id="1" label-x="323" label-y="152">
-			<path-point x="214" y="142"/>
-			<path-point x="411" y="209"/>
-			<attribute name="name" type="string" value="tr_1"/>
-			<attribute name="condition" type="string" value="! NO_TRAF"/>
-		</transition>
-		<transition source-state-id="0" destination-state-id="2" label-x="271" label-y="244">
-			<path-point x="204" y="164"/>
+		<transition source-state-id="0" destination-state-id="2" label-x="212" label-y="215">
+			<path-point x="84" y="104"/>
 			<path-point x="262" y="324"/>
 			<attribute name="name" type="string" value="tr_2"/>
-			<attribute name="condition" type="string" value="NO_TRAF"/>
+			<attribute name="condition" type="string" value="NO_TRAFFIC"/>
+		</transition>
+		<transition source-state-id="0" destination-state-id="3" label-x="221" label-y="76">
+			<path-point x="102" y="86"/>
+			<path-point x="377" y="100"/>
+			<attribute name="name" type="string" value="tr_1"/>
+			<attribute name="condition" type="string" value="! NO_TRAFFIC"/>
+		</transition>
+		<transition source-state-id="3" destination-state-id="1" label-x="392" label-y="150">
+			<path-point x="395" y="102"/>
+			<path-point x="389" y="197"/>
+			<attribute name="name" type="string" value="tr_4"/>
+			<attribute name="condition" type="string" value="CALL_SUCCESS"/>
 		</transition>
 	</transitions>
 </process-model>
