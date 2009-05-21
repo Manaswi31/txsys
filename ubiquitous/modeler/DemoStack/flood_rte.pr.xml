@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<process-model model-name="flood_rte" code-language="C++" tv-in-db="no" tv-in-tb="no">
+	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="8" OPNET-model-data-version="14.0.A"/>
+	<attribute-assignments>
+		<assignment attribute-name="subqueue" type="compound">
+			<sub-object>
+				<attribute creation-mechanics="Model" name="count" type="integer" value="1"/>
+				<attribute creation-mechanics="Model" name="list" type="object list">
+					<object-list>
+						<sub-object/>
+					</object-list>
+				</attribute>
+			</sub-object>
+		</assignment>
+	</attribute-assignments>
+	<header-block>
+<![CDATA[
+#include "flood.h"
+]]>
+	</header-block>
+	<states initial-state-id="0">
+		<state id="0" x="270" y="210">
+			<attribute name="name" type="string" value="st_0"/>
+		</state>
+	</states>
+	<external-sources>
+<![CDATA[
+flood
+]]>
+	</external-sources>
+</process-model>
