@@ -7,6 +7,7 @@
 
 
 #include <assert.h>
+#include <list>
 
 static const int INFINITY =  0xff;
 static const int MaxSeqNum = 1000;
@@ -30,6 +31,16 @@ class FloodRTEntry
 	seq_t  minSeqNum_;
 	Rid src_;
 };
+
+class FloodRTable
+{
+    public:
+	FloodRTable();
+	void rtDelete(Rid toDel);
+	void rtLoopUp(Rid toFind);
+    private:
+	std::list <FloodRTEntry> rTable;
+} ;
 
 
 #endif
