@@ -1,8 +1,7 @@
 #include "../include/opencell_support.h"
 
-Openbts_Func_Fin_Status 
-cur_frame_calc (Openbts_Frame_Struct* frame_struct, simtime_t cur_time);
-
+Opencell_Func_Fin_Status 
+cur_frame_calc (Opencell_Frame_Struct* frame_struct, simtime_t cur_time)
 {
     int cur_slot_num;
 
@@ -18,7 +17,7 @@ cur_frame_calc (Openbts_Frame_Struct* frame_struct, simtime_t cur_time);
     
     /*how many TDMA frames are there?*/
     frame_struct->TDMA_frame_seq = (int) (frame_struct->slot_num / SLOT_PER_FRAME);
-    if (frame_struct->multiframe_type==Openbts_Ctrl) {
+    if (frame_struct->multiframe_type==Opencell_Ctrl) {
 	frame_struct->multi_frame_seq = (int) (frame_struct->tdma_frame_seq / 51);
 	frame_struct->tdma_frame_seq %= 51;
     } else {
@@ -26,10 +25,10 @@ cur_frame_calc (Openbts_Frame_Struct* frame_struct, simtime_t cur_time);
 	frame_struct->tdma_frame_seq %= 26;
     }
 
-    FRET (OPENBTS_SUCCESS);
+    FRET (OPENCELL_SUCCESS);
 }
 
-void frame_struct_debug (Openbts_Frame_Struct* frame_struct)
+void frame_struct_debug (Opencell_Frame_Struct* frame_struct)
 {
     char message[1024];
 

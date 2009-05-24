@@ -30,6 +30,7 @@
 		<module type="proc" id="9" x="154" y="108">
 			<module-attributes>
 				<attribute name="name" type="string" value="RR"/>
+				<attribute name="process model" type="typed file" spectype="9" value="opencell_ms_rr"/>
 			</module-attributes>
 		</module>
 	</node-modules>

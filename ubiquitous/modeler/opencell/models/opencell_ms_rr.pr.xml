@@ -35,25 +35,7 @@ begsim intrpt
 	</interfaces>
 	<state-variables>
 <![CDATA[
-Stathandle	\bits_rcvd_stathandle;
-
-Stathandle	\bitssec_rcvd_stathandle;
-
-Stathandle	\pkts_rcvd_stathandle;
-
-Stathandle	\pktssec_rcvd_stathandle;
-
-Stathandle	\ete_delay_stathandle;
-
-Stathandle	\bits_rcvd_gstathandle;
-
-Stathandle	\bitssec_rcvd_gstathandle;
-
-Stathandle	\pkts_rcvd_gstathandle;
-
-Stathandle	\pktssec_rcvd_gstathandle;
-
-Stathandle	\ete_delay_gstathandle;
+Objid \sv_phy_objid;
 
 ]]>
 	</state-variables>
@@ -64,81 +46,56 @@ double		pk_size;
 double		ete_delay;
 ]]>
 	</temporary-variables>
-	<states initial-state-id="11">
-		<state id="9" x="210" y="90">
-			<attribute name="name" type="string" value="DISCARD"/>
-			<attribute name="Exit Execs" type="textlist">
-				<value-text>
+	<header-block>
 <![CDATA[
-/* Obtain the incoming packet.	*/
-pkptr = op_pk_get (op_intrpt_strm ());
+#define CALL_REQ (op_intrpt_type()==OPC_INTRPT_REMOTE && \
+	op_intrpt_code()==RR_Phy_Conn_Req)
 
-/* Caclulate metrics to be updated.		*/
-pk_size = (double) op_pk_total_size_get (pkptr);
-ete_delay = op_sim_time () - op_pk_creation_time_get (pkptr);
-
-/* Update local statistics.				*/
-op_stat_write (bits_rcvd_stathandle, 		pk_size);
-op_stat_write (pkts_rcvd_stathandle, 		1.0);
-op_stat_write (ete_delay_stathandle, 		ete_delay);
-
-op_stat_write (bitssec_rcvd_stathandle, 	pk_size);
-op_stat_write (bitssec_rcvd_stathandle, 	0.0);
-op_stat_write (pktssec_rcvd_stathandle, 	1.0);
-op_stat_write (pktssec_rcvd_stathandle, 	0.0);
-
-/* Update global statistics.	*/
-op_stat_write (bits_rcvd_gstathandle, 		pk_size);
-op_stat_write (pkts_rcvd_gstathandle, 		1.0);
-op_stat_write (ete_delay_gstathandle, 		ete_delay);
-
-op_stat_write (bitssec_rcvd_gstathandle, 	pk_size);
-op_stat_write (bitssec_rcvd_gstathandle, 	0.0);
-op_stat_write (pktssec_rcvd_gstathandle, 	1.0);
-op_stat_write (pktssec_rcvd_gstathandle, 	0.0);
-
-/* Destroy the received packet.	*/
-op_pk_destroy (pkptr);
 ]]>
-				</value-text>
-			</attribute>
-		</state>
-		<state id="11" x="90" y="90">
-			<attribute name="name" type="string" value="INIT"/>
+	</header-block>
+	<function-block>
+<![CDATA[
+static void call_req_handle(void)
+{
+    FIN(call_req_handle());
+
+    op_intrpt_schedule_remote (op_sim_time(), RR_Phy_Conn_Req, sv_phy_objid);
+
+    FOUT;
+}
+]]>
+	</function-block>
+	<states initial-state-id="12">
+		<state id="12" x="150" y="150">
+			<attribute name="name" type="string" value="Init"/>
 			<attribute name="Enter Execs" type="textlist">
 				<value-text>
 <![CDATA[
-/* Initilaize the statistic handles to keep	*/
-/* track of traffic sinked by this process.	*/
-bits_rcvd_stathandle 		= op_stat_reg ("Traffic Sink.Traffic Received (bits)",			OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
-bitssec_rcvd_stathandle 	= op_stat_reg ("Traffic Sink.Traffic Received (bits/sec)",		OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
-pkts_rcvd_stathandle 		= op_stat_reg ("Traffic Sink.Traffic Received (packets)",		OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
-pktssec_rcvd_stathandle 	= op_stat_reg ("Traffic Sink.Traffic Received (packets/sec)",	OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
-ete_delay_stathandle		= op_stat_reg ("Traffic Sink.End-to-End Delay (seconds)",		OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
-
-bits_rcvd_gstathandle 		= op_stat_reg ("Traffic Sink.Traffic Received (bits)",			OPC_STAT_INDEX_NONE, OPC_STAT_GLOBAL);
-bitssec_rcvd_gstathandle 	= op_stat_reg ("Traffic Sink.Traffic Received (bits/sec)",		OPC_STAT_INDEX_NONE, OPC_STAT_GLOBAL);
-pkts_rcvd_gstathandle 		= op_stat_reg ("Traffic Sink.Traffic Received (packets)",		OPC_STAT_INDEX_NONE, OPC_STAT_GLOBAL);
-pktssec_rcvd_gstathandle 	= op_stat_reg ("Traffic Sink.Traffic Received (packets/sec)",	OPC_STAT_INDEX_NONE, OPC_STAT_GLOBAL);
-ete_delay_gstathandle		= op_stat_reg ("Traffic Sink.End-to-End Delay (seconds)",		OPC_STAT_INDEX_NONE, OPC_STAT_GLOBAL);
+Objid node_objid;
+node_objid = op_topo_parent(op_id_self());
+sv_phy_objid = op_id_frome_name (node_objid, OPC_OBJTYPE_PROC, "phy");
 ]]>
 				</value-text>
 			</attribute>
 			<attribute name="status" type="toggle" value="1"/>
 		</state>
+		<state id="13" x="270" y="150">
+			<attribute name="name" type="string" value="Wait"/>
+		</state>
 	</states>
 	<transitions>
-		<transition source-state-id="9" destination-state-id="9" label-x="175" label-y="203">
-			<path-point x="214" y="117"/>
-			<path-point x="245" y="157"/>
-			<path-point x="230" y="109"/>
-			<attribute name="name" type="string" value=" "/>
+		<transition source-state-id="12" destination-state-id="13" label-x="210" label-y="147">
+			<path-point x="164" y="144"/>
+			<path-point x="256" y="149"/>
+			<attribute name="name" type="string" value="tr_2"/>
 		</transition>
-		<transition source-state-id="11" destination-state-id="9" label-x="156" label-y="89">
-			<path-point x="115" y="89"/>
-			<path-point x="196" y="89"/>
-			<attribute name="name" type="string" value="tr_12"/>
-			<attribute name="color" type="color" value="gray3"/>
+		<transition source-state-id="13" destination-state-id="13" label-x="405" label-y="160">
+			<path-point x="276" y="168"/>
+			<path-point x="357" y="248"/>
+			<path-point x="344" y="80"/>
+			<path-point x="281" y="126"/>
+			<attribute name="name" type="string" value="tr_3"/>
+			<attribute name="condition" type="string" value="CALL_REQ"/>
 		</transition>
 	</transitions>
 	<local-statistics>
