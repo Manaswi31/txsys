@@ -1,4 +1,4 @@
-include "../include/openbts_support.h"
+#include "../include/opencell_support.h"
 
 Openbts_Func_Fin_Status 
 cur_frame_calc (Openbts_Frame_Struct* frame_struct, simtime_t cur_time);
@@ -35,7 +35,7 @@ void frame_struct_debug (Openbts_Frame_Struct* frame_struct)
 
     FIN(frame_struct_debug(frame_struct));
 
-    //openbts_print ();
+    //opencell_print ();
     sprintf(message, "hyperframe: %d\nsuperframe: %d\nhyperframe: %d\nTDMA frame: %d\nTS%d\n\n",
 	    frame_struct->hyper_frame_seq,
 	    frame_struct->super_frame_seq,

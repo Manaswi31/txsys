@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<node-model model-name="opencell_ms">
+	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="5" OPNET-model-data-version="14.0.A"/>
+	<attribute-assignments>
+		<assignment attribute-name="user.On_Off" type="toggle" status="promoted"/>
+	</attribute-assignments>
+	<node-modules base-id="10">
+		<module type="proc" id="1" x="246" y="108">
+			<module-attributes>
+				<attribute name="name" type="string" value="user"/>
+				<attribute name="process model" type="typed file" spectype="9" value="opencell_ms_user"/>
+			</module-attributes>
+		</module>
+		<module type="proc" id="3" x="246" y="246">
+			<module-attributes>
+				<attribute name="name" type="string" value="phy"/>
+				<attribute name="process model" type="typed file" spectype="9" value="opencell_ms_phy"/>
+			</module-attributes>
+		</module>
+		<module type="ratx" id="5" x="338" y="338">
+			<module-attributes>
+				<attribute name="name" type="string" value="rt_0"/>
+			</module-attributes>
+		</module>
+		<module type="rarx" id="7" x="200" y="338">
+			<module-attributes>
+				<attribute name="name" type="string" value="rr_0"/>
+			</module-attributes>
+		</module>
+		<module type="proc" id="9" x="154" y="108">
+			<module-attributes>
+				<attribute name="name" type="string" value="RR"/>
+			</module-attributes>
+		</module>
+	</node-modules>
+	<node-connections base-id="7">
+		<connection type="strm" id="1" src-module-id="3" dest-module-id="5">
+			<connection-path>
+				<path-entry x="251" y="247"/>
+				<path-entry x="338" y="339"/>
+			</connection-path>
+			<connection-attributes>
+				<attribute name="name" type="string" value="strm_0"/>
+				<attribute name="src stream" type="enumerated" value="src stream [0]"/>
+				<attribute name="dest stream" type="enumerated" value="dest stream [0]"/>
+			</connection-attributes>
+		</connection>
+		<connection type="strm" id="2" src-module-id="7" dest-module-id="3">
+			<connection-path>
+				<path-entry x="202" y="346"/>
+				<path-entry x="243" y="253"/>
+			</connection-path>
+			<connection-attributes>
+				<attribute name="name" type="string" value="strm_1"/>
+				<attribute name="src stream" type="enumerated" value="src stream [0]"/>
+				<attribute name="dest stream" type="enumerated" value="dest stream [0]"/>
+			</connection-attributes>
+		</connection>
+		<connection type="strm" id="4" src-module-id="1" dest-module-id="3">
+			<connection-path>
+				<path-entry x="246" y="113"/>
+				<path-entry x="246" y="241"/>
+			</connection-path>
+			<connection-attributes>
+				<attribute name="name" type="string" value="strm_2"/>
+				<attribute name="src stream" type="enumerated" value="src stream [0]"/>
+				<attribute name="dest stream" type="enumerated" value="dest stream [1]"/>
+			</connection-attributes>
+		</connection>
+		<connection type="strm" id="6" src-module-id="9" dest-module-id="3">
+			<connection-path>
+				<path-entry x="155" y="122"/>
+				<path-entry x="161" y="246"/>
+				<path-entry x="236" y="248"/>
+			</connection-path>
+			<connection-attributes>
+				<attribute name="name" type="string" value="strm_3"/>
+				<attribute name="src stream" type="enumerated" value="src stream [0]"/>
+				<attribute name="dest stream" type="enumerated" value="dest stream [2]"/>
+			</connection-attributes>
+		</connection>
+	</node-connections>
+</node-model>

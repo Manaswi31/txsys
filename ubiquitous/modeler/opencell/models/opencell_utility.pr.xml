@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<process-model model-name="opencell_utility" code-language="C" tv-in-db="no" tv-in-tb="no">
+	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="5" OPNET-model-data-version="14.0.A"/>
+	<attribute-assignments>
+		<assignment attribute-name="begsim intrpt" type="toggle" value="1"/>
+		<assignment attribute-name="subqueue" type="compound">
+			<sub-object>
+				<attribute creation-mechanics="Model" name="count" type="integer" value="1"/>
+				<attribute creation-mechanics="Model" name="list" type="object list">
+					<object-list>
+						<sub-object/>
+					</object-list>
+				</attribute>
+			</sub-object>
+		</assignment>
+	</attribute-assignments>
+	<header-block>
+<![CDATA[
+Openbts_Global_Share * global_share;
+]]>
+	</header-block>
+	<function-block>
+<![CDATA[
+static void init(void)
+{
+    FIN(init());
+    global_share = (Openbts_Global_Share*) openbts_mem_alloc (
+	    sizeof (Openbts_Global_Share));
+    global_share->start_of_epoch = 10.0;
+
+    FOUT;
+}
+
+]]>
+	</function-block>
+	<states initial-state-id="1">
+		<state id="1" x="270" y="210">
+			<attribute name="name" type="string" value="Init"/>
+			<attribute name="Enter Execs" type="textlist">
+				<value-text>
+<![CDATA[
+init();
+]]>
+				</value-text>
+			</attribute>
+			<attribute name="status" type="toggle" value="1"/>
+		</state>
+		<state id="2" x="390" y="210">
+			<attribute name="name" type="string" value="Wait"/>
+		</state>
+	</states>
+	<transitions>
+		<transition source-state-id="1" destination-state-id="2" label-x="332" label-y="216">
+			<path-point x="277" y="217"/>
+			<path-point x="386" y="214"/>
+			<attribute name="name" type="string" value="tr_0"/>
+		</transition>
+	</transitions>
+</process-model>

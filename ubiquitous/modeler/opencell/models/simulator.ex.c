@@ -1,6 +1,6 @@
 #include "../include/simulator.h"
 
-simtime_t openbts_simtime_get(void)
+simtime_t opencell_simtime_get(void)
 {
 #ifdef SIM_OPNET
     return op_sim_time();
@@ -8,7 +8,7 @@ simtime_t openbts_simtime_get(void)
     return (-1);
 }
 
-void * openbts_mem_alloc(size_t size)
+void * opencell_mem_alloc(size_t size)
 {
 #ifdef SIM_OPNET
     return op_prg_mem_alloc(size);
