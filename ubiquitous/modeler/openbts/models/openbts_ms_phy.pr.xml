@@ -22,10 +22,14 @@ Evhandle	\rach_try_timer;
 
 Prohandle	\rach_pro;
 
+Openbts_Frame_Struct*	\frame_struct_ptr;
+
 ]]>
 	</state-variables>
 	<header-block>
 <![CDATA[
+#include "../include/openbts_support.h"
+
 /*A call from user module*/
 #define CALL_REQ (op_intrpt_type()==OPC_INTRPT_REMOTE && \
 	op_intrpt_code()==Phy_Conn_Req)
@@ -34,15 +38,38 @@ Prohandle	\rach_pro;
 	</header-block>
 	<function-block>
 <![CDATA[
+static void init(void)
+{
+    FIN(init());
+
+    frame_struct_ptr = (Openbts_Frame_Struct*) openbts_mem_alloc(
+	    sizeof (Openbts_Frame_Struct));
+
+    FOUT;
+}
+
 static void start_radio_access(void)
 {
     FIN(start_radio_access());
 
-    rach_pro = op_pro_create("openbts_rach", OPC_NIL);
-    op_pro_invoke(rach_pro);
 
     FOUT;
 } 
+
+static void start_rach(void)
+{   
+   FIN(start_radio_access());
+
+
+    rach_pro = op_pro_create("openbts_rach", OPC_NIL);
+    op_pro_invoke(rach_pro, OPC_NIL);
+
+
+    FOUT;
+}
+
+
+
 ]]>
 	</function-block>
 	<states initial-state-id="0">
@@ -58,7 +85,6 @@ static void start_radio_access(void)
 		</state>
 		<state id="3" x="330" y="90">
 			<attribute name="name" type="string" value="Wait_Access"/>
-			<attribute name="Enter Execs" type="textlist"/>
 		</state>
 	</states>
 	<transitions>

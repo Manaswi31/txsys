@@ -1,6 +1,6 @@
 #include "../include/simulator.h"
 
-simtime_t sim_time_get(void)
+simtime_t openbts_simtime_get(void)
 {
 #ifdef SIM_OPNET
     return op_sim_time();
