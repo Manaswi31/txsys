@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <process-model model-name="openbts_ms_user" code-language="C" tv-in-db="no" tv-in-tb="no">
-	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="8" OPNET-model-data-version="14.0.A"/>
+	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="5" OPNET-model-data-version="14.0.A"/>
 	<model-attributes>
 		<attribute name="On_Off" group="User Traffic" type="toggle">
 			<properties type="toggle" auto-assign="no" symbolic-only="no">
@@ -35,6 +35,7 @@ int	\sv_out_strm;
 	<temporary-variables>
 <![CDATA[
 int intrpt_code;
+int intrpt_type;
 ]]>
 	</temporary-variables>
 	<header-block>
@@ -42,6 +43,7 @@ int intrpt_code;
 #include "../include/openbts_support.h"
 #define NO_TRAFFIC (sv_traf_on_flag==OPC_FALSE)
 #define CALL_SUCCESS (intrpt_code==User_Conn_Inited)
+#define GEN_INTRPT (intrpt_type==OPC_INTRPT_SELF)
 ]]>
 	</header-block>
 	<function-block>
@@ -122,12 +124,13 @@ intrpt_code = op_intrpt_code();
 		</state>
 	</states>
 	<transitions>
-		<transition source-state-id="1" destination-state-id="1" label-x="517" label-y="240">
+		<transition source-state-id="1" destination-state-id="1" label-x="534" label-y="240">
 			<path-point x="388" y="222"/>
 			<path-point x="469" y="328"/>
 			<path-point x="465" y="149"/>
 			<path-point x="398" y="195"/>
 			<attribute name="name" type="string" value="tr_0"/>
+			<attribute name="condition" type="string" value="GEN_INTRPT"/>
 			<attribute name="executive" type="string" value="gen()"/>
 		</transition>
 		<transition source-state-id="0" destination-state-id="2" label-x="212" label-y="215">

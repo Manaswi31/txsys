@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <process-model model-name="openbts_ms_phy" code-language="C" tv-in-db="no" tv-in-tb="no">
-	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="8" OPNET-model-data-version="14.0.A"/>
+	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="5" OPNET-model-data-version="14.0.A"/>
 	<attribute-assignments>
 		<assignment attribute-name="begsim intrpt" type="toggle" value="1"/>
 		<assignment attribute-name="subqueue" type="compound">
@@ -18,13 +18,33 @@
 <![CDATA[
 Boolean	\sv_dch_inited;
 
+Evhandle	\rach_try_timer;
+
+Prohandle	\rach_pro;
+
 ]]>
 	</state-variables>
 	<header-block>
 <![CDATA[
+/*A call from user module*/
+#define CALL_REQ (op_intrpt_type()==OPC_INTRPT_REMOTE && \
+	op_intrpt_code()==Phy_Conn_Req)
 #define DCH_INITED (sv_dch_inited)
 ]]>
 	</header-block>
+	<function-block>
+<![CDATA[
+static void start_radio_access(void)
+{
+    FIN(start_radio_access());
+
+    rach_pro = op_pro_create("openbts_rach", OPC_NIL);
+    op_pro_invoke(rach_pro);
+
+    FOUT;
+} 
+]]>
+	</function-block>
 	<states initial-state-id="0">
 		<state id="0" x="150" y="210">
 			<attribute name="name" type="string" value="Init"/>
@@ -36,18 +56,16 @@ Boolean	\sv_dch_inited;
 		<state id="2" x="510" y="210">
 			<attribute name="name" type="string" value="Dedicated"/>
 		</state>
+		<state id="3" x="330" y="90">
+			<attribute name="name" type="string" value="Wait_Access"/>
+			<attribute name="Enter Execs" type="textlist"/>
+		</state>
 	</states>
 	<transitions>
 		<transition source-state-id="0" destination-state-id="1" label-x="243" label-y="207">
 			<path-point x="164" y="204"/>
 			<path-point x="321" y="210"/>
 			<attribute name="name" type="string" value="tr_0"/>
-		</transition>
-		<transition source-state-id="1" destination-state-id="2" label-x="419" label-y="194">
-			<path-point x="351" y="210"/>
-			<path-point x="514" y="212"/>
-			<attribute name="name" type="string" value="tr_1"/>
-			<attribute name="condition" type="string" value="DCH_INITED"/>
 		</transition>
 		<transition source-state-id="1" destination-state-id="1" label-x="334" label-y="310">
 			<path-point x="317" y="228"/>
@@ -57,5 +75,24 @@ Boolean	\sv_dch_inited;
 			<attribute name="name" type="string" value="tr_2"/>
 			<attribute name="condition" type="string" value="default"/>
 		</transition>
+		<transition source-state-id="1" destination-state-id="3" label-x="188" label-y="107">
+			<path-point x="313" y="197"/>
+			<path-point x="240" y="136"/>
+			<path-point x="318" y="91"/>
+			<attribute name="name" type="string" value="tr_3"/>
+			<attribute name="condition" type="string" value="CALL_REQ"/>
+			<attribute name="executive" type="string" value="start_radio_access()"/>
+		</transition>
+		<transition source-state-id="3" destination-state-id="2" label-x="495" label-y="127">
+			<path-point x="354" y="91"/>
+			<path-point x="519" y="212"/>
+			<attribute name="name" type="string" value="tr_1"/>
+			<attribute name="condition" type="string" value="DCH_INITED"/>
+		</transition>
 	</transitions>
+	<child-processes>
+<![CDATA[
+openbts_rach
+]]>
+	</child-processes>
 </process-model>
