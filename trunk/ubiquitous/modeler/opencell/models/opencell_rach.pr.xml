@@ -28,5 +28,12 @@
 			<path-point x="452" y="200"/>
 			<attribute name="name" type="string" value="tr_0"/>
 		</transition>
+		<transition source-state-id="1" destination-state-id="1" label-x="472" label-y="262">
+			<path-point x="448" y="231"/>
+			<path-point x="496" y="292"/>
+			<path-point x="514" y="163"/>
+			<path-point x="459" y="190"/>
+			<attribute name="name" type="string" value="tr_1"/>
+		</transition>
 	</transitions>
 </process-model>

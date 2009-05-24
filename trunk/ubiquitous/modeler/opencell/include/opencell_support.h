@@ -73,8 +73,10 @@ typedef enum
 
 typedef enum
 {
-    User_Conn_Inited = 1, /*PHY->User: the connection is ready. Send your traffic, please.*/
-    Phy_Conn_Req /*User->PHY: I press the "call" button, please make a connection for me.*/
+    Phy_User_Conn_Inited = 1, /*PHY->User: the connection is ready. Send your traffic, please.*/
+    Phy_RR_Conn_Inited  /*PHY->RR: the connection is ready. Send your signalling, please.*/
+    User_RR_Conn_Req /*User->RR: I press the "call" button, please make a connection for me.*/
+    RR_Phy_Conn_Req /*RR->Phy: I have signalling to do, please make a connection for me.*/
 } Opencell_Intrpt_Code;
 
 extern Opencell_Global_Share * global_share;

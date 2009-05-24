@@ -30,6 +30,8 @@ Objid	\sv_phy_objid;
 
 int	\sv_out_strm;
 
+Objid	\sv_rr_objid;
+
 ]]>
 	</state-variables>
 	<temporary-variables>
@@ -52,8 +54,8 @@ static void press_call_button(void)
 {
     FIN(press_call_button());
 
-    /*Tell PHY that I'd like to make a call*/
-    op_intrpt_schedule_remote (op_sim_time(), Phy_Conn_Req, sv_phy_objid);
+    /*Tell RR that I'd like to make a call*/
+    op_intrpt_schedule_remote (op_sim_time(), User_RR_Conn_Req, sv_rr_objid);
 
     FOUT;
 }
@@ -91,6 +93,7 @@ static void gen(void)
 Objid node_objid;
 node_objid = op_topo_parent(op_id_self());
 sv_phy_objid = op_id_from_name (node_objid, OPC_OBJTYPE_PROC, "phy");
+sv_rr_objid = op_id_from_name (node_objid, OPC_OBJTYPE_PROC, "RR");
 op_ima_obj_attr_get_toggle(op_id_self(), "On_Off", & sv_traf_on_flag);
 sv_out_strm = 0;
 

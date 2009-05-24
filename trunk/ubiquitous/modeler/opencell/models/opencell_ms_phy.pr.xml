@@ -30,9 +30,9 @@ Openbts_Frame_Struct*	\frame_struct_ptr;
 <![CDATA[
 #include "../include/openbts_support.h"
 
-/*A call from user module*/
+/*A request from RR module*/
 #define CALL_REQ (op_intrpt_type()==OPC_INTRPT_REMOTE && \
-	op_intrpt_code()==Phy_Conn_Req)
+	op_intrpt_code()==RR_Phy_Conn_Req)
 #define DCH_INITED (sv_dch_inited)
 ]]>
 	</header-block>
@@ -61,7 +61,7 @@ static void start_rach(void)
    FIN(start_radio_access());
 
 
-    rach_pro = op_pro_create("openbts_rach", OPC_NIL);
+    rach_pro = op_pro_create("opencell_rach", OPC_NIL);
     op_pro_invoke(rach_pro, OPC_NIL);
 
 
