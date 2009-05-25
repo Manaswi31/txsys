@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <process-model model-name="opencell_ms_user" code-language="C" tv-in-db="no" tv-in-tb="no">
-	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="5" OPNET-model-data-version="14.0.A"/>
+	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="8" OPNET-model-data-version="14.0.A"/>
 	<model-attributes>
 		<attribute name="On_Off" group="User Traffic" type="toggle">
 			<properties type="toggle" auto-assign="no" symbolic-only="no">
@@ -71,9 +71,11 @@ static void gen(void)
 	pkptr = op_pk_create(0);
 
 	/*For a normal burst, the contents of fields are not modeled*/
-	op_pk_fd_set(pkptr, Openbts_Burst_Fd_Index_Category, OPC_FIELD_TYPE_UNSPEC, 0);
+	op_pk_fd_set(pkptr, Openbts_Burst_Fd_Index_Type, OPC_FIELD_TYPE_UNSPEC, 0);
 	op_pk_fd_set(pkptr, Openbts_Burst_Fd_Index_Overhead, OPC_FIELD_TYPE_UNSPEC, 34);
 	op_pk_fd_set(pkptr, Openbts_Burst_Fd_Index_Payload, OPC_FIELD_TYPE_UNSPEC, 114);
+	
+	
 
 	op_pk_send(pkptr, sv_out_strm);
 	
