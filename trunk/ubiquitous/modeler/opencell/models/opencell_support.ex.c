@@ -1,11 +1,25 @@
 #include "../include/opencell_support.h"
 
+simtime_t opencell_next_slot (simtime_t cur_time)
+{
+    simtime_t next_slot_time;
+    simtime_t delta;
+
+    FIN(opencell_next_slot() );
+
+    delta = cur_time % SLOT_DURATION;
+    next_slot_time = cur_time - delta;
+
+
+    FRET (next_slot_time);
+}
+
 Opencell_Func_Fin_Status 
-cur_frame_calc (Opencell_Frame_Struct* frame_struct, simtime_t cur_time)
+opencell_cur_frame_calc (Opencell_Frame_Struct* frame_struct, simtime_t cur_time)
 {
     int cur_slot_num;
 
-    FIN(cur_frame_calc(frame_struct, cur_time));
+    FIN(opencell_cur_frame_calc(frame_struct, cur_time));
 
     assert(frame_struct);
 
@@ -28,11 +42,11 @@ cur_frame_calc (Opencell_Frame_Struct* frame_struct, simtime_t cur_time)
     FRET (OPENCELL_SUCCESS);
 }
 
-void frame_struct_debug (Opencell_Frame_Struct* frame_struct)
+void opencell_frame_struct_debug (Opencell_Frame_Struct* frame_struct)
 {
     char message[1024];
 
-    FIN(frame_struct_debug(frame_struct));
+    FIN(opencell_frame_struct_debug(frame_struct));
 
     //opencell_print ();
     sprintf(message, "hyperframe: %d\nsuperframe: %d\nhyperframe: %d\nTDMA frame: %d\nTS%d\n\n",
@@ -42,7 +56,7 @@ void frame_struct_debug (Opencell_Frame_Struct* frame_struct)
 	    frame_struct->tdma_frame_seq,
 	    frame_struct->ts_seq);
 
-    op_prg_text_output(message);
+    opencell_text_output(message);
 
     FOUT;
 }

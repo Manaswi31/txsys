@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <process-model model-name="opencell_ms_rr" mt-safe="yes" code-language="C" tv-in-db="yes" tv-in-tb="yes">
-	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="5" OPNET-model-data-version="14.0.A"/>
+	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="8" OPNET-model-data-version="14.0.A"/>
 	<attribute-assignments>
 		<assignment attribute-name="begsim intrpt" type="toggle" status="hidden" value="1"/>
 		<assignment attribute-name="doc file" type="string" status="hidden"/>
@@ -49,7 +49,7 @@ double		ete_delay;
 	<header-block>
 <![CDATA[
 #define CALL_REQ (op_intrpt_type()==OPC_INTRPT_REMOTE && \
-	op_intrpt_code()==RR_Phy_Conn_Req)
+	op_intrpt_code()==User_RR_Conn_Req)
 
 ]]>
 	</header-block>
