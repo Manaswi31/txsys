@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <process-model model-name="opencell_utility" code-language="C" tv-in-db="no" tv-in-tb="no">
-	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="5" OPNET-model-data-version="14.0.A"/>
+	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="8" OPNET-model-data-version="14.0.A"/>
 	<attribute-assignments>
 		<assignment attribute-name="begsim intrpt" type="toggle" value="1"/>
 		<assignment attribute-name="subqueue" type="compound">
@@ -27,6 +27,7 @@ static void init(void)
     global_share = (Openbts_Global_Share*) openbts_mem_alloc (
 	    sizeof (Openbts_Global_Share));
     global_share->start_of_epoch = 10.0;
+
 
     FOUT;
 }

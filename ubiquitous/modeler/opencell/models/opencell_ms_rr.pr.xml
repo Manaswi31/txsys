@@ -35,7 +35,11 @@ begsim intrpt
 	</interfaces>
 	<state-variables>
 <![CDATA[
-Objid \sv_phy_objid;
+Objid	\phy_objid;
+
+Objid	\phy_ostrm;
+
+Objid	\phy_istrm;
 
 ]]>
 	</state-variables>
@@ -57,9 +61,15 @@ double		ete_delay;
 <![CDATA[
 static void call_req_handle(void)
 {
+	Packet *pkptr;
+	
     FIN(call_req_handle());
 
-    op_intrpt_schedule_remote (op_sim_time(), RR_Phy_Conn_Req, sv_phy_objid);
+    op_intrpt_schedule_remote (op_sim_time(), RR_Phy_Conn_Req, phy_objid);
+	
+	/*Create signalling packet*/
+	pkptr = op_pk_create();
+	op_pk_send (pkptr, phy_ostrm);
 
     FOUT;
 }
@@ -71,9 +81,16 @@ static void call_req_handle(void)
 			<attribute name="Enter Execs" type="textlist">
 				<value-text>
 <![CDATA[
+/*
+stream    :  RR [0] -> phy [2]
+stream    :  phy [1] -> RR [0]
+*/
+
 Objid node_objid;
 node_objid = op_topo_parent(op_id_self());
-sv_phy_objid = op_id_frome_name (node_objid, OPC_OBJTYPE_PROC, "phy");
+phy_objid = op_id_frome_name (node_objid, OPC_OBJTYPE_PROC, "phy");
+phy_ostrm = 0;
+phy_istrm = 0;
 ]]>
 				</value-text>
 			</attribute>
@@ -89,13 +106,14 @@ sv_phy_objid = op_id_frome_name (node_objid, OPC_OBJTYPE_PROC, "phy");
 			<path-point x="256" y="149"/>
 			<attribute name="name" type="string" value="tr_2"/>
 		</transition>
-		<transition source-state-id="13" destination-state-id="13" label-x="405" label-y="160">
+		<transition source-state-id="13" destination-state-id="13" label-x="465" label-y="159">
 			<path-point x="276" y="168"/>
 			<path-point x="357" y="248"/>
 			<path-point x="344" y="80"/>
 			<path-point x="281" y="126"/>
 			<attribute name="name" type="string" value="tr_3"/>
 			<attribute name="condition" type="string" value="CALL_REQ"/>
+			<attribute name="executive" type="string" value="call_req_handle()"/>
 		</transition>
 	</transitions>
 	<local-statistics>
