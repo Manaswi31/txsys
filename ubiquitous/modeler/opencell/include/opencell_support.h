@@ -84,9 +84,9 @@ extern Opencell_Global_Share * global_share;
 
 /*Function prototypes*/
 Opencell_Func_Fin_Status 
-cur_frame_calc (Opencell_Frame_Struct* frame_struct, simtime_t cur_time);
+opencell_cur_frame_calc (Opencell_Frame_Struct* frame_struct, simtime_t cur_time);
 
-void frame_struct_debug (Opencell_Frame_Struct* frame_struct);
+void opencell_frame_struct_debug (Opencell_Frame_Struct* frame_struct);
 
 
 #endif

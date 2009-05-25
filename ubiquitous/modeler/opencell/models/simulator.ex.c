@@ -15,3 +15,15 @@ void * opencell_mem_alloc(size_t size)
 #else
     return NULL;
 }
+
+void opencell_text_output(char* message)
+{
+    FIN(opencell_text_output());
+
+#ifdef SIM_OPNET
+    op_prg_text_output(message);
+
+    FOUT;
+}
+
+

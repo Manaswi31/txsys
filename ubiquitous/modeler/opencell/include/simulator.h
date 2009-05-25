@@ -6,7 +6,7 @@
 
 #define double simtime_t
 
-simtime_t openbts_simtime_get(void);
-void openbts_print(char* string);
+simtime_t opencell_simtime_get(void);
+void opencell_print(char* string);
 
 #endif
