@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <node-model model-name="opencell_ms">
-	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="5" OPNET-model-data-version="14.0.A"/>
+	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="8" OPNET-model-data-version="14.0.A"/>
 	<attribute-assignments>
 		<assignment attribute-name="user.On_Off" type="toggle" status="promoted"/>
 	</attribute-assignments>
@@ -20,11 +20,13 @@
 		<module type="ratx" id="5" x="338" y="338">
 			<module-attributes>
 				<attribute name="name" type="string" value="rt_0"/>
+				<attribute name="modulation" type="typed file" spectype="21" value="gmsk"/>
 			</module-attributes>
 		</module>
 		<module type="rarx" id="7" x="200" y="338">
 			<module-attributes>
 				<attribute name="name" type="string" value="rr_0"/>
+				<attribute name="modulation" type="typed file" spectype="21" value="gmsk"/>
 			</module-attributes>
 		</module>
 		<module type="proc" id="9" x="154" y="108">
@@ -34,7 +36,7 @@
 			</module-attributes>
 		</module>
 	</node-modules>
-	<node-connections base-id="7">
+	<node-connections base-id="10">
 		<connection type="strm" id="1" src-module-id="3" dest-module-id="5">
 			<connection-path>
 				<path-entry x="251" y="247"/>
@@ -78,6 +80,31 @@
 				<attribute name="name" type="string" value="strm_3"/>
 				<attribute name="src stream" type="enumerated" value="src stream [0]"/>
 				<attribute name="dest stream" type="enumerated" value="dest stream [2]"/>
+				<attribute name="color" type="color" value="#FF8040"/>
+			</connection-attributes>
+		</connection>
+		<connection type="strm" id="8" src-module-id="3" dest-module-id="9">
+			<connection-path>
+				<path-entry x="237" y="241"/>
+				<path-entry x="164" y="239"/>
+				<path-entry x="160" y="114"/>
+			</connection-path>
+			<connection-attributes>
+				<attribute name="name" type="string" value="strm_4"/>
+				<attribute name="src stream" type="enumerated" value="src stream [1]"/>
+				<attribute name="dest stream" type="enumerated" value="dest stream [0]"/>
+				<attribute name="color" type="color" value="#FF8040"/>
+			</connection-attributes>
+		</connection>
+		<connection type="strm" id="9" src-module-id="3" dest-module-id="1">
+			<connection-path>
+				<path-entry x="252" y="238"/>
+				<path-entry x="250" y="111"/>
+			</connection-path>
+			<connection-attributes>
+				<attribute name="name" type="string" value="strm_5"/>
+				<attribute name="src stream" type="enumerated" value="src stream [2]"/>
+				<attribute name="dest stream" type="enumerated" value="dest stream [0]"/>
 			</connection-attributes>
 		</connection>
 	</node-connections>

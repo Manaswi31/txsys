@@ -7,6 +7,7 @@
 #define double simtime_t
 
 simtime_t opencell_simtime_get(void);
-void opencell_print(char* string);
+void * opencell_mem_alloc(size_t size);
+void opencell_text_output(char* string);
 
 #endif

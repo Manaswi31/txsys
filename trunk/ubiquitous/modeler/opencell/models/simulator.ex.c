@@ -14,6 +14,7 @@ void * opencell_mem_alloc(size_t size)
     return op_prg_mem_alloc(size);
 #else
     return NULL;
+    #endif
 }
 
 void opencell_text_output(char* message)
@@ -22,6 +23,7 @@ void opencell_text_output(char* message)
 
 #ifdef SIM_OPNET
     op_prg_text_output(message);
+#endif
 
     FOUT;
 }

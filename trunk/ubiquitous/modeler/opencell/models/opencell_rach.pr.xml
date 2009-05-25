@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <process-model model-name="opencell_rach" code-language="C" tv-in-db="no" tv-in-tb="no">
-	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="5" OPNET-model-data-version="14.0.A"/>
+	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="8" OPNET-model-data-version="14.0.A"/>
 	<attribute-assignments>
 		<assignment attribute-name="subqueue" type="compound">
 			<sub-object>
@@ -13,9 +13,43 @@
 			</sub-object>
 		</assignment>
 	</attribute-assignments>
+	<state-variables>
+<![CDATA[
+Opencell_Phy_Mod_Data*	\phy_mod_data_ptr;
+
+]]>
+	</state-variables>
+	<function-block>
+<![CDATA[
+static void init(void)
+	{
+	FIN(init());
+	phy_mod_data_ptr = (Opencell_Phy_Mod_Data*) op_pro_modmem_access();
+	
+	FOUT;
+	}
+
+static void xmit(void)
+	{
+	Packet* pkptr;
+	
+	FIN(xmit());
+	
+	op_pk_send (pkptr, phy_mod_data_ptr->tx_ostrm);
+	
+	}
+]]>
+	</function-block>
 	<states initial-state-id="0">
 		<state id="0" x="270" y="210">
 			<attribute name="name" type="string" value="Init"/>
+			<attribute name="Enter Execs" type="textlist">
+				<value-text>
+<![CDATA[
+init();
+]]>
+				</value-text>
+			</attribute>
 			<attribute name="status" type="toggle" value="1"/>
 		</state>
 		<state id="1" x="450" y="210">
@@ -28,12 +62,13 @@
 			<path-point x="452" y="200"/>
 			<attribute name="name" type="string" value="tr_0"/>
 		</transition>
-		<transition source-state-id="1" destination-state-id="1" label-x="472" label-y="262">
+		<transition source-state-id="1" destination-state-id="1" label-x="548" label-y="236">
 			<path-point x="448" y="231"/>
 			<path-point x="496" y="292"/>
 			<path-point x="514" y="163"/>
 			<path-point x="459" y="190"/>
 			<attribute name="name" type="string" value="tr_1"/>
+			<attribute name="executive" type="string" value="xmt()"/>
 		</transition>
 	</transitions>
 </process-model>

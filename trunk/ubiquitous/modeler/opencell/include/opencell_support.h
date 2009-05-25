@@ -48,15 +48,34 @@ typedef enum
     OPNEBTS_FAILURE = -1
 } Opencell_Func_Fin_Status;
 
-typedef enum _Opencell_Chan_Type
+typedef enum
 {
-    Opencell_RACH = 1,
-    Opencell_DCH,
-    Opencell_AGCH,
-    Opencell_PCH,
-    Opencell_TCH_HS,
+    Opencell_TCH_HS = 1,
     Opencell_TCH_FS
-} Opencell_Chan_Type;
+} Opencell_Traf_Chan_Type;
+
+typedef enum
+{
+    Opencell_BCCH = 3,
+    Opencell_FCCH,
+    Opencell_SCH
+  
+} Opencell_Broadcast_Chan_Type;
+
+typedef enum
+{
+Opencell_PCH = 6,
+Opencell_RACH,
+Opencell_AGCH
+
+} Opencell_Common_Ctrl_Chan_Type;
+
+typedef enum
+{
+Opencell_SDCCH = 9,
+Opencell_SACCH,
+Opencell_FACCH
+} Opencell_Dedicated_Ctrl_Chan_Type;
 
 typedef enum
 {
@@ -79,7 +98,21 @@ typedef enum
     RR_Phy_Conn_Req /*RR->Phy: I have signalling to do, please make a connection for me.*/
 } Opencell_Intrpt_Code;
 
-extern Opencell_Global_Share * global_share;
+
+typedef struct
+	{
+
+Objid	rr_objid;
+
+Objid	user_objid;
+
+int	rr_ostrm;
+
+int	user_ostrm;
+	int tx_ostrm;
+	} Opencell_Phy_Mod_Data;
+
+
 
 
 /*Function prototypes*/
@@ -88,5 +121,9 @@ opencell_cur_frame_calc (Opencell_Frame_Struct* frame_struct, simtime_t cur_time
 
 void opencell_frame_struct_debug (Opencell_Frame_Struct* frame_struct);
 
+
+
+
+extern Opencell_Global_Share * global_share;
 
 #endif

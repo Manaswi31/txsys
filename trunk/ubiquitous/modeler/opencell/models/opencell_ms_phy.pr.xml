@@ -24,6 +24,8 @@ Prohandle	\rach_pro;
 
 Openbts_Frame_Struct*	\frame_struct_ptr;
 
+Opencell_Phy_Mod_Data*	\phy_mod_data_ptr;
+
 ]]>
 	</state-variables>
 	<header-block>
@@ -34,23 +36,51 @@ Openbts_Frame_Struct*	\frame_struct_ptr;
 #define CALL_REQ (op_intrpt_type()==OPC_INTRPT_REMOTE && \
 	op_intrpt_code()==RR_Phy_Conn_Req)
 #define DCH_INITED (sv_dch_inited)
+
 ]]>
 	</header-block>
 	<function-block>
 <![CDATA[
 static void init(void)
 {
+	Objid node_objid;
+	
     FIN(init());
 
     frame_struct_ptr = (Openbts_Frame_Struct*) openbts_mem_alloc(
 	    sizeof (Openbts_Frame_Struct));
+	node_objid = op_topo_parent(op_id_self());
 
+	/*
+	stream    :  phy [0] -> rt_0 [0]
+stream    :  phy [1] -> RR [0]
+stream    :  rr_0 [0] -> phy [0]
+stream    :  user [0] -> phy [1]
+stream    :  RR [0] -> phy [2]
+	*/
+
+phy_mod_data_ptr = (Opencell_Phy_Mod_Data*) opencell_mem_alloc (sizeof (Opencell_Phy_Mod_Data));
+	phy_mod_data_ptr->rr_objid = op_id_from_name (node_objid, OPC_OBJTYPE_PROC, "RR");
+	phy_mod_data_ptr->user_objid = op_id_from_name (node_objid, OPC_OBJTYPE_PROC, "user");
+		phy_mod_data_ptr->rr_ostrm = 1;
+	phy_mod_data_ptr->user_ostrm = 2;
+	phy_mod_data_ptr->tx_ostrm = 0;
+	op_pro_modmem_install(phy_mod_data_ptr);
+	
+	
     FOUT;
 }
 
 static void start_radio_access(void)
 {
+	simtime_t next_slot_time;
+	simtime_t cur_time;
+	
     FIN(start_radio_access());
+	
+	cur_time = opencell_simtime_get();
+	next_slot_time = opencell_next_slot(cur_time);
+	op_intrpt_schedule_call (next_slot_time, 0, start_rach, OPC_NIL);
 
 
     FOUT;
@@ -58,7 +88,7 @@ static void start_radio_access(void)
 
 static void start_rach(void* state_ptr, int code)
 {   
-   FIN(start_radio_access());
+   FIN(start_rach());
 
 
     rach_pro = op_pro_create("opencell_rach", OPC_NIL);
@@ -75,6 +105,13 @@ static void start_rach(void* state_ptr, int code)
 	<states initial-state-id="0">
 		<state id="0" x="150" y="210">
 			<attribute name="name" type="string" value="Init"/>
+			<attribute name="Enter Execs" type="textlist">
+				<value-text>
+<![CDATA[
+init();
+]]>
+				</value-text>
+			</attribute>
 			<attribute name="status" type="toggle" value="1"/>
 		</state>
 		<state id="1" x="330" y="210">
@@ -109,7 +146,7 @@ static void start_rach(void* state_ptr, int code)
 			<attribute name="condition" type="string" value="CALL_REQ"/>
 			<attribute name="executive" type="string" value="start_radio_access()"/>
 		</transition>
-		<transition source-state-id="3" destination-state-id="2" label-x="495" label-y="127">
+		<transition source-state-id="3" destination-state-id="2" label-x="461" label-y="127">
 			<path-point x="354" y="91"/>
 			<path-point x="519" y="212"/>
 			<attribute name="name" type="string" value="tr_1"/>
