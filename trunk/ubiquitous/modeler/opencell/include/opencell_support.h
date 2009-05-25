@@ -22,9 +22,7 @@ typedef struct
     simtime_t start_of_epoch; /*Start of time slots*/
 } Opencell_Global_Share;
 
-typedef struct normal_burst
-{
-} Opencell_Normal_Burst;
+
 
 typedef enum 
 {
@@ -85,10 +83,30 @@ typedef enum
 
 typedef enum
 {
-    Opencell_Burst_Fd_Index_Category=0, /*For simulation purpose only, not an actual burst field*/
+    Opencell_Burst_Fd_Index_Type=0, /*For simulation purpose only, not an actual burst field*/
     Opencell_Burst_Fd_Index_Payload=1,
-    Opencell_Burst_Fd_Index_Overhead,
+    Opencell_Burst_Fd_Index_Overhead /*Overhead includes Training Sequence and Tail Bit*/
 } Opencell_Burst_Fd_Index;
+
+typedef enum Opencell_Burst_Payload_Size
+{
+    Opencell_Burst_Payload_Size_NB = (57*2),  /*Normal Burst*/
+    Opencell_Burst_Payload_Size_FCB = 142,  /*Frequency Correction Burst*/
+    Opencell_Burst_Payload_Size_AB = 36
+} Opencell_Burst_Payload_Size;
+
+typedef enum Opencell_Burst_Overhead_Size
+{
+    Opencell_Burst_Overhead_Size_NB = (3*2 + 26),
+    Opencell_Burst_Overhead_Size_FCB = (3*2),
+    Opencell_Burst_Overhead_Size_AB = (3*2+41)
+} Opencell_Burst_Overhead_Size;
+
+typedef struct
+{
+
+} Opencell_Normal_Burst;
+
 
 typedef enum
 {
@@ -100,19 +118,16 @@ typedef enum
 
 
 typedef struct
-	{
-
-Objid	rr_objid;
-
-Objid	user_objid;
-
-int	rr_ostrm;
-
-int	user_ostrm;
-	int tx_ostrm;
-	} Opencell_Phy_Mod_Data;
-
-
+{
+    Objid	rr_objid;
+    Objid	user_objid;
+    int	rr_ostrm;
+    int	user_ostrm;
+    int tx_ostrm;
+    int tx_istrm;
+    int rr_istrm;
+    int user_istrm;
+} Opencell_Phy_Mod_Data;
 
 
 /*Function prototypes*/
@@ -122,8 +137,7 @@ opencell_cur_frame_calc (Opencell_Frame_Struct* frame_struct, simtime_t cur_time
 void opencell_frame_struct_debug (Opencell_Frame_Struct* frame_struct);
 
 
-
-
 extern Opencell_Global_Share * global_share;
 
 #endif
+

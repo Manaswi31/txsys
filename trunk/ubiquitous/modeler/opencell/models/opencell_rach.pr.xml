@@ -35,6 +35,8 @@ static void xmit(void)
 	
 	FIN(xmit());
 	
+	pkptr = op_pk_create(83);
+	
 	op_pk_send (pkptr, phy_mod_data_ptr->tx_ostrm);
 	
 	}

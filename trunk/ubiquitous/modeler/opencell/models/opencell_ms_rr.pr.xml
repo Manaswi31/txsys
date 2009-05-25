@@ -68,7 +68,10 @@ static void call_req_handle(void)
     op_intrpt_schedule_remote (op_sim_time(), RR_Phy_Conn_Req, phy_objid);
 	
 	/*Create signalling packet*/
-	pkptr = op_pk_create();
+	/*Currently I'm not sure where the RIL3 ChannReq signalling is dumped. Dump it here temporarily*/
+	pkptr = op_pk_create(Opencell_Burst_Overhead_Size_AB+Opencell_Burst_Payload_Size_AB);
+	
+	
 	op_pk_send (pkptr, phy_ostrm);
 
     FOUT;
