@@ -1,7 +1,3 @@
-/**
- * @author
- * illidan.modeler@gmail.com
- */
 
 #ifndef __OPENCELL_SUPPORT_H__
 #define __OPENCELL_SUPPORT_H__
