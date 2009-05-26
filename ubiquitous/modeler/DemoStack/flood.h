@@ -15,14 +15,16 @@ static const int MaxSeqNum = 1000;
 /*Rotuer ID Type*/
 typedef int Rid;
 typedef unsigned seq_t;
+#define FloodEntryIter (std::list <FloodRTEntry>::iterator) 
 
 class FloodRTEntry
 {
+    friend class FloodRTable;
     public:
 	FloodRTEntry();
 	FloodRTEntry(Rid src, seq_t seq);
 	bool isNewSeq (seq_t seq);
-	void addSeq();
+	void addSeq(seq_t);
 	void rtLookUp();
 
     protected:
@@ -37,7 +39,7 @@ class FloodRTable
     public:
 	FloodRTable();
 	void rtDelete(Rid toDel);
-	void rtLoopUp(Rid toFind);
+	FloodEntryIter rtLoopUp(Rid toFind);
     private:
 	std::list <FloodRTEntry> rTable;
 } ;

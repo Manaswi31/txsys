@@ -55,7 +55,7 @@ static void init(void)
 	
     FIN(init());
 
-    frame_struct_ptr = (Opencell_Frame_Struct*) openbts_mem_alloc(
+    frame_struct_ptr = (Opencell_Frame_Struct*) opencell_mem_alloc(
 	    sizeof (Opencell_Frame_Struct));
 	node_objid = op_topo_parent(op_id_self());
 

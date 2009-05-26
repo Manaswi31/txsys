@@ -1,6 +1,9 @@
 #ifndef __SIMULATOR_H__
 #define __SIMULATOR_H__
 
+#include <stdlib.h>
+#include <opnet.h>
+
 #define SIM_OPNET 0
 #define SIM_OMNET 1
 

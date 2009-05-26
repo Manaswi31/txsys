@@ -6,6 +6,7 @@ simtime_t opencell_simtime_get(void)
     return op_sim_time();
 #else
     return (-1);
+#endif
 }
 
 void * opencell_mem_alloc(size_t size)

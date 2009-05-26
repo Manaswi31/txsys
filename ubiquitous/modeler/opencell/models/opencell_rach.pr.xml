@@ -19,6 +19,11 @@ Opencell_Phy_Mod_Data*	\phy_mod_data_ptr;
 
 ]]>
 	</state-variables>
+	<header-block>
+<![CDATA[
+#include "../include/opencell_support.h"
+]]>
+	</header-block>
 	<function-block>
 <![CDATA[
 static void init(void)

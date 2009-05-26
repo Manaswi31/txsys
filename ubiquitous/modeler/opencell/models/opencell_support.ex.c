@@ -3,13 +3,15 @@
 simtime_t opencell_next_slot (simtime_t cur_time)
 {
     simtime_t next_slot_time;
-    simtime_t delta;
+    //simtime_t delta;
+    int times;
+    double delta;
+    double cur_time_;
 
     FIN(opencell_next_slot() );
 
-    delta = cur_time % SLOT_DURATION;
-    next_slot_time = cur_time - delta;
-
+    times = (int) ((double)cur_time) / SLOT_DURATION;
+    next_slot_time = (times+1)*SLOT_DURATION;
 
     FRET (next_slot_time);
 }
@@ -25,12 +27,12 @@ opencell_cur_frame_calc (Opencell_Frame_Struct* frame_struct, simtime_t cur_time
 
     cur_slot_num = (int)(cur_time-global_share->start_of_epoch)/SLOT_DURATION;
     frame_struct->ts_seq = cur_slot_num % SLOT_PER_FRAME;
-    frame_struct->hyper_frame_seq = (int) frame_struct->slot_num / SLOT_PER_HYPERFRAME;
-    frame_struct->super_frame_seq = frame_struct->slot_num / SLOT_PER_SUPERFRAME;
+    frame_struct->hyper_frame_seq = (int) frame_struct->ts_seq / SLOT_PER_HYPERFRAME;
+    frame_struct->super_frame_seq = frame_struct->ts_seq / SLOT_PER_SUPERFRAME;
     if (frame_struct->super_frame_seq>=2048) frame_struct->super_frame_seq %= 2048;
     
     /*how many TDMA frames are there?*/
-    frame_struct->TDMA_frame_seq = (int) (frame_struct->slot_num / SLOT_PER_FRAME);
+    frame_struct->tdma_frame_seq = (int) (frame_struct->ts_seq / SLOT_PER_FRAME);
     if (frame_struct->multiframe_type==Opencell_Ctrl) {
 	frame_struct->multi_frame_seq = (int) (frame_struct->tdma_frame_seq / 51);
 	frame_struct->tdma_frame_seq %= 51;
