@@ -44,7 +44,7 @@ int intrpt_type;
 <![CDATA[
 #include "../include/opencell_support.h"
 #define NO_TRAFFIC (sv_traf_on_flag==OPC_FALSE)
-#define CALL_SUCCESS (intrpt_code==User_Conn_Inited)
+#define CALL_SUCCESS (intrpt_code==Phy_User_Conn_Inited)
 #define GEN_INTRPT (intrpt_type==OPC_INTRPT_SELF)
 ]]>
 	</header-block>
@@ -71,9 +71,9 @@ static void gen(void)
 	pkptr = op_pk_create(0);
 
 	/*For a normal burst, the contents of fields are not modeled*/
-	op_pk_fd_set(pkptr, Openbts_Burst_Fd_Index_Type, OPC_FIELD_TYPE_UNSPEC, 0);
-	op_pk_fd_set(pkptr, Openbts_Burst_Fd_Index_Overhead, OPC_FIELD_TYPE_UNSPEC, 34);
-	op_pk_fd_set(pkptr, Openbts_Burst_Fd_Index_Payload, OPC_FIELD_TYPE_UNSPEC, 114);
+	op_pk_fd_set(pkptr, Opencell_Burst_Fd_Index_Type, OPC_FIELD_TYPE_UNSPEC, 0);
+	op_pk_fd_set(pkptr, Opencell_Burst_Fd_Index_Overhead, OPC_FIELD_TYPE_UNSPEC, 34);
+	op_pk_fd_set(pkptr, Opencell_Burst_Fd_Index_Payload, OPC_FIELD_TYPE_UNSPEC, 114);
 	
 	
 

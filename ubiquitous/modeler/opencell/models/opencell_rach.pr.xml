@@ -29,15 +29,17 @@ static void init(void)
 	FOUT;
 	}
 
-static void xmit(void)
+static void xmt(void)
 	{
 	Packet* pkptr;
 	
-	FIN(xmit());
+	FIN(xmt());
 	
-	pkptr = op_pk_create(83);
+	pkptr = op_pk_create(Opencell_Burst_Overhead_Size_AB+Opencell_Burst_Payload_Size_AB);
 	
 	op_pk_send (pkptr, phy_mod_data_ptr->tx_ostrm);
+	
+	
 	
 	}
 ]]>
@@ -59,10 +61,11 @@ init();
 		</state>
 	</states>
 	<transitions>
-		<transition source-state-id="0" destination-state-id="1" label-x="361" label-y="205">
+		<transition source-state-id="0" destination-state-id="1" label-x="361" label-y="193">
 			<path-point x="269" y="210"/>
 			<path-point x="452" y="200"/>
 			<attribute name="name" type="string" value="tr_0"/>
+			<attribute name="executive" type="string" value="xmt()"/>
 		</transition>
 		<transition source-state-id="1" destination-state-id="1" label-x="548" label-y="236">
 			<path-point x="448" y="231"/>
