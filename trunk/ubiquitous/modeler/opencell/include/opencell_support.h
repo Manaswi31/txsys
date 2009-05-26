@@ -102,17 +102,18 @@ typedef enum Opencell_Burst_Overhead_Size
     Opencell_Burst_Overhead_Size_AB = (3*2+41)
 } Opencell_Burst_Overhead_Size;
 
+/*
 typedef struct
 {
-
+;
 } Opencell_Normal_Burst;
-
+*/
 
 typedef enum
 {
     Phy_User_Conn_Inited = 1, /*PHY->User: the connection is ready. Send your traffic, please.*/
-    Phy_RR_Conn_Inited  /*PHY->RR: the connection is ready. Send your signalling, please.*/
-    User_RR_Conn_Req /*User->RR: I press the "call" button, please make a connection for me.*/
+    Phy_RR_Conn_Inited,  /*PHY->RR: the connection is ready. Send your signalling, please.*/
+    User_RR_Conn_Req, /*User->RR: I press the "call" button, please make a connection for me.*/
     RR_Phy_Conn_Req /*RR->Phy: I have signalling to do, please make a connection for me.*/
 } Opencell_Intrpt_Code;
 
@@ -127,6 +128,7 @@ typedef struct
     int tx_istrm;
     int rr_istrm;
     int user_istrm;
+    List* rr_sig_lptr; /*List containing signalling packets from RR*/
 } Opencell_Phy_Mod_Data;
 
 
