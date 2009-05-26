@@ -1,8 +1,23 @@
 <?xml version="1.0"?>
 <node-model model-name="opencell_ms">
 	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="8" OPNET-model-data-version="14.0.A"/>
+	<interface-descriptions>
+		<description promoted-name="On/Off" type="toggle" inherit-limits="yes" inherit-symbol-only="yes" inherit-comments="yes" inherit-units="yes" inherit-default-value="yes" promotion-group="User Traffic">
+			<attribute-names>
+<![CDATA[
+user.On_Off
+]]>
+			</attribute-names>
+			<properties type="toggle" auto-assign="no" symbolic-only="no">
+				<default-value value="0"/>
+			</properties>
+		</description>
+	</interface-descriptions>
 	<attribute-assignments>
-		<assignment attribute-name="user.On_Off" type="toggle" status="promoted"/>
+		<assignment attribute-name="TIM source" type="string" status="hidden"/>
+		<assignment attribute-name="financial cost" type="string" status="hidden"/>
+		<assignment attribute-name="phase" type="double" status="hidden"/>
+		<assignment attribute-name="priority" type="integer" status="hidden"/>
 	</attribute-assignments>
 	<node-modules base-id="10">
 		<module type="proc" id="1" x="246" y="108">

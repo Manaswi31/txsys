@@ -16,7 +16,8 @@
 	</attribute-assignments>
 	<header-block>
 <![CDATA[
-Openbts_Global_Share * global_share;
+#include "../include/opencell_support.h"
+Opencell_Global_Share * global_share;
 ]]>
 	</header-block>
 	<function-block>
@@ -24,8 +25,8 @@ Openbts_Global_Share * global_share;
 static void init(void)
 {
     FIN(init());
-    global_share = (Openbts_Global_Share*) openbts_mem_alloc (
-	    sizeof (Openbts_Global_Share));
+    global_share = (Opencell_Global_Share*) opencell_mem_alloc (
+	    sizeof (Opencell_Global_Share));
     global_share->start_of_epoch = 10.0;
 
 
@@ -57,4 +58,10 @@ init();
 			<attribute name="name" type="string" value="tr_0"/>
 		</transition>
 	</transitions>
+	<external-sources>
+<![CDATA[
+opencell_support
+simulator
+]]>
+	</external-sources>
 </process-model>

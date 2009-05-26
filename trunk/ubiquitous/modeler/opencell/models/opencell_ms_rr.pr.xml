@@ -52,6 +52,8 @@ double		ete_delay;
 	</temporary-variables>
 	<header-block>
 <![CDATA[
+#include "../include/opencell_support.h"
+
 #define CALL_REQ (op_intrpt_type()==OPC_INTRPT_REMOTE && \
 	op_intrpt_code()==User_RR_Conn_Req)
 
@@ -94,7 +96,7 @@ stream    :  phy [1] -> RR [0]
 
 Objid node_objid;
 node_objid = op_topo_parent(op_id_self());
-phy_objid = op_id_frome_name (node_objid, OPC_OBJTYPE_PROC, "phy");
+phy_objid = op_id_from_name (node_objid, OPC_OBJTYPE_PROC, "phy");
 phy_ostrm = 0;
 phy_istrm = 0;
 ]]>

@@ -20,7 +20,14 @@
 	</header-block>
 	<states initial-state-id="0">
 		<state id="0" x="270" y="210">
-			<attribute name="name" type="string" value="st_0"/>
+			<attribute name="name" type="string" value="Init"/>
+			<attribute name="Enter Execs" type="textlist">
+				<value-text>
+<![CDATA[
+FloodRTEntry rtentry;
+]]>
+				</value-text>
+			</attribute>
 		</state>
 	</states>
 	<external-sources>
