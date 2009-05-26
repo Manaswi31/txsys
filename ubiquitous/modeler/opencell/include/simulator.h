@@ -4,7 +4,7 @@
 #define SIM_OPNET 0
 #define SIM_OMNET 1
 
-#define double simtime_t
+typedef double simtime_t;
 
 simtime_t opencell_simtime_get(void);
 void * opencell_mem_alloc(size_t size);
