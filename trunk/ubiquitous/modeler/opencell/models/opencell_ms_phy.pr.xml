@@ -22,7 +22,7 @@ Evhandle	\rach_try_timer;
 
 Prohandle	\rach_pro;
 
-Openbts_Frame_Struct*	\frame_struct_ptr;
+Opencell_Frame_Struct*	\frame_struct_ptr;
 
 Opencell_Phy_Mod_Data*	\phy_mod_data_ptr;
 
@@ -30,13 +30,21 @@ Opencell_Phy_Mod_Data*	\phy_mod_data_ptr;
 	</state-variables>
 	<header-block>
 <![CDATA[
-#include "../include/openbts_support.h"
+#include "../include/opencell_support.h"
 
 /*A request from RR module*/
-#define CALL_REQ (op_intrpt_type()==OPC_INTRPT_REMOTE && \
-	op_intrpt_code()==RR_Phy_Conn_Req)
+#define CALL_REQ ((op_intrpt_type()==OPC_INTRPT_REMOTE) && (op_intrpt_source ()==phy_mod_data_ptr->rr_objid) && \
+	(op_intrpt_code()==RR_Phy_Conn_Req))
+
+#define RR_SIG_ARRVL (op_intrpt_type()==OPC_INTRPT_STRM && \
+	op_intrpt_strm()==phy_mod_data_ptr->rr_istrm)
+
 #define DCH_INITED (sv_dch_inited)
 
+static void init(void);
+static void start_rach(void* state_ptr, int code);
+static void start_radio_access(void);
+static void rr_sig_handle(void);
 ]]>
 	</header-block>
 	<function-block>
@@ -47,8 +55,8 @@ static void init(void)
 	
     FIN(init());
 
-    frame_struct_ptr = (Openbts_Frame_Struct*) openbts_mem_alloc(
-	    sizeof (Openbts_Frame_Struct));
+    frame_struct_ptr = (Opencell_Frame_Struct*) openbts_mem_alloc(
+	    sizeof (Opencell_Frame_Struct));
 	node_objid = op_topo_parent(op_id_self());
 
 	/*
@@ -65,6 +73,9 @@ phy_mod_data_ptr = (Opencell_Phy_Mod_Data*) opencell_mem_alloc (sizeof (Opencell
 		phy_mod_data_ptr->rr_ostrm = 1;
 	phy_mod_data_ptr->user_ostrm = 2;
 	phy_mod_data_ptr->tx_ostrm = 0;
+	
+	phy_mod_data_ptr->rr_istrm = 2;
+	phy_mod_data_ptr->rr_sig_lptr = op_prg_list_create();
 	op_pro_modmem_install(phy_mod_data_ptr);
 	
 	
@@ -98,12 +109,26 @@ static void start_rach(void* state_ptr, int code)
     FOUT;
 }
 
+static void rr_sig_handle(void)
+	{
+	Packet *rr_sig_pkptr;
+	
+	FIN(rr_sig_handle());
+	
+	rr_sig_pkptr = op_pk_get(phy_mod_data_ptr->rr_istrm);
+	/*op_prg_list_insert(phy_mod_data_ptr->rr_sig_lptr, rr_sig_pkptr, OPC_LISTPOS_TAIL);*/
+	op_pk_destroy(rr_sig_pkptr);
+	
+	FOUT;
+	}
+
+
 
 
 ]]>
 	</function-block>
 	<states initial-state-id="0">
-		<state id="0" x="150" y="210">
+		<state id="0" x="150" y="330">
 			<attribute name="name" type="string" value="Init"/>
 			<attribute name="Enter Execs" type="textlist">
 				<value-text>
@@ -114,43 +139,52 @@ init();
 			</attribute>
 			<attribute name="status" type="toggle" value="1"/>
 		</state>
-		<state id="1" x="330" y="210">
+		<state id="1" x="330" y="330">
 			<attribute name="name" type="string" value="Idle"/>
 		</state>
-		<state id="2" x="510" y="210">
+		<state id="2" x="510" y="330">
 			<attribute name="name" type="string" value="Dedicated"/>
 		</state>
-		<state id="3" x="330" y="90">
+		<state id="3" x="330" y="210">
 			<attribute name="name" type="string" value="Wait_Access"/>
 		</state>
 	</states>
 	<transitions>
-		<transition source-state-id="0" destination-state-id="1" label-x="243" label-y="207">
-			<path-point x="164" y="204"/>
-			<path-point x="321" y="210"/>
+		<transition source-state-id="0" destination-state-id="1" label-x="243" label-y="327">
+			<path-point x="164" y="324"/>
+			<path-point x="321" y="330"/>
 			<attribute name="name" type="string" value="tr_0"/>
 		</transition>
-		<transition source-state-id="1" destination-state-id="1" label-x="334" label-y="310">
-			<path-point x="317" y="228"/>
-			<path-point x="241" y="309"/>
-			<path-point x="391" y="314"/>
-			<path-point x="342" y="224"/>
+		<transition source-state-id="1" destination-state-id="1" label-x="334" label-y="430">
+			<path-point x="317" y="348"/>
+			<path-point x="241" y="429"/>
+			<path-point x="391" y="434"/>
+			<path-point x="342" y="344"/>
 			<attribute name="name" type="string" value="tr_2"/>
 			<attribute name="condition" type="string" value="default"/>
 		</transition>
-		<transition source-state-id="1" destination-state-id="3" label-x="188" label-y="107">
-			<path-point x="313" y="197"/>
-			<path-point x="240" y="136"/>
-			<path-point x="318" y="91"/>
+		<transition source-state-id="1" destination-state-id="3" label-x="188" label-y="227">
+			<path-point x="313" y="317"/>
+			<path-point x="240" y="256"/>
+			<path-point x="318" y="211"/>
 			<attribute name="name" type="string" value="tr_3"/>
 			<attribute name="condition" type="string" value="CALL_REQ"/>
 			<attribute name="executive" type="string" value="start_radio_access()"/>
 		</transition>
-		<transition source-state-id="3" destination-state-id="2" label-x="461" label-y="127">
-			<path-point x="354" y="91"/>
-			<path-point x="519" y="212"/>
+		<transition source-state-id="3" destination-state-id="2" label-x="461" label-y="247">
+			<path-point x="354" y="211"/>
+			<path-point x="519" y="332"/>
 			<attribute name="name" type="string" value="tr_1"/>
 			<attribute name="condition" type="string" value="DCH_INITED"/>
+		</transition>
+		<transition source-state-id="3" destination-state-id="3" label-x="320" label-y="133">
+			<path-point x="306" y="196"/>
+			<path-point x="263" y="149"/>
+			<path-point x="393" y="159"/>
+			<path-point x="346" y="197"/>
+			<attribute name="name" type="string" value="tr_4"/>
+			<attribute name="condition" type="string" value="RR_SIG_ARRVL"/>
+			<attribute name="executive" type="string" value="rr_sig_handle()"/>
 		</transition>
 	</transitions>
 	<child-processes>

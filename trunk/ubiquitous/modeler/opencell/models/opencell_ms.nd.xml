@@ -20,12 +20,38 @@
 		<module type="ratx" id="5" x="338" y="338">
 			<module-attributes>
 				<attribute name="name" type="string" value="rt_0"/>
+				<attribute name="channel" type="compound">
+					<sub-object>
+						<attribute creation-mechanics="Model" name="count" type="integer" value="1"/>
+						<attribute creation-mechanics="Model" name="list" type="object list">
+							<object-list>
+								<sub-object>
+									<attribute creation-mechanics="Model" name="data rate" type="double" value="270,830"/>
+									<attribute creation-mechanics="Model" name="min frequency" type="double" value="900"/>
+								</sub-object>
+							</object-list>
+						</attribute>
+					</sub-object>
+				</attribute>
 				<attribute name="modulation" type="typed file" spectype="21" value="gmsk"/>
 			</module-attributes>
 		</module>
 		<module type="rarx" id="7" x="200" y="338">
 			<module-attributes>
 				<attribute name="name" type="string" value="rr_0"/>
+				<attribute name="channel" type="compound">
+					<sub-object>
+						<attribute creation-mechanics="Model" name="count" type="integer" value="1"/>
+						<attribute creation-mechanics="Model" name="list" type="object list">
+							<object-list>
+								<sub-object>
+									<attribute creation-mechanics="Model" name="data rate" type="double" value="270,830"/>
+									<attribute creation-mechanics="Model" name="min frequency" type="double" value="900"/>
+								</sub-object>
+							</object-list>
+						</attribute>
+					</sub-object>
+				</attribute>
 				<attribute name="modulation" type="typed file" spectype="21" value="gmsk"/>
 			</module-attributes>
 		</module>
@@ -108,4 +134,5 @@
 			</connection-attributes>
 		</connection>
 	</node-connections>
+	<model-data mobile-icon-name="cellphone"/>
 </node-model>
