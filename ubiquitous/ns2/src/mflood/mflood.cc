@@ -83,10 +83,12 @@ void MFlood::rt_resolve(Packet *p) {
 	rt = rtable_.rt_lookup(ih->saddr());
 
 	if (rt==NULL) {
+	    //I receive packet from that node for the first time
 		rt = new MFlood_RTEntry(ih->saddr(), fh->seq_);
 		LIST_INSERT_HEAD(&rtable_.rthead, rt, rt_link);
 		forward(rt, p, FORWARD_DELAY);
 	} else if (rt->isNewSeq(fh->seq_)) {
+	    //this is not a new node, but this packet contains a new seq
 		forward(rt, p, FORWARD_DELAY);
 		rt->addSeq(fh->seq_);
 	} else {
@@ -103,6 +105,7 @@ void MFlood::recv(Packet* p, Handler*) {
 	//std::cout << "recv called." << std:endl;
 
 	if ((ih->saddr()==index_) && (ch->num_forwards()==0)) {
+	    //this is packet from higher layer within the same node
 		ch->size() += IP_HDR_LEN;
 		ih->ttl_ = NETWORK_DIAMETER;
 		fh->seq_ = myseq_++;
