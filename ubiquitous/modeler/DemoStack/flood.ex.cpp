@@ -95,15 +95,22 @@ Routing::Routing()
 
 void Routing::init()
 {
+    L3IfData* ifdata;
+
     /*Receiving remote interrupt from TransNet and do the init */
 
     FIN(Routing::init());
 
+    /*extracts the event state and read in the data*/
+    ifdata = (L3IfData*) op_ev_state(op_ev_current());
+    //_rid = ifdata->addr.L3Address;
+
     /*Currently only supports flood_rte*/
-    rte_prohndl = op_pro_create("flood_rte");
-    op_pro_invoke(rte_prohndl);
-    _modData.rid = ;
-    op_pro_modmem_install(_modData);
+    rte_prohndl = op_pro_create("flood_rte", OPC_NIL);
+    op_pro_invoke(rte_prohndl, OPC_NIL);
+
+    _modData.rid = ifdata->addr.L3Addr;
+    op_pro_modmem_install((void*)&_modData);
 
     FOUT;
 }
@@ -127,6 +134,7 @@ stream    :  rr_0 [0] -> routing [1]
 
 void FloodRte::init()
 {   
+
     L3IfData* ifdata;
 
     FIN(FloodRte::init());
@@ -138,10 +146,8 @@ void FloodRte::init()
     _rtable = new FloodRTable();
     //_rid = g_rid++;
 
-    /*extracts the event state and read in the data*/
-
-    ifdata = (L3IfData*) op_ev_state_get(op_ev_current());
-    _rid = ifdata->addr.L3Address;
+    ifdata = (L3IfData*) op_pro_modmem_access ();
+    _rid = ifdata->addr.L3Addr;
 
     op_intrpt_type_register (OPC_INTRPT_STRM, op_pro_self());
 
@@ -274,16 +280,16 @@ void TransNet::init()
     op_ima_obj_attr_get_objid(_objid, "Address", & addr_comp_objid);
 
     temp_objid = op_topo_child(addr_comp_objid, OPC_OBJTYPE_GENERIC, 0);
-    op_ima_obj_attr_get_objid(temp_objid, "L1Address", & _addr.L1Addr);
+    op_ima_obj_attr_get_int32(temp_objid, "L1Address", (int*) & (_addr.L1Addr));
 
     temp_objid = op_topo_child(addr_comp_objid, OPC_OBJTYPE_GENERIC, 1);
-    op_ima_obj_attr_get_objid(temp_objid , "L2Address", & _addr.L2Addr);
+    op_ima_obj_attr_get_int32(temp_objid , "L2Address", (int*)& (_addr.L2Addr));
 
     temp_objid = op_topo_child(addr_comp_objid, OPC_OBJTYPE_GENERIC, 2);
-    op_ima_obj_attr_get_objid(temp_objid , "L3Address", & _addr.L3Addr);
+    op_ima_obj_attr_get_int32(temp_objid , "L3Address", (int*)& (_addr.L3Addr));
 
     temp_objid = op_topo_child(addr_comp_objid, OPC_OBJTYPE_GENERIC, 3);
-    op_ima_obj_attr_get_objid(temp_objid , "L4Address", & _addr.L4Addr);
+    op_ima_obj_attr_get_int32(temp_objid , "L4Address", (int*)& (_addr.L4Addr));
 
     /*send a remote interrupt to Routing, which will do initialization after receiving this signal*/
     node_objid = op_topo_parent(_objid);
@@ -291,11 +297,11 @@ void TransNet::init()
     
     L3IfData *ifdata;
     ifdata = new L3IfData;
-    ifdata.addr.L1Address = _addr.L1Addr;
-    ifdata.addr.L2Address = _addr.L2Addr;
-    ifdata.addr.L3Address = _addr.L3Addr;
+    ifdata->addr.L1Addr = _addr.L1Addr;
+    ifdata->addr.L2Addr = _addr.L2Addr;
+    ifdata->addr.L3Addr = _addr.L3Addr;
     op_ev_state_install(ifdata, OPC_NIL);
-    op_intrupt_schedule_remote(op_sim_time(), 0, _rte_objid);
+    op_intrpt_schedule_remote(op_sim_time(), 0, _rte_objid);
     op_ev_state_install(OPC_NIL, OPC_NIL);
 
     FOUT;
