@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<process-model model-name="flood_rte" code-language="C++" tv-in-db="no" tv-in-tb="no">
+<process-model model-name="antitcp_transnet" code-language="C++" tv-in-db="no" tv-in-tb="no">
 	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="8" OPNET-model-data-version="14.0.A"/>
 	<attribute-assignments>
 		<assignment attribute-name="subqueue" type="compound">
@@ -15,8 +15,8 @@
 	</attribute-assignments>
 	<state-variables>
 <![CDATA[
+TransNet	\flood_transnet_instance;
 
-FloodRte \flood_rte_instance;
 ]]>
 	</state-variables>
 	<header-block>
@@ -28,7 +28,7 @@ FloodRte \flood_rte_instance;
 <![CDATA[
 void message_handler(void)
 {
-    flood_rte_instance.handleMessage();
+    flood_transnet_instance.handleMessage();
 }
 ]]>
 	</function-block>
