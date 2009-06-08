@@ -22,11 +22,13 @@ FloodRte \flood_rte_instance;
 	<header-block>
 <![CDATA[
 #include "flood.h"
+
+static void message_handler(void);
 ]]>
 	</header-block>
 	<function-block>
 <![CDATA[
-void message_handler(void)
+static void message_handler(void)
 {
     flood_rte_instance.handleMessage();
 }
