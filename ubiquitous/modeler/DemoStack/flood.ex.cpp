@@ -277,7 +277,7 @@ void TransNet::init()
     FIN(TransNet::init());
 
     _objid = op_id_self();
-    op_ima_obj_attr_get_objid(_objid, "Address", & addr_comp_objid);
+    op_ima_obj_attr_get_objid(_objid, "TransNet.Address", & addr_comp_objid);
 
     temp_objid = op_topo_child(addr_comp_objid, OPC_OBJTYPE_GENERIC, 0);
     op_ima_obj_attr_get_int32(temp_objid, "L1Address", (int*) & (_addr.L1Addr));
