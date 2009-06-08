@@ -23,8 +23,9 @@ typedef std::list <FloodRTEntry>::iterator FloodRTEntryIter;
 
 typedef struct
 {
- int dummy;
-} L3IfData; //
+     Address addr;
+     int dummy;
+} L3IfData; //TransNet->Routing
 
 typedef struct
 {
@@ -62,6 +63,20 @@ class FloodRTable
 	void rtInsert(Rid rid, seq_t seq);
     private:
 	std::list <FloodRTEntry> rTable;
+} ;
+
+typedef struct 
+{
+    Rid rid;
+} Rte_Module_Data;
+
+class Routing
+{
+    public:
+	Routing();
+    private:
+	prohandle rte_prohndl;
+	Rte_Module_Data	_modData;
 } ;
 
 class FloodRte
@@ -104,6 +119,7 @@ class TransNet
     public :
 	TransNet();
 	TransNet(Byte L1addr, Byte L2addr, Byte L3addr, Byte l4addr);
+	void init();
 	void procLLPk(Packet*);
 	void procHLPk(Packet*);
 	void handleMessage();
@@ -120,6 +136,8 @@ class TransNet
 	} TransNetHdr;
 
 	Address _addr;
+	Objid _objid;
+	Objid _rte_objid;
 	int llOstrm ;
 	int hlOstrm ; 
 	int llIstrm ;

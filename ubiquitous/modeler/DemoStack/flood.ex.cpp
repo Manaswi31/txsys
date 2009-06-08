@@ -87,30 +87,73 @@ void FloodRTable::rtDelete(Rid id)
 }
 
 //////////////////////////////////////////////////////////
+//class Routing
+//////////////////////////////////////////////////////////
+Routing::Routing()
+{
+}
+
+void Routing::init()
+{
+    /*Receiving remote interrupt from TransNet and do the init */
+
+    FIN(Routing::init());
+
+    /*Currently only supports flood_rte*/
+    rte_prohndl = op_pro_create("flood_rte");
+    op_pro_invoke(rte_prohndl);
+    _modData.rid = ;
+    op_pro_modmem_install(_modData);
+
+    FOUT;
+}
+
+//////////////////////////////////////////////////////////
 //class FloodRte
 //////////////////////////////////////////////////////////
 
 FloodRte::FloodRte() : _seq(0)
 { 
+    /*
+stream    :  routing [0] -> transnet [0]
+stream    :  routing [1] -> rt_0 [0]
+stream    :  transnet [0] -> routing [0]
+stream    :  rr_0 [0] -> routing [1]
+    */
+    
 	//void rtLookUp();
-    llIstrm = 0;
-    hlIstrm = 1;
-    llOstrm = 0;
-    hlIstrm = 1;
-    _rtable = new FloodRTable();
-    _rid = g_rid++;
-
 }
 
 
 void FloodRte::init()
-{
+{   
+    L3IfData* ifdata;
+
+    FIN(FloodRte::init());
+
+    llIstrm = 1;
+    hlIstrm = 0;
+    llOstrm = 1;
+    hlOstrm = 0;
+    _rtable = new FloodRTable();
+    //_rid = g_rid++;
+
+    /*extracts the event state and read in the data*/
+
+    ifdata = (L3IfData*) op_ev_state_get(op_ev_current());
+    _rid = ifdata->addr.L3Address;
+
+    op_intrpt_type_register (OPC_INTRPT_STRM, op_pro_self());
+
+    FOUT;
 }
 
 void FloodRte::procHLPk(Packet* hlpk)
 {
     Packet* pk;
     Flood_Rte_Hdr *hdr;
+
+    FIN(FloodRte::procHLPk());
 
     hdr = (Flood_Rte_Hdr* )op_prg_mem_alloc (sizeof (Flood_Rte_Hdr));
     hdr->seq = _seq++;
@@ -122,6 +165,8 @@ void FloodRte::procHLPk(Packet* hlpk)
     op_pk_fd_set_ptr(pk, Flood_Rte_Fd_Ind_Header, hdr, 0, op_prg_mem_copy_create, op_prg_mem_free, sizeof (Flood_Rte_Hdr ));
     op_pk_fd_set_pkt(pk, Flood_Rte_Fd_Ind_Payload, hlpk, -1);
     op_pk_send(pk, llOstrm);
+
+    FOUT;
 }
 
 void FloodRte::procLLPk(Packet* pk)
@@ -130,6 +175,8 @@ void FloodRte::procLLPk(Packet* pk)
     Flood_Rte_Hdr *hdr;
     FloodRTEntryIter entry_it ;
     //FloodRTEntry * entry;
+
+    FIN(FloodRte::procLLPk());
 
     op_pk_fd_get_ptr(pk, Flood_Rte_Fd_Ind_Header, (void**)&hdr);
     op_pk_fd_get_pkt(pk,Flood_Rte_Fd_Ind_Payload, & hlpk);
@@ -163,12 +210,16 @@ void FloodRte::procLLPk(Packet* pk)
 	op_pk_destroy(pk);
 	op_pk_destroy(hlpk);
     }
+
     FOUT;
 }
 
 void FloodRte::handleMessage()
 {
     Packet* pk;
+
+    FIN(FloodRte::handleMessage());
+
     if (op_intrpt_strm()==hlIstrm) {
 	pk = op_pk_get(hlIstrm);
 	procHLPk(pk);
@@ -176,6 +227,8 @@ void FloodRte::handleMessage()
 	pk = op_pk_get(llIstrm);
 	procLLPk(pk);
     }
+
+    FOUT;
 }
 
 //////////////////////////////////////////////////////////
@@ -184,6 +237,11 @@ void FloodRte::handleMessage()
 
 TransNet::TransNet()
 {
+    llOstrm = 0;
+    hlOstrm = 1;
+    llIstrm = 0;
+    hlIstrm = 1;
+    init();
 }
 
 TransNet::TransNet(Byte L1addr, Byte L2addr, Byte L3addr, Byte L4addr)  
@@ -204,10 +262,51 @@ TransNet::TransNet(Byte L1addr, Byte L2addr, Byte L3addr, Byte L4addr)
     _addr.L4Addr=L4addr;
 }
 
+void TransNet::init()
+{
+    Objid node_objid ;
+    Objid addr_comp_objid;
+    Objid temp_objid;
+
+    FIN(TransNet::init());
+
+    _objid = op_id_self();
+    op_ima_obj_attr_get_objid(_objid, "Address", & addr_comp_objid);
+
+    temp_objid = op_topo_child(addr_comp_objid, OPC_OBJTYPE_GENERIC, 0);
+    op_ima_obj_attr_get_objid(temp_objid, "L1Address", & _addr.L1Addr);
+
+    temp_objid = op_topo_child(addr_comp_objid, OPC_OBJTYPE_GENERIC, 1);
+    op_ima_obj_attr_get_objid(temp_objid , "L2Address", & _addr.L2Addr);
+
+    temp_objid = op_topo_child(addr_comp_objid, OPC_OBJTYPE_GENERIC, 2);
+    op_ima_obj_attr_get_objid(temp_objid , "L3Address", & _addr.L3Addr);
+
+    temp_objid = op_topo_child(addr_comp_objid, OPC_OBJTYPE_GENERIC, 3);
+    op_ima_obj_attr_get_objid(temp_objid , "L4Address", & _addr.L4Addr);
+
+    /*send a remote interrupt to Routing, which will do initialization after receiving this signal*/
+    node_objid = op_topo_parent(_objid);
+    _rte_objid = op_id_from_name(node_objid, OPC_OBJTYPE_PROC, "routing");
+    
+    L3IfData *ifdata;
+    ifdata = new L3IfData;
+    ifdata.addr.L1Address = _addr.L1Addr;
+    ifdata.addr.L2Address = _addr.L2Addr;
+    ifdata.addr.L3Address = _addr.L3Addr;
+    op_ev_state_install(ifdata, OPC_NIL);
+    op_intrupt_schedule_remote(op_sim_time(), 0, _rte_objid);
+    op_ev_state_install(OPC_NIL, OPC_NIL);
+
+    FOUT;
+}
+
 void TransNet::procHLPk(Packet* hlpk)
 {
     Packet* pk;
     TransNetHdr * hdr;
+
+    Packet *pkptr;
 
     FIN(procHLPk(hlpk));
 
@@ -221,6 +320,8 @@ void TransNet::procHLPk(Packet* hlpk)
     op_pk_fd_set_ptr(pk, Flood_TransNet_Fd_Ind_Hdr, hdr, 0, op_prg_mem_copy_create, op_prg_mem_free, sizeof (TransNetHdr ));
     op_pk_fd_set_pkt(pk, Flood_TransNet_Fd_Ind_Payload , hlpk, -1);
 
+    //op_pk_fd_get_pkt(pk, Flood_TransNet_Fd_Ind_Payload, & pkptr);
+
     op_pk_send(pk, llOstrm);
 
     FOUT;
@@ -230,7 +331,7 @@ void TransNet::procLLPk(Packet* pk)
 {
     Packet* hlpk;
 
-    FIN(procHLPk(pk));
+    FIN(procLLPk(pk));
 
     op_pk_fd_get_pkt(pk, Flood_TransNet_Fd_Ind_Payload, & hlpk);
     op_pk_destroy(pk);
