@@ -46,6 +46,10 @@ Rid FloodRTEntry::getSRid() {
 //class FloodRTable
 //////////////////////////////////////////////////////////
 
+FloodRTable::FloodRTable()
+{
+}
+
 bool FloodRTable::rtLookUp(Rid id)
 {
     std::list<FloodRTEntry>::iterator it ;
@@ -174,8 +178,26 @@ void FloodRte::handleMessage()
     }
 }
 
+//////////////////////////////////////////////////////////
+//class TransNet
+//////////////////////////////////////////////////////////
+
+TransNet::TransNet()
+{
+}
+
 TransNet::TransNet(Byte L1addr, Byte L2addr, Byte L3addr, Byte L4addr)  
 {
+    /*
+    stream    :  transnet [0] -> routing [0]
+     stream    :  transnet [1] -> traffic [0]
+     stream    :  routing [0] -> transnet [0]
+     stream    :  traffic [0] -> transnet [1]
+     */
+    llOstrm = 0;
+    hlOstrm = 1;
+    llIstrm = 0;
+    hlIstrm = 1;
     _addr.L1Addr=L1addr; 
     _addr.L2Addr=L2addr; 
     _addr.L3Addr=L3addr; 
@@ -186,6 +208,9 @@ void TransNet::procHLPk(Packet* hlpk)
 {
     Packet* pk;
     TransNetHdr * hdr;
+
+    FIN(procHLPk(hlpk));
+
     pk = op_pk_create(TransNetPkHdrSize);
     hdr = new TransNetHdr;
     hdr->addr.L1Addr = _addr.L1Addr;
@@ -197,14 +222,21 @@ void TransNet::procHLPk(Packet* hlpk)
     op_pk_fd_set_pkt(pk, Flood_TransNet_Fd_Ind_Payload , hlpk, -1);
 
     op_pk_send(pk, llOstrm);
+
+    FOUT;
 }
 
 void TransNet::procLLPk(Packet* pk)
 {
     Packet* hlpk;
+
+    FIN(procHLPk(pk));
+
     op_pk_fd_get_pkt(pk, Flood_TransNet_Fd_Ind_Payload, & hlpk);
     op_pk_destroy(pk);
     op_pk_send(hlpk, hlOstrm);
+
+    FOUT;
 }
 
 void TransNet::handleMessage()
