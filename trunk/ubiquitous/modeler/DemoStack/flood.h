@@ -23,17 +23,17 @@ typedef std::list <FloodRTEntry>::iterator FloodRTEntryIter;
 
 typedef struct
 {
-     Address addr;
-     int dummy;
-} L3IfData; //TransNet->Routing
-
-typedef struct
-{
     Byte L1Addr;
     Byte L2Addr;
     Byte L3Addr; //local
     Byte L4Addr; //for application, i.e., a port
 } Address;
+
+typedef struct
+{
+     Address addr;
+     int dummy;
+} L3IfData; //TransNet->Routing
 
 class FloodRTEntry
 {
@@ -74,8 +74,9 @@ class Routing
 {
     public:
 	Routing();
+	void init();
     private:
-	prohandle rte_prohndl;
+	Prohandle rte_prohndl;
 	Rte_Module_Data	_modData;
 } ;
 
