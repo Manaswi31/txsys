@@ -30,7 +30,11 @@ static void message_handler(void);
 <![CDATA[
 static void message_handler(void)
 {
+	FIN(message_handler());
+	
     flood_rte_instance.handleMessage();
+	
+	FOUT;
 }
 ]]>
 	</function-block>
@@ -41,9 +45,11 @@ static void message_handler(void)
 				<value-text>
 <![CDATA[
 //FloodRTEntry rtentry;
+flood_rte_instance.init();
 ]]>
 				</value-text>
 			</attribute>
+			<attribute name="status" type="toggle" value="1"/>
 		</state>
 		<state id="1" x="390" y="210">
 			<attribute name="name" type="string" value="Wait"/>
@@ -67,6 +73,8 @@ static void message_handler(void)
 	<external-sources>
 <![CDATA[
 flood
+oms_pr
+oms_string_support
 ]]>
 	</external-sources>
 </process-model>
