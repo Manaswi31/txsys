@@ -60,21 +60,26 @@ static void init(void)
 	node_objid = op_topo_parent(op_id_self());
 
 	/*
-	stream    :  phy [0] -> rt_0 [0]
+stream    :  phy [0] -> tx [0]
 stream    :  phy [1] -> RR [0]
-stream    :  rr_0 [0] -> phy [0]
+stream    :  phy [2] -> user [0]
+stream    :  rx [0] -> phy [0]
 stream    :  user [0] -> phy [1]
 stream    :  RR [0] -> phy [2]
 	*/
 
-phy_mod_data_ptr = (Opencell_Phy_Mod_Data*) opencell_mem_alloc (sizeof (Opencell_Phy_Mod_Data));
+	phy_mod_data_ptr = (Opencell_Phy_Mod_Data*) opencell_mem_alloc (sizeof (Opencell_Phy_Mod_Data));
 	phy_mod_data_ptr->rr_objid = op_id_from_name (node_objid, OPC_OBJTYPE_PROC, "RR");
 	phy_mod_data_ptr->user_objid = op_id_from_name (node_objid, OPC_OBJTYPE_PROC, "user");
-		phy_mod_data_ptr->rr_ostrm = 1;
+	
+	phy_mod_data_ptr->rr_ostrm = 1;
 	phy_mod_data_ptr->user_ostrm = 2;
 	phy_mod_data_ptr->tx_ostrm = 0;
 	
 	phy_mod_data_ptr->rr_istrm = 2;
+	phy_mod_data_ptr->user_istrm = 1;
+	phy_mod_data_ptr->rx_istrm = 0;
+	
 	phy_mod_data_ptr->rr_sig_lptr = op_prg_list_create();
 	op_pro_modmem_install(phy_mod_data_ptr);
 	

@@ -129,7 +129,7 @@ typedef struct
     int	rr_ostrm;
     int	user_ostrm;
     int tx_ostrm;
-    int tx_istrm;
+    int rx_istrm;
     int rr_istrm;
     int user_istrm;
     List* rr_sig_lptr;

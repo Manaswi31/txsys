@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<process-model model-name="opencell_rach" code-language="C" tv-in-db="no" tv-in-tb="no">
+<process-model model-name="flood_rte" code-language="C++" tv-in-db="no" tv-in-tb="no">
 	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="8" OPNET-model-data-version="14.0.A"/>
 	<attribute-assignments>
 		<assignment attribute-name="subqueue" type="compound">
@@ -15,40 +15,27 @@
 	</attribute-assignments>
 	<state-variables>
 <![CDATA[
-Opencell_Phy_Mod_Data*	\phy_mod_data_ptr;
 
+FloodRte \flood_rte_instance;
 ]]>
 	</state-variables>
 	<header-block>
 <![CDATA[
-#include "../include/opencell_support.h"
+#include "flood.h"
+
+static void message_handler(void);
 ]]>
 	</header-block>
 	<function-block>
 <![CDATA[
-static void init(void)
-	{
-	FIN(init());
-	phy_mod_data_ptr = (Opencell_Phy_Mod_Data*) op_pro_modmem_access();
+static void message_handler(void)
+{
+	FIN(message_handler());
+	
+    flood_rte_instance.handleMessage();
 	
 	FOUT;
-	}
-
-static void xmt(void)
-	{
-	Packet* pkptr;
-	
-	FIN(xmt());
-	
-	pkptr = op_pk_create(Opencell_Burst_Overhead_Size_AB+Opencell_Burst_Payload_Size_AB);
-	
-	op_pk_send (pkptr, phy_mod_data_ptr->tx_ostrm);
-	
-	FOUT;
-	
-	
-	
-	}
+}
 ]]>
 	</function-block>
 	<states initial-state-id="0">
@@ -57,30 +44,37 @@ static void xmt(void)
 			<attribute name="Enter Execs" type="textlist">
 				<value-text>
 <![CDATA[
-init();
+//FloodRTEntry rtentry;
+flood_rte_instance.init();
 ]]>
 				</value-text>
 			</attribute>
 			<attribute name="status" type="toggle" value="1"/>
 		</state>
-		<state id="1" x="450" y="210">
-			<attribute name="name" type="string" value="Xmit"/>
+		<state id="1" x="390" y="210">
+			<attribute name="name" type="string" value="Wait"/>
 		</state>
 	</states>
 	<transitions>
-		<transition source-state-id="0" destination-state-id="1" label-x="361" label-y="193">
-			<path-point x="269" y="210"/>
-			<path-point x="452" y="200"/>
+		<transition source-state-id="0" destination-state-id="1" label-x="331" label-y="211">
+			<path-point x="284" y="210"/>
+			<path-point x="378" y="211"/>
 			<attribute name="name" type="string" value="tr_0"/>
-			<attribute name="executive" type="string" value="xmt()"/>
 		</transition>
-		<transition source-state-id="1" destination-state-id="1" label-x="548" label-y="236">
-			<path-point x="448" y="231"/>
-			<path-point x="496" y="292"/>
-			<path-point x="514" y="163"/>
-			<path-point x="459" y="190"/>
+		<transition source-state-id="1" destination-state-id="1" label-x="525" label-y="202">
+			<path-point x="393" y="235"/>
+			<path-point x="445" y="286"/>
+			<path-point x="438" y="134"/>
+			<path-point x="379" y="203"/>
 			<attribute name="name" type="string" value="tr_1"/>
-			<attribute name="executive" type="string" value="xmt()"/>
+			<attribute name="executive" type="string" value="message_handler()"/>
 		</transition>
 	</transitions>
+	<external-sources>
+<![CDATA[
+flood
+oms_pr
+oms_string_support
+]]>
+	</external-sources>
 </process-model>

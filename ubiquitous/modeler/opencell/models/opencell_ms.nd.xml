@@ -15,6 +15,7 @@ user.On_Off
 	</interface-descriptions>
 	<attribute-assignments>
 		<assignment attribute-name="TIM source" type="string" status="hidden"/>
+		<assignment attribute-name="altitude" type="double" value="2.0"/>
 		<assignment attribute-name="financial cost" type="string" status="hidden"/>
 		<assignment attribute-name="phase" type="double" status="hidden"/>
 		<assignment attribute-name="priority" type="integer" status="hidden"/>
@@ -34,7 +35,7 @@ user.On_Off
 		</module>
 		<module type="ratx" id="5" x="338" y="338">
 			<module-attributes>
-				<attribute name="name" type="string" value="rt_0"/>
+				<attribute name="name" type="string" value="tx"/>
 				<attribute name="channel" type="compound">
 					<sub-object>
 						<attribute creation-mechanics="Model" name="count" type="integer" value="1"/>
@@ -49,11 +50,12 @@ user.On_Off
 					</sub-object>
 				</attribute>
 				<attribute name="modulation" type="typed file" spectype="21" value="gmsk"/>
+				<attribute name="txdel model" type="typed file" spectype="10" value="NONE"/>
 			</module-attributes>
 		</module>
 		<module type="rarx" id="7" x="200" y="338">
 			<module-attributes>
-				<attribute name="name" type="string" value="rr_0"/>
+				<attribute name="name" type="string" value="rx"/>
 				<attribute name="channel" type="compound">
 					<sub-object>
 						<attribute creation-mechanics="Model" name="count" type="integer" value="1"/>
