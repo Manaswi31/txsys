@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
-<process-model model-name="opencell_utility" code-language="C" tv-in-db="no" tv-in-tb="no">
+<process-model model-name="antitcp_transnet" code-language="C++" tv-in-db="no" tv-in-tb="no">
 	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="8" OPNET-model-data-version="14.0.A"/>
 	<attribute-assignments>
-		<assignment attribute-name="begsim intrpt" type="toggle" value="1"/>
 		<assignment attribute-name="subqueue" type="compound">
 			<sub-object>
 				<attribute creation-mechanics="Model" name="count" type="integer" value="1"/>
@@ -14,55 +13,58 @@
 			</sub-object>
 		</assignment>
 	</attribute-assignments>
+	<state-variables>
+<![CDATA[
+TransNet	\flood_transnet_instance;
+
+]]>
+	</state-variables>
 	<header-block>
 <![CDATA[
-#include "../include/opencell_support.h"
-Opencell_Global_Share * global_share;
+#include "flood.h"
 ]]>
 	</header-block>
 	<function-block>
 <![CDATA[
-static void init(void)
+void message_handler(void)
 {
-    FIN(init());
-    global_share = (Opencell_Global_Share*) opencell_mem_alloc (
-	    sizeof (Opencell_Global_Share));
-    global_share->start_of_epoch = 10.0;
-
-
-    FOUT;
+    flood_transnet_instance.handleMessage();
 }
-
 ]]>
 	</function-block>
-	<states initial-state-id="1">
-		<state id="1" x="270" y="210">
+	<states initial-state-id="0">
+		<state id="0" x="270" y="210">
 			<attribute name="name" type="string" value="Init"/>
 			<attribute name="Enter Execs" type="textlist">
 				<value-text>
 <![CDATA[
-init();
+//FloodRTEntry rtentry;
 ]]>
 				</value-text>
 			</attribute>
-			<attribute name="status" type="toggle" value="1"/>
 		</state>
-		<state id="2" x="390" y="210">
+		<state id="1" x="390" y="210">
 			<attribute name="name" type="string" value="Wait"/>
 		</state>
 	</states>
 	<transitions>
-		<transition source-state-id="1" destination-state-id="2" label-x="332" label-y="216">
-			<path-point x="277" y="217"/>
-			<path-point x="386" y="214"/>
+		<transition source-state-id="0" destination-state-id="1" label-x="331" label-y="211">
+			<path-point x="284" y="210"/>
+			<path-point x="378" y="211"/>
 			<attribute name="name" type="string" value="tr_0"/>
+		</transition>
+		<transition source-state-id="1" destination-state-id="1" label-x="525" label-y="202">
+			<path-point x="393" y="235"/>
+			<path-point x="445" y="286"/>
+			<path-point x="438" y="134"/>
+			<path-point x="379" y="203"/>
+			<attribute name="name" type="string" value="tr_1"/>
+			<attribute name="executive" type="string" value="message_handler()"/>
 		</transition>
 	</transitions>
 	<external-sources>
 <![CDATA[
-oms_pr
-opencell_support
-simulator
+flood
 ]]>
 	</external-sources>
 </process-model>

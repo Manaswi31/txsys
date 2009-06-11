@@ -74,8 +74,8 @@ static void call_req_handle(void)
 	/*Create signalling packet*/
 	/*Currently I'm not sure where the RIL3 ChannReq signalling is dumped. Dump it here temporarily*/
 	pkptr = op_pk_create(Opencell_Burst_Overhead_Size_AB+Opencell_Burst_Payload_Size_AB);
-	op_pk_fd_set(pkptr, Opencell_Burst_Fd_Index_Type, OPC_FIELD_TYPE_INTEGER, & burst_type , OPC_FIELD_SIZE_UNCHANGED);
-	op_pk_fd_set(pkptr, Opencell_Burst_Fd_Index_Signalling, OPC_FIELD_TYPE_INTEGER, & signalling_type, OPC_FIELD_SIZE_UNCHANGED);
+	op_pk_fd_set(pkptr, Opencell_Burst_Fd_Index_Type, OPC_FIELD_TYPE_INTEGER, & burst_type , 0);
+	op_pk_fd_set(pkptr, Opencell_Burst_Fd_Index_Signalling, OPC_FIELD_TYPE_INTEGER, & signalling_type, 0);
 	
 	op_pk_send (pkptr, phy_ostrm);
 
