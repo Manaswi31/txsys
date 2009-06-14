@@ -74,7 +74,7 @@ class Routing
 {
     public:
 	Routing();
-	void init();
+	void initialize();
     private:
 	Prohandle rte_prohndl;
 	Rte_Module_Data	_modData;
@@ -84,7 +84,7 @@ class FloodRte
 {
     public:
 	FloodRte();
-	void init();
+	void initialize();
 	//encap();
 	//send();
 	void procHLPk(Packet*);
@@ -117,13 +117,16 @@ class FloodRte
 
 class TransNet
 {
+    friend class FloodRte;
+
     public :
 	TransNet();
 	TransNet(Byte L1addr, Byte L2addr, Byte L3addr, Byte l4addr);
-	void init();
+	void initialize();
 	void procLLPk(Packet*);
 	void procHLPk(Packet*);
-	void handleMessage();
+
+void handleMessage();
     private:
 	const static int TransNetPkHdrSize = 20; //in bits
 	
@@ -143,6 +146,10 @@ class TransNet
 	int hlOstrm ; 
 	int llIstrm ;
 	int hlIstrm ;
+
+	Stathandle sh_load;
+	Stathandle sh_traf_sent;
+
 } ;
 
 

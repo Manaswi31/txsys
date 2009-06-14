@@ -140,7 +140,7 @@ static void message_handler(void)
 				<value-text>
 <![CDATA[
 //FloodRTEntry rtentry;
-transnet_instance.init();
+transnet_instance.initialize();
 ]]>
 				</value-text>
 			</attribute>
@@ -170,4 +170,8 @@ transnet_instance.init();
 flood
 ]]>
 	</external-sources>
+	<local-statistics>
+		<statistic name="Load (bytes/sec)" group="TransNet" dimension="0" capture-mode="bucket/default total/sum_time" display-mode="linear" low-bound="0.0" high-bound="disabled"/>
+		<statistic name="Traffic Sent (bytes/sec)" group="TransNet" dimension="0" capture-mode="bucket/default total/sum_time" display-mode="linear" low-bound="0.0" high-bound="disabled"/>
+	</local-statistics>
 </process-model>

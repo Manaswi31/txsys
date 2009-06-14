@@ -45,7 +45,7 @@ static void message_handler(void)
 				<value-text>
 <![CDATA[
 //FloodRTEntry rtentry;
-flood_rte_instance.init();
+flood_rte_instance.initialize();
 ]]>
 				</value-text>
 			</attribute>
