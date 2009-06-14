@@ -1,7 +1,0 @@
-node models:
-antitcp_station
-link models:
-path models:
-demand models:
-wdomain models:
-riskgroup models:
