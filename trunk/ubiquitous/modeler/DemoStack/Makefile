@@ -12,9 +12,8 @@ runsim:
     -ef antitcp-scenario1-DES-1 \
     -DESinfo antitcp-scenario1-DES-1 \
 	-exec_id 1 \
-	-opnet_port 53275 \
-	-parent_pid 17730 \
-	-pipe_stdin
+	-pipe_stdin \
+	-probe antitcp-scenario1
 
 odb: 
 	cd antitcp.project
@@ -25,9 +24,8 @@ odb:
     -ef antitcp-scenario1-DES-1 \
     -DESinfo antitcp-scenario1-DES-1 \
 	-exec_id 1 \
-	-opnet_port 53275 \
-	-parent_pid 17730 \
 	-c \
 	-debug \
-	-pipe_stdin
+	-pipe_stdin \
+	-probe antitcp-scenario1
 

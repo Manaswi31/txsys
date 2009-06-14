@@ -40,7 +40,7 @@ static void message_handler(void);
 			<attribute name="Exit Execs" type="textlist">
 				<value-text>
 <![CDATA[
-rte_instance.init();
+rte_instance.initialize();
 ]]>
 				</value-text>
 			</attribute>
