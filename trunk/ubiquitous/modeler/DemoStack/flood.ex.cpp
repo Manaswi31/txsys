@@ -96,6 +96,7 @@ Routing::Routing()
 void Routing::initialize()
 {
     L3IfData* ifdata;
+	int temp;
 
     /*Receiving remote interrupt from TransNet and do the initialize */
 
@@ -106,8 +107,17 @@ void Routing::initialize()
     ifdata = (L3IfData*) op_ev_state(op_ev_current());
     //_rid = ifdata->addr.L3Address;
 
-    _modData.rid = ifdata->addr.L3Addr;
-    op_pro_modmem_install((void*)&_modData);
+	/*
+    _modData = (Rte_Module_Data*)op_prg_mem_alloc(sizeof (Rte_Module_Data));
+    _modData->rid = (int) ifdata->addr.L3Addr;
+	*/
+    
+    /* I hereby confirm that local variable(in the stack, instead of dynamic memory that is in heap) */
+    /* can also be installed as module memory, */
+    /* and be extracted intact later by calling op_pro_mod_mem_acess() */
+    _modData.rid = (int) ifdata->addr.L3Addr;
+    op_pro_modmem_install((void*) &_modData);
+    //op_pro_modmem_install((void*)_modData);
 
     /*Currently only supports flood_rte*/
     rte_prohndl = op_pro_create("flood_rte", OPC_NIL);
@@ -137,7 +147,7 @@ stream    :  rr_0 [0] -> routing [1]
 void FloodRte::initialize()
 {   
 
-    L3IfData* ifdata;
+    Rte_Module_Data* modData;
 
     FIN(FloodRte::initialize());
 
@@ -149,8 +159,8 @@ void FloodRte::initialize()
     hlOstrm = 0;
     _rtable = new FloodRTable();
 
-    ifdata = (L3IfData*) op_pro_modmem_access ();
-    _rid = ifdata->addr.L3Addr;
+    modData = (Rte_Module_Data*) op_pro_modmem_access ();
+    _rid = modData->rid;
 
     op_intrpt_type_register (OPC_INTRPT_STRM, op_pro_self());
 
@@ -214,10 +224,30 @@ void FloodRte::procLLPk(Packet* pk)
 	//I receive packet from this node for the first time, create an entry for it.
 	//entry = new FloodRTEntry(hdr->saddr, hdr->seq);
 	_rtable->rtInsert(hdr->saddr, hdr->seq);
+
+	/*Encapsulate the fields back into the packet, and send it out again*/
+	op_pk_fd_set_ptr(pk, Flood_Rte_Fd_Ind_Header, hdr, \
+		0, op_prg_mem_copy_create, op_prg_mem_free, sizeof (Flood_Rte_Hdr ));
+
+	/*If the specified size of a packet field is set to a negative value,*/
+	/* the size of the field will be set to the size of the encapsulated packet, */
+	/*thus accurately modeling the aggregate packet size.*/
+	op_pk_fd_set_pkt(pk, Flood_Rte_Fd_Ind_Payload, hlpk, -1);
+
 	op_pk_send(pk, llOstrm);
     } else if (entry_it->isNewSeq(hdr->seq)) {
 	//This isn't the first time, but this is a new seq. Update my table then.
 	entry_it->addSeq(hdr->seq);
+
+	/*Encapsulate the fields back into the packet, and send it out again*/
+	op_pk_fd_set_ptr(pk, Flood_Rte_Fd_Ind_Header, hdr, \
+		0, op_prg_mem_copy_create, op_prg_mem_free, sizeof (Flood_Rte_Hdr ));
+
+	/*If the specified size of a packet field is set to a negative value,*/
+	/* the size of the field will be set to the size of the encapsulated packet, */
+	/*thus accurately modeling the aggregate packet size.*/
+	op_pk_fd_set_pkt(pk, Flood_Rte_Fd_Ind_Payload, hlpk, -1);
+
 	op_pk_send(pk, llOstrm);
     } else {
 	//this is a past packet
@@ -275,6 +305,7 @@ void TransNet::initialize()
 {
     Objid node_objid ;
     Objid addr_comp_objid;
+    Objid dest_addr_comp_objid;
     Objid temp_objid;
 
     FIN(TransNet::initialize());
