@@ -181,7 +181,7 @@ void FloodRte::procHLPk(Packet* hlpk)
     hdr->seq = _seq++;
     hdr->saddr = _rid;
     op_pk_fd_access_read_only_ptr(hlpk, TransNet::Flood_TransNet_Fd_Ind_Hdr , (const void**) & tran_hdr);
-    hdr->daddr = tran_hdr->addr.L3Addr;
+    hdr->daddr = tran_hdr->daddr.L3Addr;
     //hdr->daddr = (_rid+1) % g_rid;
     //if (hdr->daddr==0) hdr->daddr = g_rid;
 
@@ -318,13 +318,20 @@ void TransNet::initialize()
     _objid = op_id_self();
     node_objid = op_topo_parent(_objid);
     op_ima_obj_attr_get_objid(_objid, "Address", & addr_comp_objid);
-    //op_ima_obj_attr_get_objid(_objid, "TransNet.Address", & addr_comp_objid);
 
     temp_objid = op_topo_child(addr_comp_objid, OPC_OBJTYPE_GENERIC, 0);
     op_ima_obj_attr_get_int32(temp_objid, "L1Address", (int*) & (_addr.L1Addr));
     op_ima_obj_attr_get_int32(temp_objid , "L2Address", (int*)& (_addr.L2Addr));
     op_ima_obj_attr_get_int32(temp_objid , "L3Address", (int*)& (_addr.L3Addr));
     op_ima_obj_attr_get_int32(temp_objid , "L4Address", (int*)& (_addr.L4Addr));
+
+    op_ima_obj_attr_get_objid(_objid, "Dest Address", & dest_addr_comp_objid);
+
+    temp_objid = op_topo_child(dest_addr_comp_objid, OPC_OBJTYPE_GENERIC, 0);
+    op_ima_obj_attr_get_int32(temp_objid, "L1Address", (int*) & (_dest_addr.L1Addr));
+    op_ima_obj_attr_get_int32(temp_objid , "L2Address", (int*)& (_dest_addr.L2Addr));
+    op_ima_obj_attr_get_int32(temp_objid , "L3Address", (int*)& (_dest_addr.L3Addr));
+    op_ima_obj_attr_get_int32(temp_objid , "L4Address", (int*)& (_dest_addr.L4Addr));
 
     /*send a remote interrupt to Routing, which will do initialization after receiving this signal*/
     _rte_objid = op_id_from_name(node_objid, OPC_OBJTYPE_PROC, "routing");
@@ -355,10 +362,14 @@ void TransNet::procHLPk(Packet* hlpk)
 
     pk = op_pk_create(TransNetPkHdrSize);
     hdr = new TransNetHdr;
-    hdr->addr.L1Addr = _addr.L1Addr;
-    hdr->addr.L2Addr = _addr.L2Addr;
-    hdr->addr.L3Addr = _addr.L3Addr;
-    hdr->addr.L4Addr = _addr.L4Addr;
+    hdr->saddr.L1Addr = _addr.L1Addr;
+    hdr->saddr.L2Addr = _addr.L2Addr;
+    hdr->saddr.L3Addr = _addr.L3Addr;
+    hdr->saddr.L4Addr = _addr.L4Addr;
+    hdr->daddr.L1Addr = _dest_addr.L1Addr;
+    hdr->daddr.L2Addr = _dest_addr.L2Addr;
+    hdr->daddr.L3Addr = _dest_addr.L3Addr;
+    hdr->daddr.L4Addr = _dest_addr.L4Addr;
 
     op_pk_fd_set_ptr(pk, Flood_TransNet_Fd_Ind_Hdr, hdr, 0, op_prg_mem_copy_create, op_prg_mem_free, sizeof (TransNetHdr ));
     op_pk_fd_set_pkt(pk, Flood_TransNet_Fd_Ind_Payload , hlpk, -1);
