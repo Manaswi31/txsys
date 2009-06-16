@@ -113,6 +113,11 @@ class FloodRte
 	int _seq;
 	Rid _rid;
 	FloodRTable* _rtable;
+
+	Stathandle sh_traf_byte_fwd;
+	Stathandle sh_traf_byte_drop_loop;
+	Stathandle sh_traf_byte_drop_past;
+
 } ;
 
 class TransNet
@@ -156,3 +161,4 @@ void handleMessage();
 
 
 #endif
+
