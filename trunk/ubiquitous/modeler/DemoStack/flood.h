@@ -136,10 +136,12 @@ void handleMessage();
 	} Flood_TransNet_Pk_Fd_Ind;
 
 	typedef struct {
-	    Address addr;
+	    Address saddr;
+	    Address daddr;
 	} TransNetHdr;
 
 	Address _addr;
+	Address _dest_addr;
 	Objid _objid;
 	Objid _rte_objid;
 	int llOstrm ;
