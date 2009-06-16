@@ -164,6 +164,10 @@ void FloodRte::initialize()
 
     op_intrpt_type_register (OPC_INTRPT_STRM, op_pro_self());
 
+    sh_traf_byte_fwd = op_stat_reg("Flood Routing.Traffic Forwarded (bytes/sec)", OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);;
+    sh_traf_byte_drop_loop = op_stat_reg("Flood Routing.Traffic Dropped Due To Route Loop (bytes/sec)", \
+	    OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);;
+
     FOUT;
 }
 
@@ -207,6 +211,10 @@ void FloodRte::procLLPk(Packet* pk)
 
     //this is a route loop
     if (hdr->saddr==_rid) {
+
+	op_stat_write(sh_traf_byte_drop_loop , op_pk_total_size_get(pk));
+	op_stat_write(sh_traf_byte_drop_loop , 0.0);
+
 	op_pk_destroy(hlpk);
 	op_pk_destroy(pk);
 	FOUT;
@@ -234,6 +242,9 @@ void FloodRte::procLLPk(Packet* pk)
 	/*thus accurately modeling the aggregate packet size.*/
 	op_pk_fd_set_pkt(pk, Flood_Rte_Fd_Ind_Payload, hlpk, -1);
 
+	op_stat_write(sh_traf_byte_fwd, op_pk_total_size_get(pk)); 
+	op_stat_write(sh_traf_byte_fwd, 0.0);
+
 	op_pk_send(pk, llOstrm);
     } else if (entry_it->isNewSeq(hdr->seq)) {
 	//This isn't the first time, but this is a new seq. Update my table then.
@@ -247,6 +258,9 @@ void FloodRte::procLLPk(Packet* pk)
 	/* the size of the field will be set to the size of the encapsulated packet, */
 	/*thus accurately modeling the aggregate packet size.*/
 	op_pk_fd_set_pkt(pk, Flood_Rte_Fd_Ind_Payload, hlpk, -1);
+
+	op_stat_write(sh_traf_byte_fwd, op_pk_total_size_get(pk)); 
+	op_stat_write(sh_traf_byte_fwd, 0.0);
 
 	op_pk_send(pk, llOstrm);
     } else {

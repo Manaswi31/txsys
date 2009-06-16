@@ -77,4 +77,8 @@ oms_pr
 oms_string_support
 ]]>
 	</external-sources>
+	<local-statistics>
+		<statistic name="Traffic Forwarded (bytes/sec)" group="Flood Routing" dimension="0" capture-mode="bucket/default total/sum_time" display-mode="linear" low-bound="0.0" high-bound="disabled"/>
+		<statistic name="Traffic Dropped Due To Route Loop (bytes/sec)" group="Flood Routing" dimension="0" capture-mode="bucket/default total/sum_time" display-mode="linear" low-bound="0.0" high-bound="disabled"/>
+	</local-statistics>
 </process-model>
