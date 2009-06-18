@@ -119,6 +119,9 @@ TransNet	\transnet_instance;
 	<header-block>
 <![CDATA[
 #include "flood.h"
+using namespace AntiTcp;
+	
+	
 ]]>
 	</header-block>
 	<function-block>

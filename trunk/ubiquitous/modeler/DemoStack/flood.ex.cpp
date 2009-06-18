@@ -1,5 +1,8 @@
 #include "flood.h"
 
+//using AntiTcp::FloodRTEntry;
+using namespace AntiTcp;
+
 static int g_rid = 0;
 
 FloodRTEntry::FloodRTEntry()
@@ -424,5 +427,179 @@ void TransNet::handleMessage()
     }
 }
 
-//EOF
+////////////////////////////////////////
+//Application
+///////////////////////////////////////
+
+Application::Application()
+{
+}
+
+void Application::initialize()
+{
+    Objid own_id;
+    Prohandle sink_prohndl;
+
+    
+    char		interarrival_str [128];
+    char		size_str [128];
+    Prg_List*	pk_format_names_lptr;
+    char*		found_format_str;
+    Boolean		format_found;
+    int			i;
+    double start_time, stop_time;
+
+    FIN(Application::initialize());
+
+    sh_sent_bit = op_stat_reg("antitcp applicaton.Traffic Sent (bits/sec)", OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
+//Traffic Sent (bits/sec)
+    sink_prohndl = op_pro_create("antitcp_app_sink", OPC_NIL);
+    //op_pro_invoke (sink_prohndl, OPC_NIL);
+    op_intrpt_type_register(OPC_INTRPT_STRM, sink_prohndl);
+
+    /* At this initial state, we read the values of source attributes	*/
+    /* and schedule a selt interrupt that will indicate our start time	*/
+    /* for packet generation.											*/
+
+    /* Obtain the object id of the surrounding module.					*/
+    own_id = op_id_self ();
+
+    /* Read the values of the packet generation parameters, i.e. the	*/
+    /* attribute values of the surrounding module.						*/
+    op_ima_obj_attr_get (own_id, "Packet Interarrival Time", interarrival_str);
+    op_ima_obj_attr_get (own_id, "Packet Size",              size_str);
+    op_ima_obj_attr_get (own_id, "Start Time",               &start_time);
+    op_ima_obj_attr_get (own_id, "Stop Time",                &stop_time);
+
+    /* Load the PDFs that will be used in computing the packet			*/
+    /* interarrival times and packet sizes.								*/
+    interarrival_dist_ptr = oms_dist_load_from_string (interarrival_str);
+    pksize_dist_ptr = oms_dist_load_from_string (size_str);
+
+	 
+    /* Make sure we have valid start and stop times, i.e. stop time is	*/
+    /* not earlier than start time.										*/
+    if ((stop_time <= start_time) && (stop_time != SSC_INFINITE_TIME))
+	{
+	/* Stop time is earlier than start time. Disable the source.	*/
+	start_time = SSC_INFINITE_TIME;
+
+	/* Display an appropriate warning.								*/
+	op_prg_odb_print_major ("Warning from simple packet generator model (simple_source):", 
+				"Although the generator is not disabled (start time is set to a finite value),",
+				"a stop time that is not later than the start time is specified.",
+				"Disabling the generator.", OPC_NIL);
+	}
+
+    /* Schedule a self interrupt that will indicate our start time for	*/
+    /* packet generation activities. If the source is disabled,			*/
+    /* schedule it at current time with the appropriate code value.		*/
+    if (start_time == SSC_INFINITE_TIME)
+	    {
+	    op_intrpt_schedule_self (op_sim_time (), SSC_STOP);
+	    }
+    else
+	    {
+		op_intrpt_schedule_self (start_time, SSC_START);
+
+		/* In this case, also schedule the interrupt when we will stop	*/
+		/* generating packets, unless we are configured to run until	*/
+		/* the end of the simulation.									*/
+		if (stop_time != SSC_INFINITE_TIME)
+			{
+			op_intrpt_schedule_self (stop_time, SSC_STOP);
+			}
+		
+		next_intarr_time = oms_dist_outcome (interarrival_dist_ptr);
+
+		/* Make sure that interarrival time is not negative. In that case it */
+		/* will be set to 0. */ 
+
+		if (next_intarr_time <0)
+			{
+			next_intarr_time = 0.0;
+			}
+	    }
+
+	    /* Register the statistics that will be maintained by this model.	*/
+	    sh_sent_bit = op_stat_reg ("antitcp applicaton.Traffic Sent (bits/sec)",
+    		    OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
+}
+
+void Application::scheduleNextPk()
+{
+
+    FIN(Application::scheduleNextPk());
+
+    /* At the enter execs of the "generate" state we schedule the		*/
+    /* arrival of the next packet.										*/
+    next_intarr_time = oms_dist_outcome (interarrival_dist_ptr);
+
+    /* Make sure that interarrival time is not negative. In that case it */
+    /* will be set to 0.												 */
+    if (next_intarr_time <0)
+	    {
+	    next_intarr_time = 0;
+	    }
+
+    nextPkEvHndl = op_intrpt_schedule_self (op_sim_time () + next_intarr_time, SSC_GENERATE);
+
+
+    FOUT;
+}
+
+void Application::genPk()
+{
+    Packet*				pkptr;
+    double				pksize;
+
+    FIN(Application::genPk());
+
+    /** This function creates a packet based on the packet generation		**/
+    /** specifications of the source model and sends it to the lower layer.	**/
+
+    /* Generate a packet size outcome.					*/
+    //pksize = (double) ceil (oms_dist_outcome (pksize_dist_ptr));
+    pksize = 1024;
+    
+    /* We produce unformatted packets. Create one.	*/
+    pkptr = op_pk_create (pksize);
+
+    /* Update the packet generation statistics.			*/
+    /*
+    op_stat_write (packets_sent_hndl, 1.0);
+    op_stat_write (packets_sent_hndl, 0.0);
+    op_stat_write (packet_size_hndl, (double) pksize);
+    op_stat_write (interarrivals_hndl, next_intarr_time);
+    */
+    op_stat_write (sh_sent_bit, (double) pksize);
+    op_stat_write (sh_sent_bit, 0.0);
+
+    /* Send the packet via the stream to the lower layer.	*/
+    op_pk_send (pkptr, SSC_STRM_TO_LOW);
+
+    FOUT;
+}
+
+void Application::finalize()
+{
+
+    FIN(Application::finalize());
+
+    /* When we enter into the "stop" state, it is the time for us to	*/
+    /* stop generating traffic. We simply cancel the generation of the	*/
+    /* next packet and go into a silent mode by not scheduling anything	*/
+    /* else.								*/
+
+    if (op_ev_valid (nextPkEvHndl) == OPC_TRUE)
+	    {
+	    op_ev_cancel (nextPkEvHndl);
+	    }
+
+    FOUT;
+}
+
+
+
+
 

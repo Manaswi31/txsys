@@ -24,6 +24,8 @@ Routing	\rte_instance;
 <![CDATA[
 #include "flood.h"
 
+using namespace AntiTcp;
+
 static void message_handler(void);
 ]]>
 	</header-block>
