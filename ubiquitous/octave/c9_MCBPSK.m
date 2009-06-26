@@ -4,7 +4,7 @@ snrdB=snrdB_min:1:snrdB_max;
 Nsymbols=input('Enter number of symbols>');
 snr=10.^(snrdB/10);
 %h=waitbar(0, 'SNR Iteraction');
-len_snr=length(snrdB);
+len_snr=length(snrdB)
 for j=1:len_snr
 %    waitbar(j/len_snr)
     sigma=sqrt(1/(2*snr(j)));
@@ -19,17 +19,19 @@ for j=1:len_snr
             d_est=1;
         else
             d_est=0;
-        end
+        endif
         if (d_est ~= d)
             error_count=error_count+1;
-        end
-    end
+        endif
+    endfor
+    j
     errors(j)=error_count;
-end
+endfor
 %close(h)
-ber_sim=errors/Nsymbols;
+ber_sim=errors/Nsymbols
 ber_theor=q(sqrt(2*snr));
-semilogy(snrdB, ber_theor, snrdB, ber_sim, 'o');
+%semilogy(snrdB, ber_theor, snrdB, ber_sim, 'o');
+semilogy(snrdB, ber_sim)
 %plot(snrdB, ber_theor, snrdB, ber_sim, 'o');
 axis([snrdB_min snrdB_max 0.0001 1])
 xlabel('SNR in dB')
