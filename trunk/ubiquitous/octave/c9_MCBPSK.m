@@ -30,8 +30,9 @@ endfor
 %close(h)
 ber_sim=errors/Nsymbols
 ber_theor=q(sqrt(2*snr));
-%semilogy(snrdB, ber_theor, snrdB, ber_sim, 'o');
-semilogy(snrdB, ber_sim)
+theoryBer = 0.5*erfc(sqrt(10.^(snrdB/20))); % theoretical ber
+semilogy(snrdB, ber_theor, snrdB, theoryBer, 'mx-', snrdB, ber_sim, 'o');
+%semilogy(snrdB, ber_sim)
 %plot(snrdB, ber_theor, snrdB, ber_sim, 'o');
 axis([snrdB_min snrdB_max 0.0001 1])
 xlabel('SNR in dB')
