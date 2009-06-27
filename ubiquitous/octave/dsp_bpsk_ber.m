@@ -1,5 +1,5 @@
 clear
-N = 10^6 % number of bits or symbols
+N = 1E5 % number of bits or symbols
 rand('state',100); % initializing the rand() function
 randn('state',200); % initializing the randn() function
 
@@ -29,11 +29,11 @@ theoryBer = 0.5*erfc(sqrt(10.^(Eb_N0_dB/10))); % theoretical ber
 % plot
 close all
 figure
-%semilogy(Eb_N0_dB,theoryBer,'b.-');
-plot(Eb_N0_dB,theoryBer,'b.-');
+semilogy(Eb_N0_dB,theoryBer,'b.-');
+%plot(Eb_N0_dB,theoryBer,'b.-');
 hold on
-%semilogy(Eb_N0_dB,simBer,'mx-');
-plot(Eb_N0_dB,simBer,'mx-');
+semilogy(Eb_N0_dB,simBer,'mx-');
+%plot(Eb_N0_dB,simBer,'mx-');
 axis([-10 10 10^-5 0.5])
 grid on
 legend('theory', 'simulation');
