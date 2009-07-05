@@ -448,13 +448,14 @@ void Application::initialize()
     Boolean		format_found;
     int			i;
     double start_time, stop_time;
+    Objid comp_attr_objid, temp_objid;
 
     FIN(Application::initialize());
 
     sh_sent_bit = op_stat_reg("antitcp applicaton.Traffic Sent (bits/sec)", OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
-//Traffic Sent (bits/sec)
+
     sink_prohndl = op_pro_create("antitcp_app_sink", OPC_NIL);
-    //op_pro_invoke (sink_prohndl, OPC_NIL);
+    op_pro_invoke (sink_prohndl, OPC_NIL);
     op_intrpt_type_register(OPC_INTRPT_STRM, sink_prohndl);
 
     /* At this initial state, we read the values of source attributes	*/
@@ -466,10 +467,12 @@ void Application::initialize()
 
     /* Read the values of the packet generation parameters, i.e. the	*/
     /* attribute values of the surrounding module.						*/
-    op_ima_obj_attr_get (own_id, "Packet Interarrival Time", interarrival_str);
-    op_ima_obj_attr_get (own_id, "Packet Size",              size_str);
-    op_ima_obj_attr_get (own_id, "Start Time",               &start_time);
-    op_ima_obj_attr_get (own_id, "Stop Time",                &stop_time);
+    op_ima_obj_attr_get_objid (own_id, "Application Profile", & comp_attr_objid);
+    temp_objid = op_topo_child(comp_attr_objid, OPC_OBJTYPE_GENERIC, 0);
+    op_ima_obj_attr_get (temp_objid, "Packet Interarrival Time", interarrival_str);
+    op_ima_obj_attr_get (temp_objid, "Packet Size",              size_str);
+    op_ima_obj_attr_get (temp_objid, "Start Time",               &start_time);
+    op_ima_obj_attr_get (temp_objid, "Stop Time",                &stop_time);
 
     /* Load the PDFs that will be used in computing the packet			*/
     /* interarrival times and packet sizes.								*/
