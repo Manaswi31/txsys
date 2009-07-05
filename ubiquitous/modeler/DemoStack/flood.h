@@ -15,7 +15,7 @@
 namespace AntiTcp
 {
 
-    static const int INFINITY =  0xff;
+    static const int INFINITY_ =  0xff;
     static const int MaxSeqNum = 1000;
 
     /*Rotuer ID Type*/
