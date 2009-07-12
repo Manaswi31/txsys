@@ -99,36 +99,75 @@ Routing::Routing()
 void Routing::initialize()
 {
     L3IfData* ifdata;
-	int temp;
+    int temp;
+    int rteProtoName;
+    Objid _id;
+
+    typedef enum {
+	rteTransparent = 0,
+	rteFlood = 1
+    } rteProto;
 
     /*Receiving remote interrupt from TransNet and do the initialize */
 
     FIN(Routing::initialize());
+
+    _id = op_id_self();
+
+    op_ima_obj_attr_get_int32 (_id, "Routing Protocol", & rteProtoName);
 
     /*transnet delivers the address infomation to routing module*/
     /*extracts the event state and read in the data*/
     ifdata = (L3IfData*) op_ev_state(op_ev_current());
     //_rid = ifdata->addr.L3Address;
 
-	/*
-    _modData = (Rte_Module_Data*)op_prg_mem_alloc(sizeof (Rte_Module_Data));
-    _modData->rid = (int) ifdata->addr.L3Addr;
-	*/
     
     /* I hereby confirm that local variable(in the stack, instead of dynamic memory that is in heap) */
     /* can also be installed as module memory, */
     /* and be extracted intact later by calling op_pro_mod_mem_acess() */
     _modData.rid = (int) ifdata->addr.L3Addr;
+    _modData.llIstrm = 1;
+    _modData.hlIstrm = 0;
+    _modData.llOstrm = 1;
+    _modData.hlOstrm = 0;
     op_pro_modmem_install((void*) &_modData);
-    //op_pro_modmem_install((void*)_modData);
 
     /*Currently only supports flood_rte*/
-    rte_prohndl = op_pro_create("flood_rte", OPC_NIL);
+    switch (rteProtoName) {
+    case (rteTransparent) :
+	    rte_prohndl = op_pro_create("rte_tp", OPC_NIL);
+	    break;
+    case (rteFlood) :
+	    rte_prohndl = op_pro_create("flood_rte", OPC_NIL);
+	    break;
+    }
+
     op_pro_invoke(rte_prohndl, OPC_NIL);
 
 
     FOUT;
 }
+
+//////////////////////////////////////////////////////////
+//class RteTransparent
+//////////////////////////////////////////////////////////
+
+RteTransparent::RteTransparent()
+{
+}
+
+void RteTransparent::Initialize()
+{
+}
+
+void RteTransparent::Finalize()
+{
+}
+
+void RteTransparent::handleMessage()
+{
+}
+
 
 //////////////////////////////////////////////////////////
 //class FloodRte
@@ -150,20 +189,15 @@ stream    :  rr_0 [0] -> routing [1]
 void FloodRte::initialize()
 {   
 
-    Rte_Module_Data* modData;
 
     FIN(FloodRte::initialize());
 
     _seq = 0;
 
-    llIstrm = 1;
-    hlIstrm = 0;
-    llOstrm = 1;
-    hlOstrm = 0;
     _rtable = new FloodRTable();
 
-    modData = (Rte_Module_Data*) op_pro_modmem_access ();
-    _rid = modData->rid;
+    _modData = (Rte_Module_Data*) op_pro_modmem_access ();
+    //_rid = modData->rid;
 
     op_intrpt_type_register (OPC_INTRPT_STRM, op_pro_self());
 
@@ -186,7 +220,7 @@ void FloodRte::procHLPk(Packet* hlpk)
 
     hdr = (Flood_Rte_Hdr* )op_prg_mem_alloc (sizeof (Flood_Rte_Hdr));
     hdr->seq = _seq++;
-    hdr->saddr = _rid;
+    hdr->saddr = modData->rid; //_rid;
     op_pk_fd_access_read_only_ptr(hlpk, TransNet::Flood_TransNet_Fd_Ind_Hdr , (const void**) & tran_hdr);
     hdr->daddr = tran_hdr->daddr.L3Addr;
     //hdr->daddr = (_rid+1) % g_rid;
