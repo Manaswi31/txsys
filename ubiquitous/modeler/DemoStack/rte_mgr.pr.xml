@@ -1,7 +1,19 @@
 <?xml version="1.0"?>
 <process-model model-name="rte_mgr" code-language="C++" tv-in-db="no" tv-in-tb="no">
-	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="8" OPNET-model-data-version="14.0.A"/>
+	<OPNET-info OPNET-release="14.5.A" OPNET-patchlevel="5" OPNET-model-data-version="14.0.A"/>
+	<model-attributes>
+		<attribute name="Routing Protocol" type="integer">
+			<properties type="integer" auto-assign="no" symbolic-only="no">
+				<default-value value-symbol="Flood"/>
+				<symbol-map>
+					<symbol name="Transparent" value="0"/>
+					<symbol name="Flood" value="1"/>
+				</symbol-map>
+			</properties>
+		</attribute>
+	</model-attributes>
 	<attribute-assignments>
+		<assignment attribute-name="Routing Protocol" type="integer" status="promoted"/>
 		<assignment attribute-name="begsim intrpt" type="toggle" value="1"/>
 		<assignment attribute-name="subqueue" type="compound">
 			<sub-object>
@@ -68,6 +80,7 @@ rte_instance.initialize();
 	<child-processes>
 <![CDATA[
 flood_rte
+rte_tp
 ]]>
 	</child-processes>
 	<external-sources>
