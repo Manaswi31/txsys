@@ -39,13 +39,22 @@ namespace AntiTcp
 	 int dummy;
     } L3IfData; //TransNet->Routing
 
-   class SimProcess 
+   class SimpleProcess 
    {
        protected:
-	   virtual void Initialize() = 0;
+	   virtual void initialize() = 0;
 	   virtual void handleMessage()=0;
-	   virtual void Finalize() = 0;
+	   virtual void finalize() = 0;
    };
+
+   class TransparentProcess : public SimpleProcess
+    {
+       public:
+	   TransparentProcess(); 
+	   virtual void initialize() ;
+	   virtual void handleMessage();
+	   virtual void finalize();
+    };
 
     class FloodRTEntry
     {
@@ -90,18 +99,22 @@ namespace AntiTcp
     {
 	public:
 	    Routing();
-	    void initialize();
+	    virtual void initialize();
+	    virtual void finalize();
 	private:
 	    Prohandle rte_prohndl;
 	    Rte_Module_Data	_modData;
     } ;
 
-    class RteTransparent : public SimProcess
+    class RteTransparent : public SimleProcess
     {
 	public:
 	    RteTransparent();
+	    virtual void initialize();
 	    virtual void handleMessage();
+	    virtual void finalize();
 	private:
+	    Rte_Module_Data* _modData;
 	    int hlIstrm;
 	    int llIstrm;
 	    int hlOstrm;
@@ -133,16 +146,14 @@ namespace AntiTcp
 	    } Flood_Rte_Pk_Fd_Ind;
 
 	    const static int Flood_Pk_Hdr_Size = 160; //in bits
-	    Rte_Module_Data* modData;
-	    /*
+	    Rte_Module_Data* _modData;
+	    Rid _rid;
 	    int llOstrm ;
 	    int hlOstrm ; 
 	    int llIstrm ;
 	    int hlIstrm ;
-	    */
 	    Packet* curPk;
 	    int _seq;
-	    //Rid _rid;
 	    FloodRTable* _rtable;
 
 	    Stathandle sh_traf_byte_fwd;
