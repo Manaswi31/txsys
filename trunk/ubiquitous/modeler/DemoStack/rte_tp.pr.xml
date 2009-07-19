@@ -21,7 +21,7 @@ RteTransparent	\rte_instance;
 	</state-variables>
 	<header-block>
 <![CDATA[
-#include "flood.h"
+#include "antitcp.h"
 
 using namespace AntiTcp;
 
