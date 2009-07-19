@@ -1,6 +1,6 @@
 #INC=/usr/opnet/14.5.A/sys/include
-compile: flood.ex.cpp flood.h
-	op_mko -type ex -m flood
+compile: antitcp.ex.cpp antitcp.h
+	op_mko -type ex -m antitcp
 	op_mko -type pr -m flood_rte
 	op_mko -type pr -m antitcp_transnet
 

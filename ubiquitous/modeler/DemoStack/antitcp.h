@@ -106,7 +106,7 @@ namespace AntiTcp
 	    Rte_Module_Data	_modData;
     } ;
 
-    class RteTransparent : public SimleProcess
+    class RteTransparent : public SimpleProcess
     {
 	public:
 	    RteTransparent();
