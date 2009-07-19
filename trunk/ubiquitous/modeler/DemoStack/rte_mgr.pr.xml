@@ -85,7 +85,6 @@ rte_tp
 	</child-processes>
 	<external-sources>
 <![CDATA[
-flood
 oms_pr
 oms_string_support
 ]]>
