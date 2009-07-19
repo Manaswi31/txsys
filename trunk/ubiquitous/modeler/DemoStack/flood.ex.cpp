@@ -98,15 +98,15 @@ Routing::Routing()
 
 void Routing::initialize()
 {
-    L3IfData* ifdata;
-    int temp;
-    int rteProtoName;
-    Objid _id;
-
     typedef enum {
 	rteTransparent = 0,
 	rteFlood = 1
     } rteProto;
+
+    L3IfData* ifdata;
+    int temp;
+    int rteProtoName;
+    Objid _id;
 
     /*Receiving remote interrupt from TransNet and do the initialize */
 
@@ -114,7 +114,7 @@ void Routing::initialize()
 
     _id = op_id_self();
 
-    op_ima_obj_attr_get_int32 (_id, "Routing Protocol", & rteProtoName);
+    op_ima_obj_attr_get_int32 (_id, "Routing Protocol", &  rteProtoName);
 
     /*transnet delivers the address infomation to routing module*/
     /*extracts the event state and read in the data*/
@@ -142,8 +142,18 @@ void Routing::initialize()
 	    break;
     }
 
+    op_intrpt_type_register (OPC_INTRPT_STRM, rte_prohndl);
     op_pro_invoke(rte_prohndl, OPC_NIL);
 
+
+    FOUT;
+}
+
+void Routing::finalize()
+{
+    FIN(Routing::finalize());
+
+    
 
     FOUT;
 }
@@ -156,16 +166,41 @@ RteTransparent::RteTransparent()
 {
 }
 
-void RteTransparent::Initialize()
+void RteTransparent::initialize()
 {
+    FIN(RteTransparent::Initialize());
+
+    _modData = (Rte_Module_Data*) op_pro_modmem_access();
+
+    hlIstrm = _modData->hlIstrm;
+    llIstrm = _modData->llIstrm;
+    hlOstrm = _modData->hlOstrm;
+    llOstrm = _modData->llOstrm;
+
+    FOUT;
 }
 
-void RteTransparent::Finalize()
+void RteTransparent::finalize()
 {
 }
 
 void RteTransparent::handleMessage()
 {
+    int istrm;
+    Packet * pk;
+
+    FIN(RteTransparent::handleMessage());
+
+    istrm = op_intrpt_strm();
+    if (istrm==hlIstrm) {
+	pk = op_pk_get(istrm);
+	op_pk_send(pk, llOstrm);
+    } else if (istrm==llIstrm) {
+	pk = op_pk_get(istrm);
+	op_pk_send(pk, hlOstrm);
+    }
+
+    FOUT;
 }
 
 
@@ -197,9 +232,14 @@ void FloodRte::initialize()
     _rtable = new FloodRTable();
 
     _modData = (Rte_Module_Data*) op_pro_modmem_access ();
-    //_rid = modData->rid;
 
-    op_intrpt_type_register (OPC_INTRPT_STRM, op_pro_self());
+    _rid = _modData->rid;
+    llIstrm = _modData->llIstrm ;
+    hlIstrm = _modData->hlIstrm ;
+    llOstrm = _modData->llOstrm ;
+    hlOstrm = _modData->hlOstrm ;
+    
+
 
     sh_traf_byte_fwd = op_stat_reg("Flood Routing.Traffic Forwarded (bytes/sec)", OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);;
     sh_traf_byte_drop_loop = op_stat_reg("Flood Routing.Traffic Dropped Due To Route Loop (bytes/sec)", \
@@ -220,7 +260,7 @@ void FloodRte::procHLPk(Packet* hlpk)
 
     hdr = (Flood_Rte_Hdr* )op_prg_mem_alloc (sizeof (Flood_Rte_Hdr));
     hdr->seq = _seq++;
-    hdr->saddr = modData->rid; //_rid;
+    hdr->saddr = _rid;
     op_pk_fd_access_read_only_ptr(hlpk, TransNet::Flood_TransNet_Fd_Ind_Hdr , (const void**) & tran_hdr);
     hdr->daddr = tran_hdr->daddr.L3Addr;
     //hdr->daddr = (_rid+1) % g_rid;
@@ -441,6 +481,7 @@ void TransNet::procLLPk(Packet* pk)
     Packet* hlpk;
 
     FIN(procLLPk(pk));
+    /*TODO: Add checking fields for address field*/
 
     op_pk_fd_get_pkt(pk, Flood_TransNet_Fd_Ind_Payload, & hlpk);
     op_pk_destroy(pk);
