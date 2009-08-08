@@ -23,6 +23,7 @@ enum Err_Cause {
 } ;
 
 #define Ra_Aloha_Ack_Pk_Name "ra_aloha_ack"
+#define Ra_Aloha_Data_Pk_Name "ra_aloha_data"
 
 extern double tr_len_ack;
 
