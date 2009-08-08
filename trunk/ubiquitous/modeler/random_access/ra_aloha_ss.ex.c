@@ -3,10 +3,15 @@ static int istrm_hl;
 static int istrm_ll;
 static int ostrm_hl;
 static int ostrm_ll;
+static Stathandle sh_thru_bits;
+static Stathandle sh_load_bits;
 
 void ra_aloha_ss_init(void)
 {
     FIN(ra_aloha_ss_init());
+
+    sh_load_bits = op_stat_reg("ALOHA.ALOHA SS Load(bits/sec)", OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
+    sh_thru_bits = op_stat_reg("ALOHA.ALOHA SS Throughput(bits/sec)", OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
 
     FOUT;
 }
@@ -63,6 +68,10 @@ void ra_aloha_ss_intrpt_strm_handler(void)
 	op_pk_format(pkptr, pk_fmt_str);
 
 	if (strcmp(pk_fmt_str, Ra_Aloha_Ack_Pk_Name)==0) {
+
+	    op_stat_write(sh_thru_bits, op_pk_total_size_get(pkptr));
+	    op_stat_write(sh_thru_bits, op_pk_total_size_get(pkptr));
+
 	    op_pk_destroy(buf_pkptr);
 	    //TODO: check whether the timer event is valid
 	    op_ev_cancel(tr_ack);
@@ -134,18 +143,6 @@ Packet* ra_aloha_ss_dequeue(void)
     FRET (pkptr);
 }
 
-/*
-void ra_aloha_sche_tx(double time_offset, Packet* pkptr)
-{
-    FIN(ra_aloha_sche_tx());
-
-    op_intrpt_schedule_self(current_time+time_offset, T_NEXT_TX);
-
-
-    FOUT;
-}
-*/
-
 void errh_print(enum Err_Cause err_cause)
 {
     switch (err_cause) {
@@ -157,9 +154,14 @@ void errh_print(enum Err_Cause err_cause)
     }
 }
 
-void ra_aloha_ss_stats_update(Packet* pkptr)
+/*
+void ra_aloha_ss_stats_update(Packet* pkptr, )
 {
-}
+    FIN(ra_aloha_ss_stats_update);
 
+
+    FOUT;
+}
+*/
 
 
