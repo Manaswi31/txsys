@@ -1,3 +1,6 @@
+#include "ra.h" 
+//#include <opnet.h>
+extern double tr_len_retx;
 
 static int istrm_hl;
 static int istrm_ll;
@@ -5,10 +8,24 @@ static int ostrm_hl;
 static int ostrm_ll;
 static Stathandle sh_thru_bits;
 static Stathandle sh_load_bits;
+static Packet* buf_pkptr; //the copy of the appending packet that is on the fly
 
 void ra_aloha_ss_init(void)
 {
     FIN(ra_aloha_ss_init());
+
+    /*
+     *
+     * stream    :  MAC [0] -> rt_0 [0]
+     * stream    :  MAC [1] -> sink [0]
+     * stream    :  rr_0 [0] -> MAC [0]
+     * stream    :  traffic [0] -> MAC [1]
+     */
+
+    istrm_hl=1;
+    istrm_ll=0;
+    ostrm_hl=1;
+    ostrm_ll=0;
 
     sh_load_bits = op_stat_reg("ALOHA.ALOHA SS Load(bits/sec)", OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
     sh_thru_bits = op_stat_reg("ALOHA.ALOHA SS Throughput(bits/sec)", OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
@@ -47,8 +64,7 @@ void ra_aloha_ss_intrpt_strm_handler(void)
     int istrm;
     char pk_fmt_str[64];
     static Boolean wait_ack_flag = OPC_FALSE;
-    static Packet* buf_pkptr;
-    static evhandle tr_ack;
+    static Evhandle tr_ack;
 
     FIN(ra_aloha_ss_intrpt_strm_handler());
 
@@ -57,7 +73,8 @@ void ra_aloha_ss_intrpt_strm_handler(void)
 
     if (istrm == istrm_hl) {
 	if (wait_ack_flag) {
-	    op_subq_insert(0, OPC_SUBQ_POS_HEAD);
+	    //What will happen if the subq overflows?
+	    op_subq_pk_insert(0, pkptr, OPC_QPOS_TAIL);
 	    return ;
 	}
 	buf_pkptr = op_pk_copy(pkptr);
@@ -77,7 +94,7 @@ void ra_aloha_ss_intrpt_strm_handler(void)
 	    op_ev_cancel(tr_ack);
 
 	    //the waiting queue is not empty, scheduing next tx
-	    if (!op_subq_empty()) {
+	    if (!op_subq_empty(0)) {
 		pkptr = ra_aloha_ss_dequeue();
 		buf_pkptr = op_pk_copy(pkptr);
 		op_pk_send(pkptr, ostrm_ll);
@@ -130,6 +147,8 @@ void ra_aloha_ss_sche_retx(double time_offset)
     FOUT;
 }
 
+
+
 Packet* ra_aloha_ss_dequeue(void)
 {
     Packet* pkptr;
@@ -138,7 +157,7 @@ Packet* ra_aloha_ss_dequeue(void)
 
     //if (op_subq_empty()) return;
     //
-    pkptr = op_subq_dequeue(0);
+    pkptr = op_subq_pk_remove(0, OPC_QPOS_HEAD);
 
     FRET (pkptr);
 }

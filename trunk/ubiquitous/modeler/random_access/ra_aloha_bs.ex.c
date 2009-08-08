@@ -1,3 +1,4 @@
+#include "ra.h"
 
 static int istrm_hl;
 static int istrm_ll;
@@ -8,9 +9,9 @@ void ra_aloha_bs_init(void)
 {
     FIN(ra_aloha_bs_init());
 
-    istrm_ll=;
-    ostrm_hl=;
-    ostrm_ll=;
+    istrm_ll=0;
+    ostrm_hl=1;
+    ostrm_ll=0;
 
     FOUT;
 }
