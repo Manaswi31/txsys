@@ -1,3 +1,5 @@
+#include "ra.h"
+
 double tr_len_ack;
 double tr_len_retx;
 int max_retx_times;

@@ -4,8 +4,9 @@
  *
  * Dependencies of OPNET Modeler platform:
  * * DES engine
- * * sub queue support
- * * stats recording support
+ * * Sub queue support : op_pk_subq_...
+ * * Stats recording support : op_stat_...
+ * * Tracing support : FIN, FOUT, FRET
  *
  * */
 
@@ -43,6 +44,8 @@ void ra_aloha_ss_intrpt_strm_handler(void);
 void ra_aloha_ss_init(void);
 void ra_aloha_ss_intrpt_handler(void);
 void errh_print(enum Err_Cause err_cause);
+
+void ra_aloha_bs_intrpt_strm_handler(void);
 
 #endif
 
