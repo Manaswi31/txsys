@@ -57,8 +57,9 @@ void ra_aloha_bs_intrpt_handler(void)
 
 void ra_aloha_bs_intrpt_strm_handler(void)
 {
-    Packet* pkptr;
-    Packet* ack_pkptr;
+    Packet* pduptr;
+    Packet * sduptr;
+    Packet* ack_pduptr;
     int istrm;
     int ss_id;
     char pk_fmt_str[64];
@@ -66,23 +67,24 @@ void ra_aloha_bs_intrpt_strm_handler(void)
     FIN(ra_aloha_bs_intrpt_strm_handler());
 
     istrm = op_intrpt_strm();
-    pkptr = op_pk_get(istrm);
+    pduptr = op_pk_get(istrm);
 
     if (istrm == svptr->istrm_ll) {
-	op_pk_format(pkptr, pk_fmt_str);
+	op_pk_format(pduptr, pk_fmt_str);
 	if (strcmp(pk_fmt_str, Ra_Aloha_Data_Pk_Name)==0) {
-	    op_pk_nfd_get_int32(pkptr, "SS ID", & ss_id);
-	    op_pk_send(pkptr , svptr->ostrm_hl);
-	    ack_pkptr = op_pk_create_fmt(Ra_Aloha_Ack_Pk_Name);
-	    op_pk_nfd_set_int32(ack_pkptr, "SS ID", ss_id);
-	    op_pk_send(ack_pkptr , svptr->ostrm_ll);
+	    op_pk_nfd_get_int32(pduptr, "SS ID", & ss_id);
+	    op_pk_nfd_get_pkt(pduptr, "Data", & sduptr);
+	    op_pk_send(sduptr , svptr->ostrm_hl);
+	    ack_pduptr = op_pk_create_fmt(Ra_Aloha_Ack_Pk_Name);
+	    op_pk_nfd_set_int32(ack_pduptr, "SS ID", ss_id);
+	    op_pk_send(ack_pduptr , svptr->ostrm_ll);
 
 	    if (op_prg_odb_ltrace_active("aloha")) {
 		op_prg_odb_print_major("Sending an ACK.", OPC_NIL);
 	    }
 
 	} else {
-	    op_pk_destroy(pkptr);
+	    op_pk_destroy(pduptr);
 	}
     }
 
