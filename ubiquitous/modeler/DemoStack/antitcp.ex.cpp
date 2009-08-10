@@ -514,7 +514,6 @@ void Application::initialize()
 {
     Objid own_id;
     Prohandle sink_prohndl;
-
     
     char		interarrival_str [128];
     char		size_str [128];
@@ -557,13 +556,13 @@ void Application::initialize()
 	 
     /* Make sure we have valid start and stop times, i.e. stop time is	*/
     /* not earlier than start time.										*/
-    if ((stop_time <= start_time) && (stop_time != SSC_INFINITE_TIME))
+    if ((stop_time <= start_time) && (stop_time != APP_INFINITE_TIME))
 	{
 	/* Stop time is earlier than start time. Disable the source.	*/
-	start_time = SSC_INFINITE_TIME;
+	start_time = APP_INFINITE_TIME;
 
 	/* Display an appropriate warning.								*/
-	op_prg_odb_print_major ("Warning from simple packet generator model (simple_source):", 
+	op_prg_odb_print_major ("Warning from Antitcp::Application :", 
 				"Although the generator is not disabled (start time is set to a finite value),",
 				"a stop time that is not later than the start time is specified.",
 				"Disabling the generator.", OPC_NIL);
@@ -572,7 +571,7 @@ void Application::initialize()
     /* Schedule a self interrupt that will indicate our start time for	*/
     /* packet generation activities. If the source is disabled,			*/
     /* schedule it at current time with the appropriate code value.		*/
-    if (start_time == SSC_INFINITE_TIME)
+    if (start_time == APP_INFINITE_TIME)
 	    {
 	    op_intrpt_schedule_self (op_sim_time (), SSC_STOP);
 	    }
@@ -583,7 +582,7 @@ void Application::initialize()
 		/* In this case, also schedule the interrupt when we will stop	*/
 		/* generating packets, unless we are configured to run until	*/
 		/* the end of the simulation.									*/
-		if (stop_time != SSC_INFINITE_TIME)
+		if (stop_time != APP_INFINITE_TIME)
 			{
 			op_intrpt_schedule_self (stop_time, SSC_STOP);
 			}
@@ -603,6 +602,18 @@ void Application::initialize()
 	    sh_sent_bit = op_stat_reg ("antitcp applicaton.Traffic Sent (bits/sec)",
     		    OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
 }
+
+void Application::handleMessage()
+{
+    FIN(Application::handleMessage());
+
+
+
+
+
+    FOUT;
+}
+
 
 void Application::scheduleNextPk()
 {

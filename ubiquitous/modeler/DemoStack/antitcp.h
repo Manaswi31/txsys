@@ -201,22 +201,30 @@ namespace AntiTcp
 
     } ;
 
-    class Application
+    class Application : public SimpleProcess
     {
 	public:
 	    Application();
-	    void initialize();
+	    virtual void initialize();
+	    virtual void handleMessage();
 	    void scheduleNextPk();
 	    void genPk();
-	    void finalize();
+	    virtual void finalize();
 
 	private:
 
 	    #define SSC_STRM_TO_LOW 0
 	    /* Special attribute values.*/
-	    #define		SSC_INFINITE_TIME		-1.0
+	    #define		APP_INFINITE_TIME		-1
 
 	    /* Interrupt code values.*/
+	    enum APP_IC
+	    {
+		APP_IC_START = 0
+		, APP_GIC_ENERATE
+		, APP_SIC_TOP
+	    } ;
+
 	    #define		SSC_START				0
 	    #define		SSC_GENERATE			1
 	    #define		SSC_STOP				2
