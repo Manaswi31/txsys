@@ -105,7 +105,7 @@ void ra_aloha_ss_intrpt_strm_handler(void)
 	op_stat_write(svptr->sh_load_bits, op_pk_total_size_get(sduptr));
 	op_stat_write(svptr->sh_load_bits, 0.0);
 
-	op_pk_nfd_set(pduptr, "Data", sduptr);
+	op_pk_nfd_set_pkt(pduptr, "Data", sduptr);
 	op_pk_send(pduptr, svptr->ostrm_ll);
 
 	tr_ack = op_intrpt_schedule_self(Cur_Time + tr_len_ack, TR_ACK_TO);
