@@ -9,8 +9,9 @@ struct SS_SVar
     int istrm_ll;
     int ostrm_hl;
     int ostrm_ll;
-    Stathandle sh_thru_bits;
     Stathandle sh_load_bits;
+    Stathandle sh_goodput_bits;
+    Stathandle gsh_load_bits;
 //    Evhandle tr_ack;
 };
 
@@ -44,7 +45,7 @@ void ra_aloha_ss_init(void)
     svptr->ostrm_ll=0;
 
     svptr->sh_load_bits = op_stat_reg("ALOHA SS.Load(bits/sec)", OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
-    svptr->sh_thru_bits = op_stat_reg("ALOHA SS.Throughput(bits/sec)", OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
+    svptr->gsh_load_bits = op_stat_reg("ALOHA SS.Load(bits/sec)", OPC_STAT_INDEX_NONE, OPC_STAT_GLOBAL);
 
  //   FOUT;
 }
@@ -104,6 +105,8 @@ void ra_aloha_ss_intrpt_strm_handler(void)
 
 	op_stat_write(svptr->sh_load_bits, op_pk_total_size_get(sduptr));
 	op_stat_write(svptr->sh_load_bits, 0.0);
+	op_stat_write(svptr->gsh_load_bits, op_pk_total_size_get(sduptr));
+	op_stat_write(svptr->gsh_load_bits, 0.0);
 
 	op_pk_nfd_set_pkt(pduptr, "Data", sduptr);
 	op_pk_send(pduptr, svptr->ostrm_ll);
@@ -124,8 +127,8 @@ void ra_aloha_ss_intrpt_strm_handler(void)
 	    op_ev_cancel(tr_ack);
 	    //op_ev_cancel(svptr->tr_ack);
 
-	    op_stat_write(svptr->sh_thru_bits, op_pk_total_size_get(pduptr));
-	    op_stat_write(svptr->sh_thru_bits, 0.0);
+	    op_stat_write(svptr->sh_goodput_bits, op_pk_total_size_get(pduptr));
+	    op_stat_write(svptr->sh_goodput_bits, 0.0);
 
 	    op_pk_destroy(buf_pkptr);
 	    //TODO: check whether the timer event is valid
