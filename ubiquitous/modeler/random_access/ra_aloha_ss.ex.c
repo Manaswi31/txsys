@@ -9,6 +9,7 @@ struct SS_SVar
     int istrm_ll;
     int ostrm_hl;
     int ostrm_ll;
+    int ss_id;
     Stathandle sh_load_bits;
     Stathandle sh_goodput_bits;
     Stathandle gsh_load_bits;
@@ -28,7 +29,9 @@ static Packet* buf_pkptr; //the copy of the appending packet that is on the fly
 
 void ra_aloha_ss_init(void)
 {
-//    FIN(ra_aloha_ss_init());
+    Objid my_objid;
+
+    FIN(ra_aloha_ss_init());
 
     /*
      *
@@ -44,10 +47,14 @@ void ra_aloha_ss_init(void)
     svptr->ostrm_hl=1;
     svptr->ostrm_ll=0;
 
+    my_objid = op_id_self();
+    op_ima_obj_attr_get_int32(my_objid, "SS ID", & svptr->ss_id);
+
     svptr->sh_load_bits = op_stat_reg("ALOHA SS.Load(bits/sec)", OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
+    svptr->sh_goodput_bits = op_stat_reg("ALOHA SS.Goodput(bits/sec)", OPC_STAT_INDEX_NONE, OPC_STAT_LOCAL);
     svptr->gsh_load_bits = op_stat_reg("ALOHA SS.Load(bits/sec)", OPC_STAT_INDEX_NONE, OPC_STAT_GLOBAL);
 
- //   FOUT;
+    FOUT;
 }
 
 void ra_aloha_ss_intrpt_handler(void)
@@ -80,6 +87,7 @@ void ra_aloha_ss_intrpt_strm_handler(void)
     Packet* sduptr;
     Packet* pduptr;
     int istrm;
+    int ss_id;
     char pk_fmt_str[64];
     static Boolean wait_ack_flag = OPC_FALSE;
     static Evhandle tr_ack;
@@ -123,15 +131,22 @@ void ra_aloha_ss_intrpt_strm_handler(void)
 
 	if (strcmp(pk_fmt_str, Ra_Aloha_Ack_Pk_Name)==0) {
 
+	    op_pk_nfd_get_int32(pduptr, "SS ID", & ss_id);
+
+	    if (ss_id != svptr->ss_id) {
+		op_pk_destroy(pduptr);
+		FOUT;
+	    }
+
 	    wait_ack_flag = OPC_FALSE;
+	    //TODO: check whether the timer event is valid
 	    op_ev_cancel(tr_ack);
 	    //op_ev_cancel(svptr->tr_ack);
 
-	    op_stat_write(svptr->sh_goodput_bits, op_pk_total_size_get(pduptr));
+	    op_stat_write(svptr->sh_goodput_bits, op_pk_total_size_get(buf_pkptr));
 	    op_stat_write(svptr->sh_goodput_bits, 0.0);
 
 	    op_pk_destroy(buf_pkptr);
-	    //TODO: check whether the timer event is valid
 
 	    //the waiting queue is not empty, scheduing next tx
 	    if (!op_subq_empty(0)) {
@@ -145,7 +160,7 @@ void ra_aloha_ss_intrpt_strm_handler(void)
 	    }
 	}
 
-	op_pk_send(pduptr, svptr->ostrm_hl);
+	//op_pk_send(pduptr, svptr->ostrm_hl);
     } //istrm_ll
 
     FOUT;
