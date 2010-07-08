@@ -15,7 +15,8 @@ for it=1:len_snr
     errors(it) = size(find(d_est-d), 2);
 end
 theoryBer = 0.5*erfc(sqrt(10.^(EbvsN0/10)));
-berSim=errors/NSymbols
+berSim=errors/NSymbols;
+
 figure(1);
 semilogy(EbvsN0, theoryBer, 'b.-', EbvsN0, berSim, 'o');
 legend('theory', 'simulation');
