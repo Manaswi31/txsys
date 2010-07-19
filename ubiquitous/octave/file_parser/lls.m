@@ -15,6 +15,7 @@ line_args = [
             'm<-'
 ] ;
 
+curve_counter = 1;
 
 for jj=1:dirc
 
@@ -44,8 +45,8 @@ end %for
 %coeff_f3 = [8.453085105749641e-001, 2.212612996582892e+000, 2.187293961324546e-001 0 0 0 0 0 0 0];
 
 %limits = [-20, 34, 1.084650e+001, 2.824850e+001, -3.586000e+000, -3.012900e-001];
-limits = [f4_x1_inter f4_x2_inter f5_x1 f5_x2 f3_x1 f3_x2];
-[cir, sir, ber ,bler] = tdss_reg_plot(limits, coeff_f4, coeff_f5, coeff_f3, line_args(curve_counter, );
+limits = [f4_x1 f4_x2 f5_x1 f5_x2 f3_x1 f3_x2];
+%[cir, sir, ber ,bler] = tdss_reg_plot(limits, coeff_f4, coeff_f5, coeff_f3, line_args(curve_counter, );
 
 curve_counter = curve_counter + 1;
 
