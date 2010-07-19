@@ -58,7 +58,7 @@ while(1)
         end
         
         if 1==inblock_f5
-		block = [block line] %%%contaminate to be a long line
+		block = [block line]; %%%contaminate to be a long line
                 if 0==isempty(strfind (line, 'end_SirToRawBer_F5'))
                         inblock_f5 = 0;
                         [coeff_f5_temp, f5_x1_inter_temp, f5_x2_inter_temp] = parse_f5(block);
@@ -85,13 +85,15 @@ while(1)
 	if 0==inblock_f3
             if 0==isempty(strfind (line, 'start_RawBerToBler_F3'))
                 inblock_f3 = 1;
-		block = [];
+		block = line;
+		continue;
             else
                 %continue;
             end
         end
         
           if 1==inblock_f3
+		block = [block line] %%%contaminate to be a long line
                 if 0==isempty(strfind (line, 'end_RawBerToBler_F3'))
                         inblock_f3 = 0;
                         [coeff_f3_temp, f3_x1_inter_temp, f3_x2_inter_temp] = parse_f3(block);
@@ -106,10 +108,7 @@ while(1)
                         if f3_x2_inter_temp~=0
                                 f3_x2 = f3_x2_inter_temp;
                         end
-
-                       continue;
-                else
-		    block = [block line]; %%%contaminate to be a long line
+                        continue;
                 end
 	end
 
