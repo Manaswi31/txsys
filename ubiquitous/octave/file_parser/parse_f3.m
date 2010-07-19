@@ -1,25 +1,25 @@
  	
-function [coeff_f3, x1_inter, x2_inter] =  parse_f3(line)
+function [coeff_f3, x1, x2] =  parse_f3(line)
     coeff_f3 = 0;
-    x1_inter = 0;
-    x2_inter = 0;
+    x1 = 0;
+    x2 = 0;
 
-	key1 = 'x1_inter: ';
-	key2 = 'x2_inter: ';
+	key1 = 'x0: ';
+	key2 = 'x1: ';
 	pos1 = strfind(line, key1);
 	pos2 = strfind(line, key2);
-	x1_inter_str = line(pos1+length(key1):pos2-1);
-	x1_inter = str2num(x1_inter_str);
+	x1_str = line(pos1+length(key1):pos2-1);
+	x1 = str2num(x1_str);
 
 	key1 = key2;
-	key2 = 'x0_intra: ';
+	key2 = 'ber: ';
 	pos1 = strfind(line, key1);
 	pos2 = strfind(line, key2);
-	x2_inter_str = line(pos1+length(key1):pos2-1);
-	x2_inter = str2num(x2_inter_str);
+	x2_str = line(pos1+length(key1):pos2-1);
+	x2 = str2num(x2_str);
 
-	key1 = 'CIR_Inter:';
-	key2 = 'CIR_Intra:';
+	key1 = 'ber:';
+	key2 = 'end_RawBerToBler_F3';
 	pos1 = strfind(line, key1);
 	pos2 = strfind(line, key2);
 	f3_coeff_str = line(pos1+length(key1):pos2-1);
@@ -29,7 +29,4 @@ function [coeff_f3, x1_inter, x2_inter] =  parse_f3(line)
 	for ii=1:length(startpos)
 		coeff_f3 (ii) = str2num(f3_coeff_str(startpos(ii):endpos(ii)));
 	end
-%	x1_inter
-%	x2_inter
-%	coeff_f3
     end  %end of if
