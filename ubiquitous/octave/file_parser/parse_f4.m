@@ -12,8 +12,9 @@ function [coeff_f4, x1_inter, x2_inter] =  parse_f4(line)
     coeff_f4 = 0;
     x1_inter = 0;
     x2_inter = 0;
-        if length(line)>8 && 1==strcmp('x1_inter', line(1:8))
-            x1_inter_str = line(11:end);
+    key = 'x1_inter';
+    pos = strfind(line, key);
+            x1_inter_str = line(pos+lengthkey:pos+8)
             x1_inter = str2num(x1_inter_str);
         end
 
