@@ -51,7 +51,7 @@ cir_f3=cir_orig(index);
 %%%%%%%%%%%%%%%%%%%%%%%
 subplot(221)
 plot(cir_f4, sir_f4, line_arg);
-title('CIR ~ SIR');
+title('CIR \~ SIR');
 xlabel('CIR / dB');
 ylabel('SIR / dB');
 grid on;
@@ -59,7 +59,7 @@ hold on;
 
 subplot(222)
 plot(sir_f5, ber_f5, line_arg);
-title('SIR ~ BER');
+title('SIR \~ BER');
 xlabel('SIR / dB');
 ylabel('BER / (base10 exponent)');
 axis([-Inf Inf -7 1]);
@@ -68,7 +68,7 @@ hold on;
 
 subplot(223)
 plot(ber_f3, bler_f3, line_arg);
-title('BER ~ BLER');
+title('BER \~ BLER');
 xlabel('BER / (base10 exponent)');
 ylabel('BLER (base10 exponent)');
 axis([-7 1 -5 1]);
