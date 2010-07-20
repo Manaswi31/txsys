@@ -93,7 +93,7 @@ while(1)
         end
         
           if 1==inblock_f3
-		block = [block line] %%%contaminate to be a long line
+		block = [block line]; %%%contaminate to be a long line
                 if 0==isempty(strfind (line, 'end_RawBerToBler_F3'))
                         inblock_f3 = 0;
                         [coeff_f3_temp, f3_x1_inter_temp, f3_x2_inter_temp] = parse_f3(block);
