@@ -29,8 +29,11 @@ void Sink::handleMessage(cMessage *msg)
 {
   // Handle incoming packet
   Packet *pk = check_and_cast<Packet *>(msg);
-  if (ev.isGUI()) parentModule()->bubble("Arrived");
-    numReceived++;
+
+  if (ev.isGUI()) 
+      parentModule()->bubble("Arrived");
+
+  numReceived++;
 
   // Display the number of packets received.
   char buf[40];
