@@ -25,8 +25,10 @@ void SimpleSource::initialize()
 void SimpleSource::handleMessage(cMessage *msg)
 {
   // Time to create and send a packet.
-  if (ev.isGUI()) parentModule()->bubble("Sending a packet");
-    numSent++;
+  if (ev.isGUI()) 
+      parentModule()->bubble("Sending a packet");
+
+  numSent++;
 
   pkSize = par("pkSize");
 
