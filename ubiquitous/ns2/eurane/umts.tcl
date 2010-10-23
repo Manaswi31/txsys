@@ -77,7 +77,7 @@ $ns attach-agent $ue2 $sink1
 
 # Connect sinks to TCP agents
 $ns connect $tcp0 $sink0
-$ns connect $tcp0 $sink1
+$ns connect $tcp1 $sink1
 
 $ns node-config -llType UMTS/RLC/AM \
 -downlinkBW 64kbs \

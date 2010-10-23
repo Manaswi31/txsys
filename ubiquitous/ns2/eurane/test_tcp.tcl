@@ -83,7 +83,7 @@ $tcp0 set packetSize_ 512
 $tcp0 set fid_ 0
 $tcp0 set prio_ 2
 
-#$ns attach-agent $node2 $tcp0
+#$ns attach-agent $ue2 $tcp0
 $ns attach-agent $rnc $tcp0
 
 set ftp0 [new Application/FTP]
