@@ -5,12 +5,30 @@
 #include <sys/types.h>
 #include <cmu-trace.h>
 #include <priqueue.h>
+#include <fstream>
+#include <string>
+#include <sstream>
+using std::fstream;
+using std::string;
 
 //#define NOW (Schedule::instance().clock())
 
 #define NETWORK_DIAMETER 16
 #define FORWARD_DELAY 0.01
 #define NO_DELAY -1.0
+
+class DesLog
+{
+    public:
+	static DesLog* instance();
+	~DesLog();
+	void openLog();
+	void writeLog(string* s);
+    private:
+	DesLog();
+	static DesLog* myLog;
+	fstream f;
+} ;
 
 class MFlood : public Agent {
     friend class MFlood_RTEntry;
@@ -38,6 +56,7 @@ protected:
 	
 private:
 	u_int32_t myseq_;
+	DesLog* desLog;
     
 };
     
