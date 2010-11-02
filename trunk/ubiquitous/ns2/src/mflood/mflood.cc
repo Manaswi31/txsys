@@ -8,8 +8,48 @@
 #include <random.h>
 #include <cmu-trace.h>
 #include <iostream>
+using std::fstream;
+using std::string;
+using std::cout;
+using std::endl;
+using std::stringstream;
+
 
 int hdr_mflood::offset_;
+
+DesLog::DesLog()
+{
+}
+
+DesLog::~DesLog()
+{
+    /*
+    if (f.isOpen())
+	f.close();
+	*/
+}
+
+DesLog* DesLog::myLog = NULL;
+DesLog* DesLog::instance()
+{
+    if (myLog==NULL) {
+	myLog = new DesLog();
+	cout << "creaLog()" <<endl;
+    }
+    return myLog;
+}
+
+void DesLog::openLog()
+{
+    if (!f.is_open())
+	f.open("log", fstream::out);
+}
+
+void DesLog::writeLog(string * s)
+{
+    if (s!=NULL)
+	f << *s << endl;
+}
 
 static class MFloodHeaderClass : public PacketHeaderClass {
     public:
@@ -72,6 +112,7 @@ MFlood::MFlood(nsaddr_t id) : Agent(PT_MFLOOD), port_demux_(NULL) {
 	index_ = id;
 	logtarget = 0;
 	myseq_ = 0;
+	desLog=DesLog::instance();
 }
 
 
@@ -100,9 +141,14 @@ void MFlood::recv(Packet* p, Handler*) {
 	struct hdr_cmn *ch = HDR_CMN(p);
 	struct hdr_ip *ih = HDR_IP(p);
 	struct hdr_mflood *fh = HDR_MFLOOD_PKT(p);
+
+	string s;
+	stringstream ss;
+
 	assert(initialized());
 
 	//std::cout << "recv called." << std:endl;
+	desLog->openLog();
 
 	if ((ih->saddr()==index_) && (ch->num_forwards()==0)) {
 	    //this is packet from higher layer within the same node
@@ -120,6 +166,11 @@ void MFlood::recv(Packet* p, Handler*) {
 			return;
 		}
 	}
+
+	ss << fh->seq_;
+	ss >> s;
+	desLog->writeLog(& s);
+
 	rt_resolve(p);
 }
 
