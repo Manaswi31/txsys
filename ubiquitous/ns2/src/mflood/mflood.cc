@@ -23,6 +23,7 @@ DesLog::DesLog()
 
 DesLog::~DesLog()
 {
+    cout << "~DesLog()" << endl;
     /*
     if (f.isOpen())
 	f.close();
@@ -42,7 +43,7 @@ DesLog* DesLog::instance()
 void DesLog::openLog()
 {
     if (!f.is_open())
-	f.open("log", fstream::out);
+	f.open("log", fstream::append);
 }
 
 void DesLog::writeLog(string * s)
