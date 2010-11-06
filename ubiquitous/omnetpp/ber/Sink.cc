@@ -10,6 +10,7 @@ Define_Module(Sink);
 void Sink::initialize()
 {
   numReceived = 0;
+  numErrorPk = 0;
 
   WATCH(numReceived);
 
@@ -29,8 +30,14 @@ void Sink::handleMessage(cMessage *msg)
 {
   // Handle incoming packet
   AppPacket *pk = check_and_cast<AppPacket *>(msg);
-  if (ev.isGUI()) parentModule()->bubble("Arrived");
-    numReceived++;
+
+  if (pk->hasBitError()) {
+      numErrorPk ++;
+      if (ev.isGUI()) {
+	  parentModule()->bubble("Error packet");
+      }
+  }
+  numReceived++;
 
   // Display the number of packets received.
   char buf[40];
@@ -48,8 +55,11 @@ void Sink::handleMessage(cMessage *msg)
 
 void Sink::finish()
 {
+    double per = (double)numErrorPk/numReceived;
+    perStats.collect(per);
   ev << parentModule()->fullName() << "." << fullName() << ":" << endl;
   ev << "  pks. received: " << numReceived << endl;
+  ev << "  pks. error ratio: " << per <<endl;
 
   ev << "  hop count, min:    " << hopCountStats.min() << endl;
   ev << "  hop count, max:    " << hopCountStats.max() << endl;
@@ -71,5 +81,6 @@ void Sink::finish()
   hopCountStats.recordScalar("hop count");
   pkDelayStats.recordScalar("pk delay");
   pkSizeStats.recordScalar("pk size");
+  perStats.recordScalar("Packet Error Ratio");
 }
 
