@@ -13,6 +13,7 @@ simple Sink
 endsimple
 
 channel physical
+    error 0.000001;
     delay 10ms;
     datarate 1000000;
 endchannel
@@ -47,7 +48,6 @@ module rdt_network
             display: "i=device/pc;p=245,168";
     connections:
         shost.out --> physical --> rhost.in;
-        rhost.out --> physical --> shost.in;
 endmodule
 
 network rdt_net : rdt_network

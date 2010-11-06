@@ -8,9 +8,11 @@ class Sink : public cSimpleModule
   private:
     // Statistics
     long numReceived;
+    long numErrorPk;
     cLongHistogram hopCountStats;
     cOutVector hopCountVector;
     cDoubleHistogram pkDelayStats;
+    cDoubleHistogram perStats;
     cOutVector pkDelayVector;
     cLongHistogram pkSizeStats;
 
