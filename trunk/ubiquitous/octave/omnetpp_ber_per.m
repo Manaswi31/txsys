@@ -1,0 +1,11 @@
+ber=[1e-6 1e-5 1e-4 1e-3];
+per=[0.00095511 0.0143266 0.105062 0.635148];
+n=1000;
+per_theo = 1-(1-ber).^n;
+plot(log10(ber), per, 'r-*', log10(ber), per_theo, 'b--x');
+xlabel('Bit error ratio');
+ylabel('Packet error ratio');
+legends={'real per' 'theorectial per'};
+legend(legends);
+title('BER vs. PER curve for OMNeT++ simulator');
+grid on;
